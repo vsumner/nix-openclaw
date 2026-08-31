@@ -29,6 +29,11 @@ const catalogFiles = [
   "official-external-provider-catalog.json",
 ];
 
+const gatewayWorkspacePluginPaths = new Map([
+  ["acpx", "extensions/acpx"],
+  ["codex", "extensions/codex"],
+]);
+
 function run(command, args, options = {}) {
   const result = childProcess.spawnSync(command, args, {
     encoding: "utf8",
@@ -169,6 +174,7 @@ function resolveOpenClawSourcePath() {
     "pnpmDepsHash",
     "gatewayNpmDepsHash",
     "pnpmMajor",
+    "pnpmHostOnly",
     "releaseTag",
     "releaseVersion",
     "runtimePluginVersion",
@@ -1243,12 +1249,105 @@ async function buildArtifactLock(row, artifact) {
   }
 }
 
-async function processRow(row, releaseVersion, runtimePluginVersion) {
+function workspaceRuntimeEntry(entry, label) {
+  const safeEntry = safePackageEntry(entry, label);
+  if (!isTypeScriptPackageEntry(safeEntry)) {
+    return `./${safeEntry}`;
+  }
+  return `./${safeEntry.replace(/\.[^.]+$/u, ".js")}`;
+}
+
+function buildWorkspaceLock(row, openclawSourcePath, workspacePath, releaseVersion, runtimePluginVersion) {
+  const packageRoot = path.join(openclawSourcePath, workspacePath);
+  const packageJsonPath = path.join(packageRoot, "package.json");
+  const manifestPath = path.join(packageRoot, "openclaw.plugin.json");
+  if (!fs.existsSync(packageJsonPath) || !fs.existsSync(manifestPath)) {
+    return {
+      skipped: skip(row, "missing-workspace-plugin", `${workspacePath} lacks package.json or openclaw.plugin.json`),
+    };
+  }
+
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+  if (manifest.id !== row.id) {
+    return { skipped: skip(row, "manifest-id-mismatch", `openclaw.plugin.json id is ${manifest.id}`) };
+  }
+  if (!isExactVersion(packageJson.version)) {
+    return { skipped: skip(row, "exact-version-required", `workspace version ${packageJson.version} is not exact`) };
+  }
+  if (packageJson.version !== runtimePluginVersion) {
+    return {
+      skipped: skip(
+        row,
+        "runtime-plugin-version-mismatch",
+        `workspace version ${packageJson.version} does not match ${runtimePluginVersion}`,
+      ),
+    };
+  }
+
+  const openclawCompat = packageJson.openclaw?.compat?.pluginApi ?? "";
+  for (const [name, range] of [
+    ["catalog minHostVersion", row.install?.minHostVersion ?? ""],
+    ["openclaw.compat.pluginApi", openclawCompat],
+  ]) {
+    if (range && !satisfiesVersionRange(releaseVersion, range)) {
+      return {
+        skipped: skip(row, "host-compatibility-mismatch", `${name} ${range} does not include OpenClaw ${releaseVersion}`),
+      };
+    }
+  }
+
+  const openclaw = isRecord(packageJson.openclaw) ? packageJson.openclaw : {};
+  const extensions = listManifestStringField(openclaw.extensions, "openclaw.extensions");
+  if (extensions.length === 0) {
+    return { skipped: skip(row, "missing-runtime-entry", "workspace package has no openclaw.extensions") };
+  }
+  const setupEntry = optionalString(openclaw.setupEntry);
+  const dependencies = sortedObject(packageJson.dependencies ?? {});
+  const optionalDependencies = sortedObject(packageJson.optionalDependencies ?? {});
+  const lock = pickDefined({
+    id: row.id,
+    attrName: attrNameForId(row.id),
+    label: row.label,
+    kind: row.kind,
+    catalogSource: row.source,
+    catalogFile: row.catalogFile,
+    catalogEntryName: row.catalogEntryName,
+    catalogDefaultChoice: row.install?.defaultChoice ?? null,
+    selectedSource: "workspace",
+    npmSpec: row.install?.npmSpec,
+    minHostVersion: row.install?.minHostVersion ?? "",
+    expectedIntegrity: row.install?.expectedIntegrity ?? "",
+    packageName: packageJson.name,
+    version: packageJson.version,
+    workspacePath,
+    dependencyMode: "workspace",
+    manifestId: manifest.id,
+    openclawCompat,
+    peerOpenClaw: packageJson.peerDependencies?.openclaw ?? "",
+    runtimeExtensions: extensions.map((entry) => workspaceRuntimeEntry(entry, "workspace extension")),
+    runtimeSetupEntry: setupEntry ? workspaceRuntimeEntry(setupEntry, "workspace setup entry") : null,
+    channels: manifest.channels ?? [],
+    contracts: manifest.contracts ?? {},
+    dependencies,
+    optionalDependencies,
+    bundleDependencies: [],
+    bundledPackageRoots: [],
+  });
+
+  return { lock, supported: supportedReport(lock) };
+}
+
+async function processRow(row, releaseVersion, runtimePluginVersion, openclawSourcePath) {
   if (!row.id) {
     return { skipped: skip(row, "missing-plugin-id", "catalog row has no plugin, channel, or provider id") };
   }
   if (!row.install) {
     return { skipped: skip(row, "missing-install-metadata", "catalog row has no install metadata") };
+  }
+  const workspacePath = gatewayWorkspacePluginPaths.get(row.id);
+  if (workspacePath) {
+    return buildWorkspaceLock(row, openclawSourcePath, workspacePath, releaseVersion, runtimePluginVersion);
   }
   if (row.selectedSource === "local") {
     return { skipped: skip(row, "local-source-unsupported", "catalog-selected local paths are not reproducible Nix artifacts") };
@@ -1333,7 +1432,7 @@ for (const row of rows) {
   }
   seenCatalogKeys.add(dedupeKey);
 
-  const result = await processRow(row, releaseVersion, runtimePluginVersion);
+  const result = await processRow(row, releaseVersion, runtimePluginVersion, openclawSourcePath);
   if (result.lock) {
     locks.push(result.lock);
     supported.push(result.supported);

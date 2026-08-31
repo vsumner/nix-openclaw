@@ -144,6 +144,16 @@
                 openclawGateway = packageSetStable.openclaw-gateway;
                 includeRuntimePluginSmoke = true;
               };
+              runtime-plugin-acpx-gateway-smoke = pkgs.callPackage ./nix/checks/openclaw-gateway-smoke.nix {
+                openclawGateway = packageSetStable.openclaw-gateway;
+                includeRuntimePluginSmoke = true;
+                runtimePluginSmokeId = "acpx";
+              };
+              runtime-plugin-codex-gateway-smoke = pkgs.callPackage ./nix/checks/openclaw-gateway-smoke.nix {
+                openclawGateway = packageSetStable.openclaw-gateway;
+                includeRuntimePluginSmoke = true;
+                runtimePluginSmokeId = "codex";
+              };
               runtime-plugin-locks = pkgs.callPackage ./nix/checks/openclaw-runtime-plugin-locks.nix { };
               runtime-plugin-packages = pkgs.symlinkJoin {
                 name = "openclaw-runtime-plugin-packages";
@@ -165,16 +175,15 @@
                   ];
                 }).activationPackage;
             };
-            packageArtifactPaths =
-              [
-                packageSetStable.openclaw
-                packageSetStable.openclaw-gateway
-                stableChecks.bin-surface
-                stableChecks.package-contents
-              ]
-              ++ pkgs.lib.optionals (packageSetStable ? openclaw-app && packageSetStable.openclaw-app != null) [
-                packageSetStable.openclaw-app
-              ];
+            packageArtifactPaths = [
+              packageSetStable.openclaw
+              packageSetStable.openclaw-gateway
+              stableChecks.bin-surface
+              stableChecks.package-contents
+            ]
+            ++ pkgs.lib.optionals (packageSetStable ? openclaw-app && packageSetStable.openclaw-app != null) [
+              packageSetStable.openclaw-app
+            ];
             proofChecks = {
               # Product artifacts: user-facing package plus component packages
               # and content/surface checks that prove those artifacts are sane.
@@ -209,6 +218,8 @@
                   pluginChecks.plugin-instance
                   runtimePluginChecks.runtime-plugin-config-validity
                   runtimePluginChecks.runtime-plugin-gateway-smoke
+                  runtimePluginChecks.runtime-plugin-acpx-gateway-smoke
+                  runtimePluginChecks.runtime-plugin-codex-gateway-smoke
                 ];
               };
               # QMD opt-in: local memory backend only when users enable it.

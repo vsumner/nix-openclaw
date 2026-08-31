@@ -62,6 +62,22 @@ if [ -d dist-runtime ]; then
   set -- "$@" dist-runtime
 fi
 log_step "copy build outputs" cp -R "$@" "$out/lib/openclaw/"
+
+# OpenClaw 2 publishes @openclaw/ai as a separate package. A source build keeps
+# the root dependency as a workspace symlink, so materialize the same runtime
+# files inside the Nix output instead of depending on the npm publication.
+if [ -d packages/ai/dist ] && [ -f packages/ai/package.json ]; then
+  ai_runtime="$out/lib/openclaw/packages/ai"
+  mkdir -p "$ai_runtime"
+  cp packages/ai/package.json "$ai_runtime/package.json"
+  cp -R packages/ai/dist "$ai_runtime/dist"
+  for file in LICENSE README.md; do
+    if [ -f "packages/ai/$file" ]; then
+      cp "packages/ai/$file" "$ai_runtime/$file"
+    fi
+  done
+fi
+
 if [ -d extensions ]; then
   log_step "copy extension manifests" copy_extension_manifests
 fi

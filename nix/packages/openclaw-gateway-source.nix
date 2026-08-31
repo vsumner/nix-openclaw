@@ -16,6 +16,7 @@
   makeWrapper,
   vips,
   git,
+  sqlite,
   zstd,
   sourceInfo,
   gatewaySrc ? null,
@@ -43,6 +44,7 @@ let
           python3
           node-gyp
           git
+          sqlite
           zstd
           ;
       }
@@ -52,6 +54,7 @@ let
         pnpmDepsHash = pnpmDepsHash;
         pnpmDepsPname = "openclaw-gateway";
         gatewaySrc = gatewaySrc;
+        packageVersion = if gatewaySrc == null then sourceInfo.releaseVersion else null;
         enableSharp = true;
         extraNativeBuildInputs = [
           perl

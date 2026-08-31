@@ -8,6 +8,22 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-08-31
+
+### Changed
+
+- Updated the stable OpenClaw package to release `2026.8.1` (OpenClaw 2), built
+  reproducibly from the pinned upstream source and pnpm lock.
+- Materialized the ACPX and Codex runtime plugins from the same pinned OpenClaw
+  workspace so their code and dependency graphs stay aligned with the gateway.
+- Refreshed the generated runtime plugin catalog for OpenClaw `2026.8.1`.
+
+### Fixed
+
+- Allow immutable Nix store plugin roots through OpenClaw's ownership check.
+- Keep explicit development source overrides labeled as unstable while release
+  source builds retain the pinned OpenClaw release version.
+
 ## 2026-08-30
 
 ### Fixed

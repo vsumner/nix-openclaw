@@ -109,6 +109,9 @@ function sameArray(left, right) {
 }
 
 function lockSourceIsValid(lock) {
+  if (lock.selectedSource === "workspace") {
+    return lock.workspacePath === `extensions/${lock.id}`;
+  }
   if (lock.selectedSource === "npm") {
     return typeof lock.tarballUrl === "string" && lock.tarballUrl.startsWith("https://registry.npmjs.org/");
   }
@@ -158,10 +161,16 @@ assert(sameArray(lockIds, supportedIds), "imported lock ids do not match report 
 for (const row of supported) {
   const lock = locks[row.id];
   assert(row.status === "supported", `supported row ${row.id} has wrong status`);
-  assert(row.selectedSource === "npm" || row.selectedSource === "clawhub", `supported row ${row.id} has invalid source`);
+  assert(
+    row.selectedSource === "npm" || row.selectedSource === "clawhub" || row.selectedSource === "workspace",
+    `supported row ${row.id} has invalid source`,
+  );
   assert(row.packageName, `supported row ${row.id} has no packageName`);
   assert(
-    row.dependencyMode === "none" || row.dependencyMode === "bundled" || row.dependencyMode === "shrinkwrap",
+    row.dependencyMode === "none"
+      || row.dependencyMode === "bundled"
+      || row.dependencyMode === "shrinkwrap"
+      || row.dependencyMode === "workspace",
     `supported row ${row.id} has invalid dependencyMode`,
   );
   assert(!/[~^*]|latest/.test(row.version), `supported row ${row.id} has a floating version`);
@@ -188,7 +197,16 @@ for (const row of supported) {
   assert(lock.manifestId === row.id, `lock ${row.id} manifestId does not match id`);
   assert(lockSourceIsValid(lock), `lock ${row.id} has invalid source metadata`);
   assert(!lock.npmIntegrity || /^(sha512|sha384|sha256)-/.test(lock.npmIntegrity), `lock ${row.id} has invalid npm SRI integrity`);
-  assert(/^sha256-/.test(lock.nixHash), `lock ${row.id} has missing Nix hash`);
+  if (lock.selectedSource === "workspace") {
+    assert(
+      lock.id === "acpx" || lock.id === "codex",
+      `lock ${row.id} is not an approved gateway workspace plugin`,
+    );
+    assert(!lock.nixHash, `lock ${row.id} workspace source must use the gateway source hash`);
+    assert(lock.dependencyMode === "workspace", `lock ${row.id} workspace source has wrong dependency mode`);
+  } else {
+    assert(/^sha256-/.test(lock.nixHash), `lock ${row.id} has missing Nix hash`);
+  }
   if (lock.dependencyMode === "shrinkwrap") {
     assert(/^sha256-/.test(lock.npmDepsHash), `lock ${row.id} has missing npmDepsHash`);
     assert((lock.bundledPackageRoots ?? []).length === 0, `lock ${row.id} shrinkwrap mode should not list bundled roots`);
@@ -211,8 +229,10 @@ for (const expected of ["slack", "discord", "brave", "diagnostics-prometheus"]) 
   requireSupportedId(expected);
 }
 
-const acpx = requireSupportedId("acpx");
-assert(
-  acpx.version === report.runtimePluginVersion,
-  `ACPX version ${acpx.version} does not match runtime plugin version ${report.runtimePluginVersion}`,
-);
+for (const workspacePluginId of ["acpx", "codex"]) {
+  const workspacePlugin = requireSupportedId(workspacePluginId);
+  assert(
+    workspacePlugin.version === report.runtimePluginVersion,
+    `${workspacePluginId} version ${workspacePlugin.version} does not match runtime plugin version ${report.runtimePluginVersion}`,
+  );
+}

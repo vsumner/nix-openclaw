@@ -5,6 +5,7 @@
   nodejs_22,
   openclawGateway,
   includeRuntimePluginSmoke ? false,
+  runtimePluginSmokeId ? "diagnostics-prometheus",
 }:
 
 stdenv.mkDerivation {
@@ -25,8 +26,8 @@ stdenv.mkDerivation {
     OPENCLAW_GATEWAY = openclawGateway;
   }
   // lib.optionalAttrs includeRuntimePluginSmoke {
-    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ID = "diagnostics-prometheus";
-    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ROOT = "${pkgs.openclawRuntimePlugins.diagnostics-prometheus}";
+    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ID = runtimePluginSmokeId;
+    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ROOT = "${pkgs.openclawRuntimePlugins.${runtimePluginSmokeId}}";
   };
 
   __darwinAllowLocalNetworking = true;

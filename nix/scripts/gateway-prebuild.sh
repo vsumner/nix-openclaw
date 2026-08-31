@@ -64,6 +64,16 @@ fi
 
 log_step "chmod pnpm store writable" chmod -R +w "$store_path"
 
+# fetchPnpmDeps v4 replaces pnpm's SQLite package index with a deterministic
+# SQL dump. Restore it before asking pnpm to replay the store offline, matching
+# nixpkgs' pnpmConfigHook.
+if [ -f "$store_path/v11/index.db.sql" ]; then
+  log_step "restore pnpm store index" sh -c '
+    sqlite3 "$1/v11/index.db" < "$1/v11/index.db.sql"
+    rm "$1/v11/index.db.sql"
+  ' sh "$store_path"
+fi
+
 # pnpm --ignore-scripts marks tarball deps as "not built" and offline install
 # later refuses to use them; if a dep doesn't require build, promote it.
 log_step "promote pnpm integrity" "$PROMOTE_PNPM_INTEGRITY_SH" "$store_path"

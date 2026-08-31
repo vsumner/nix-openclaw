@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.5.12-beta.1";
   expectedIntegrity = "";
   packageName = "@openclaw/anthropic-vertex-provider";
-  version = "2026.7.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/anthropic-vertex-provider/-/anthropic-vertex-provider-2026.7.1.tgz";
-  npmIntegrity = "sha512-zD/7AHXI/PtEYrdG0aVrORi071Yf58pXFdAOnTfn5pfPLER2OAtIiCTfNrzscXrzP3165+o5DTJgTPO1mMv3ew==";
-  npmShasum = "1ffadd149e36a09e4d5f0a5c7f61704f8a666273";
-  nixHash = "sha256-ZoUMjxB2Ww0sC77ZMxtHHQdqzlU+FNFi0Z/6kgC/q+Y=";
+  version = "2026.8.1";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/anthropic-vertex-provider/-/anthropic-vertex-provider-2026.8.1.tgz";
+  npmIntegrity = "sha512-jxrkeT/Mc5HreZg92qTzpDFYENJt3GjbQIfkzvX9bMbSfW0IooyrZ04Y659KUNJPiVxPoY5vBxiOHZVO4zqIDA==";
+  npmShasum = "0e9e3c55b0bf3f08328d20e6bf4ed0225846041b";
+  nixHash = "sha256-2utmGqlthEjb8xNA+q7dJw4E93fA0PnFMqFEnx46iMs=";
   dependencyMode = "bundled";
   manifestId = "anthropic-vertex";
-  openclawCompat = ">=2026.7.1";
-  peerOpenClaw = ">=2026.7.1";
+  openclawCompat = ">=2026.8.1";
+  peerOpenClaw = ">=2026.8.1";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -29,43 +29,49 @@
   channels = [ ];
   contracts = { };
   dependencies = {
-    "@anthropic-ai/vertex-sdk" = "0.19.0";
+    "@anthropic-ai/vertex-sdk" = "0.19.5";
+    google-auth-library = "10.9.1";
+    undici = "8.10.0";
   };
   optionalDependencies = { };
   bundleDependencies = [
     "@anthropic-ai/vertex-sdk"
+    "google-auth-library"
+    "undici"
   ];
   bundledPackageRoots = [
-    "node_modules/@anthropic-ai/sdk"
     "node_modules/@anthropic-ai/vertex-sdk"
-    "node_modules/@babel/runtime"
-    "node_modules/@stablelib/base64"
-    "node_modules/agent-base"
-    "node_modules/base64-js"
-    "node_modules/bignumber.js"
-    "node_modules/buffer-equal-constant-time"
-    "node_modules/data-uri-to-buffer"
-    "node_modules/debug"
-    "node_modules/ecdsa-sig-formatter"
-    "node_modules/extend"
-    "node_modules/fast-sha256"
-    "node_modules/fetch-blob"
-    "node_modules/formdata-polyfill"
-    "node_modules/gaxios"
-    "node_modules/gcp-metadata"
+    "node_modules/@anthropic-ai/vertex-sdk/node_modules/@anthropic-ai/sdk"
+    "node_modules/@anthropic-ai/vertex-sdk/node_modules/@babel/runtime"
+    "node_modules/@anthropic-ai/vertex-sdk/node_modules/@stablelib/base64"
+    "node_modules/@anthropic-ai/vertex-sdk/node_modules/fast-sha256"
+    "node_modules/@anthropic-ai/vertex-sdk/node_modules/json-schema-to-ts"
+    "node_modules/@anthropic-ai/vertex-sdk/node_modules/standardwebhooks"
+    "node_modules/@anthropic-ai/vertex-sdk/node_modules/ts-algebra"
     "node_modules/google-auth-library"
-    "node_modules/google-logging-utils"
-    "node_modules/https-proxy-agent"
-    "node_modules/json-bigint"
-    "node_modules/json-schema-to-ts"
-    "node_modules/jwa"
-    "node_modules/jws"
-    "node_modules/ms"
-    "node_modules/node-domexception"
-    "node_modules/node-fetch"
-    "node_modules/safe-buffer"
-    "node_modules/standardwebhooks"
-    "node_modules/ts-algebra"
-    "node_modules/web-streams-polyfill"
+    "node_modules/google-auth-library/node_modules/agent-base"
+    "node_modules/google-auth-library/node_modules/base64-js"
+    "node_modules/google-auth-library/node_modules/bignumber.js"
+    "node_modules/google-auth-library/node_modules/buffer-equal-constant-time"
+    "node_modules/google-auth-library/node_modules/data-uri-to-buffer"
+    "node_modules/google-auth-library/node_modules/debug"
+    "node_modules/google-auth-library/node_modules/ecdsa-sig-formatter"
+    "node_modules/google-auth-library/node_modules/extend"
+    "node_modules/google-auth-library/node_modules/fetch-blob"
+    "node_modules/google-auth-library/node_modules/formdata-polyfill"
+    "node_modules/google-auth-library/node_modules/gaxios"
+    "node_modules/google-auth-library/node_modules/gcp-metadata"
+    "node_modules/google-auth-library/node_modules/gcp-metadata/node_modules/google-logging-utils"
+    "node_modules/google-auth-library/node_modules/google-logging-utils"
+    "node_modules/google-auth-library/node_modules/https-proxy-agent"
+    "node_modules/google-auth-library/node_modules/json-bigint"
+    "node_modules/google-auth-library/node_modules/jwa"
+    "node_modules/google-auth-library/node_modules/jws"
+    "node_modules/google-auth-library/node_modules/ms"
+    "node_modules/google-auth-library/node_modules/node-domexception"
+    "node_modules/google-auth-library/node_modules/node-fetch"
+    "node_modules/google-auth-library/node_modules/safe-buffer"
+    "node_modules/google-auth-library/node_modules/web-streams-polyfill"
+    "node_modules/undici"
   ];
 }

@@ -2,14 +2,20 @@
 {
   owner = "openclaw";
   repo = "openclaw";
+  # pnpm 12's native fetcher emits relative tarball URLs inside Nix's Darwin
+  # fixed-output sandbox. The committed v9 lock remains pnpm 11 compatible.
   pnpmMajor = "11";
+  pnpmHostOnly = true;
   applyPublicSurfaceHardlinksPatch = false;
   applySkipPluginAutoEnableNixModePatch = false;
   applyNixStorePluginOwnershipPatch = true;
-  releaseTag = "v2026.7.1-2";
-  releaseVersion = "2026.7.1-2";
-  runtimePluginVersion = "2026.7.1";
-  rev = "0790d9f593ad30c940ed93b5872a8cf6d6f3cf8c";
-  hash = "sha256-kpiKCTjXX4l525IJDNsnI7j2IT6ZYdqvFTyRlKGgomg=";
-  gatewayNpmDepsHash = "sha256-wgFsto4dpdVHl0x+H/QL/Rf6bSznmGJFd+tfirnACu8=";
+  releaseTag = "v2026.8.1";
+  releaseVersion = "2026.8.1";
+  runtimePluginVersion = "2026.8.1";
+  rev = "0e0b89663f945324a9a9698a58ff8019fe78da8a";
+  hash = "sha256-6Ve5C4bCWnHYtTFcxGxkti7chCa+2H2welXAzVOYlMg=";
+  pnpmDepsHash = {
+    aarch64-darwin = "sha256-HQo90xa8LCtuErfAXR6gBPL/pJCJtr8Uk2+Vih0YjrU=";
+    x86_64-linux = "sha256-2frmMu4z+mSgJlBy4roqI8K+5sVZK12e7z4aHxQ1sM0=";
+  };
 }

@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.4.10";
   expectedIntegrity = "";
   packageName = "@openclaw/googlechat";
-  version = "2026.7.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/googlechat/-/googlechat-2026.7.1.tgz";
-  npmIntegrity = "sha512-Dv0xOmcxAThEr6hoK+ioofHNu18hfbIceQrEHX3AHZPpOUiTJvToVpA5eX87NQINewwfSJf0gVhE6kSbSk2Aew==";
-  npmShasum = "5c7eb9c4c834a81045859d77c9dfebc4389eb132";
-  nixHash = "sha256-/gNclInbVKpCT8YLWYfWKf/6G9KLgUB8U16+6pWLdn0=";
+  version = "2026.8.1";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/googlechat/-/googlechat-2026.8.1.tgz";
+  npmIntegrity = "sha512-Nx2OAyCfIXxL7QQVehLuDHBEsH/KFcFasab4u+iFn4EOxZHygMTkXxLmxg9QCN1DMOMPNZeT87OB4bezeIdo9Q==";
+  npmShasum = "60832ad8611bf3f97604ccc74eae483444fecdfb";
+  nixHash = "sha256-IPCKxP67wz3JuagP90+Q9vKCaKHtDu+YEsVPGA8RkSQ=";
   dependencyMode = "bundled";
   manifestId = "googlechat";
-  openclawCompat = ">=2026.7.1";
-  peerOpenClaw = ">=2026.7.1";
+  openclawCompat = ">=2026.8.1";
+  peerOpenClaw = ">=2026.8.1";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -31,40 +31,39 @@
   ];
   contracts = { };
   dependencies = {
-    gaxios = "7.1.5";
-    google-auth-library = "10.9.0";
+    google-auth-library = "10.9.1";
     zod = "4.4.3";
   };
   optionalDependencies = { };
   bundleDependencies = [
-    "gaxios"
     "google-auth-library"
     "zod"
   ];
   bundledPackageRoots = [
-    "node_modules/agent-base"
-    "node_modules/base64-js"
-    "node_modules/bignumber.js"
-    "node_modules/buffer-equal-constant-time"
-    "node_modules/data-uri-to-buffer"
-    "node_modules/debug"
-    "node_modules/ecdsa-sig-formatter"
-    "node_modules/extend"
-    "node_modules/fetch-blob"
-    "node_modules/formdata-polyfill"
-    "node_modules/gaxios"
-    "node_modules/gcp-metadata"
     "node_modules/google-auth-library"
-    "node_modules/google-logging-utils"
-    "node_modules/https-proxy-agent"
-    "node_modules/json-bigint"
-    "node_modules/jwa"
-    "node_modules/jws"
-    "node_modules/ms"
-    "node_modules/node-domexception"
-    "node_modules/node-fetch"
-    "node_modules/safe-buffer"
-    "node_modules/web-streams-polyfill"
+    "node_modules/google-auth-library/node_modules/agent-base"
+    "node_modules/google-auth-library/node_modules/base64-js"
+    "node_modules/google-auth-library/node_modules/bignumber.js"
+    "node_modules/google-auth-library/node_modules/buffer-equal-constant-time"
+    "node_modules/google-auth-library/node_modules/data-uri-to-buffer"
+    "node_modules/google-auth-library/node_modules/debug"
+    "node_modules/google-auth-library/node_modules/ecdsa-sig-formatter"
+    "node_modules/google-auth-library/node_modules/extend"
+    "node_modules/google-auth-library/node_modules/fetch-blob"
+    "node_modules/google-auth-library/node_modules/formdata-polyfill"
+    "node_modules/google-auth-library/node_modules/gaxios"
+    "node_modules/google-auth-library/node_modules/gcp-metadata"
+    "node_modules/google-auth-library/node_modules/gcp-metadata/node_modules/google-logging-utils"
+    "node_modules/google-auth-library/node_modules/google-logging-utils"
+    "node_modules/google-auth-library/node_modules/https-proxy-agent"
+    "node_modules/google-auth-library/node_modules/json-bigint"
+    "node_modules/google-auth-library/node_modules/jwa"
+    "node_modules/google-auth-library/node_modules/jws"
+    "node_modules/google-auth-library/node_modules/ms"
+    "node_modules/google-auth-library/node_modules/node-domexception"
+    "node_modules/google-auth-library/node_modules/node-fetch"
+    "node_modules/google-auth-library/node_modules/safe-buffer"
+    "node_modules/google-auth-library/node_modules/web-streams-polyfill"
     "node_modules/zod"
   ];
 }

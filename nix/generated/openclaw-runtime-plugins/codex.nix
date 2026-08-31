@@ -3,28 +3,24 @@
   id = "codex";
   attrName = "codex";
   label = "Codex";
-  kind = "provider";
+  kind = "plugin";
   catalogSource = "official";
-  catalogFile = "official-external-provider-catalog.json";
+  catalogFile = "official-external-plugin-catalog.json";
   catalogEntryName = "@openclaw/codex";
   catalogDefaultChoice = "npm";
-  selectedSource = "npm";
+  selectedSource = "workspace";
   npmSpec = "@openclaw/codex";
   minHostVersion = ">=2026.5.1-beta.1";
   expectedIntegrity = "";
   packageName = "@openclaw/codex";
-  version = "2026.7.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/codex/-/codex-2026.7.1.tgz";
-  npmIntegrity = "sha512-OCEVg4R3yb5vXZiwchJp02o+XmWklnF9EdcXgQUGfvVELwIwJvvvQYJ0tp0M2zJLuA4zDSYPtFVDGviKRrKd2w==";
-  npmShasum = "2096dc9b3cca035865a624312e2f5f378c2cfc93";
-  nixHash = "sha256-eQnA3lx5w7ANrG+ZpvD4ZkJMcZgYtI2hm1W3Xv1tFX0=";
-  dependencyMode = "shrinkwrap";
-  npmDepsHash = "sha256-V4wQYnImpawqfOc6cHsa07YpLhMCPX2mpTEEFVcmwNc=";
+  version = "2026.8.1";
+  workspacePath = "extensions/codex";
+  dependencyMode = "workspace";
   manifestId = "codex";
-  openclawCompat = ">=2026.7.1";
-  peerOpenClaw = ">=2026.7.1";
+  openclawCompat = ">=2026.8.1";
+  peerOpenClaw = "";
   runtimeExtensions = [
-    "./dist/index.js"
+    "./index.js"
   ];
   runtimeSetupEntry = null;
   channels = [ ];
@@ -37,15 +33,23 @@
     ];
     tools = [
       "codex_threads"
+      "codex_plugins"
+      "codex_endpoint_probe"
+      "codex_sessions_list"
+      "codex_session_read"
+      "codex_session_send"
+      "codex_session_interrupt"
     ];
     webSearchProviders = [
       "codex"
     ];
   };
   dependencies = {
-    "@openai/codex" = "0.144.3";
-    typebox = "1.3.3";
-    ws = "8.21.0";
+    "@openai/codex" = "0.151.0";
+    semver = "7.8.5";
+    smol-toml = "1.8.0";
+    typebox = "1.3.16";
+    ws = "8.21.3";
     zod = "4.4.3";
   };
   optionalDependencies = { };

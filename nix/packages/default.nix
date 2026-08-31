@@ -40,8 +40,15 @@ let
   buildOpenClawRuntimePlugin = pkgs.callPackage ../lib/openclaw-runtime-plugin.nix {
     openclawPackage = openclawGateway;
   };
+  buildGatewayRuntimePlugin = pkgs.callPackage ../lib/openclaw-runtime-plugin-from-gateway.nix {
+    openclawPackage = openclawGateway;
+  };
   openclawRuntimePlugins = pkgs.lib.mapAttrs (
-    _name: lock: buildOpenClawRuntimePlugin lock
+    _name: lock:
+    if (lock.dependencyMode or null) == "workspace" then
+      buildGatewayRuntimePlugin lock
+    else
+      buildOpenClawRuntimePlugin lock
   ) runtimePluginLocks;
   openclawApp = if isDarwin then pkgs.callPackage ./openclaw-app.nix { } else null;
   openclawBundle = pkgs.callPackage ./openclaw-batteries.nix {

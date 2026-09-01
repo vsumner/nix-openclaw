@@ -114,7 +114,7 @@ let
     in
     {
       inherit packages;
-      loadPaths = map toString packages;
+      loadPaths = map (package: toString (package.openclawRuntimePlugin.loadPath or package)) packages;
       config = lib.recursiveUpdate entriesConfig allowConfig;
       assertions = [
         {

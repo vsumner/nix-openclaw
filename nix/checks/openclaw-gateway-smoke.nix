@@ -27,7 +27,9 @@ stdenv.mkDerivation {
   }
   // lib.optionalAttrs includeRuntimePluginSmoke {
     OPENCLAW_RUNTIME_PLUGIN_SMOKE_ID = runtimePluginSmokeId;
-    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ROOT = "${pkgs.openclawRuntimePlugins.${runtimePluginSmokeId}}";
+    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ROOT = "${pkgs.openclawRuntimePlugins.${runtimePluginSmokeId}.openclawRuntimePlugin.loadPath
+      or pkgs.openclawRuntimePlugins.${runtimePluginSmokeId}
+    }";
   };
 
   __darwinAllowLocalNetworking = true;

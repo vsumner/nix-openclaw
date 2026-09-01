@@ -12,6 +12,7 @@ let
     lib.replaceStrings [ "@" "/" ":" ] [ "" "-" "-" ] lock.id
   }";
   pluginRoot = "${openclawPackage}/lib/openclaw/dist/extensions/${lock.id}";
+  packagedPluginRoot = "lib/openclaw/dist/extensions/${lock.id}";
 
   drv = stdenvNoCC.mkDerivation {
     pname = packageName;
@@ -52,22 +53,45 @@ let
         fi
       done
 
-      mkdir -p "$out"
-      for entry in "${pluginRoot}"/* "${pluginRoot}"/.[!.]* "${pluginRoot}"/..?*; do
-        [ -e "$entry" ] || continue
-        cp -R "$entry" "$out/$(basename "$entry")"
+      # Keep the plugin at its compiled workspace depth. Generated extension
+      # modules import shared gateway chunks through ../../<chunk>.js, so
+      # flattening the plugin root changes module resolution even when its
+      # public entry point still imports successfully.
+      mkdir -p "$out/lib/openclaw/dist/extensions"
+      cp -R "${pluginRoot}" "$out/${packagedPluginRoot}"
+      chmod -R u+w "$out/${packagedPluginRoot}"
+
+      # Preserve the shared compiled runtime addressed by those relative
+      # imports. Copying the complete dist tree also keeps later generated
+      # chunk edges correct without guessing a transitive file closure.
+      for entry in "${openclawPackage}/lib/openclaw/dist"/*; do
+        [ "$(basename "$entry")" = extensions ] && continue
+        cp -R "$entry" "$out/lib/openclaw/dist/$(basename "$entry")"
+      done
+
+      # Package metadata and runtime assets are discovered by walking upward
+      # from shared dist chunks. Retain that package-root contract too.
+      for entry in "${openclawPackage}/lib/openclaw"/*; do
+        case "$(basename "$entry")" in
+          dist|node_modules) continue ;;
+        esac
+        ln -s "$entry" "$out/lib/openclaw/$(basename "$entry")"
       done
 
       # Workspace plugins import the public OpenClaw plugin SDK as a peer.
       # Keep that peer explicit even when Node preserves the package symlink.
-      mkdir -p "$out/node_modules"
-      ln -s "${openclawPackage}/lib/openclaw" "$out/node_modules/openclaw"
+      mkdir -p "$out/${packagedPluginRoot}/node_modules"
+      ln -s "${openclawPackage}/lib/openclaw" "$out/${packagedPluginRoot}/node_modules/openclaw"
+
+      # Shared gateway chunks resolve their third-party dependencies from the
+      # gateway package root, not from the nested extension directory.
+      ln -s "${openclawPackage}/lib/openclaw/node_modules" "$out/lib/openclaw/node_modules"
     '';
 
     passthru.openclawRuntimePlugin = {
       inherit (lock) id;
       source = lock.selectedSource or "workspace";
-      loadPath = drv;
+      loadPath = "${drv}/${packagedPluginRoot}";
     }
     // lib.optionalAttrs ((lock.packageName or null) != null) {
       packageName = lock.packageName;

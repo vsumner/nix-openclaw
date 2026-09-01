@@ -23,6 +23,8 @@ Older repository history is available in git.
 - Allow immutable Nix store plugin roots through OpenClaw's ownership check.
 - Keep explicit development source overrides labeled as unstable while release
   source builds retain the pinned OpenClaw release version.
+- Build and run the gateway with Node 24 so OpenClaw's SQLite safety floor is
+  preserved when nix-openclaw is consumed from older compatible nixpkgs pins.
 
 ## 2026-08-30
 

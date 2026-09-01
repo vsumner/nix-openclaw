@@ -55,7 +55,7 @@ let
       mkdir -p "$out"
       for entry in "${pluginRoot}"/* "${pluginRoot}"/.[!.]* "${pluginRoot}"/..?*; do
         [ -e "$entry" ] || continue
-        ln -s "$entry" "$out/$(basename "$entry")"
+        cp -R "$entry" "$out/$(basename "$entry")"
       done
 
       # Preserve dependency resolution even when Node is run with symlink

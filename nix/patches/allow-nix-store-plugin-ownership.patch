@@ -72,9 +72,10 @@ diff --git a/src/plugins/hardlink-policy.ts b/src/plugins/hardlink-policy.ts
 index 8938d76..e3c3e78 100644
 --- a/src/plugins/hardlink-policy.ts
 +++ b/src/plugins/hardlink-policy.ts
-@@ -21,2 +21,10 @@ function isNixStorePluginRoot(rootDir: string): boolean {
+@@ -21,18 +21,25 @@ function isNixStorePluginRoot(rootDir: string): boolean {
    return rootRealPath === NIX_STORE_ROOT || rootRealPath.startsWith(`${NIX_STORE_ROOT}/`);
  }
+-
 +
 +export function isTrustedNixStorePluginRoot(params: {
 +  rootDir: string;
@@ -86,7 +87,10 @@ index 8938d76..e3c3e78 100644
  /** Decides whether plugin file hardlinks should fail boundary validation for one root. */
  export function shouldRejectHardlinkedPluginFiles(params: {
    origin: PluginOrigin;
-@@ -31,7 +38,7 @@ export function shouldRejectHardlinkedPluginFiles(params: {
+   rootDir: string;
+   env?: NodeJS.ProcessEnv;
+   realpathCache?: Map<string, string>;
+ }): boolean {
    if (params.origin === "bundled") {
      return false;
    }
@@ -95,3 +99,86 @@ index 8938d76..e3c3e78 100644
      return false;
    }
    return true;
+ }
+diff --git a/src/plugins/manifest-registry.ts b/src/plugins/manifest-registry.ts
+index 43c4e8c..476b591 100644
+--- a/src/plugins/manifest-registry.ts
++++ b/src/plugins/manifest-registry.ts
+@@ -20,6 +20,9 @@ import {
+   type PluginDiscoveryResult,
+ } from "./discovery.js";
+-import { shouldRejectHardlinkedPluginFiles } from "./hardlink-policy.js";
++import {
++  isTrustedNixStorePluginRoot,
++  shouldRejectHardlinkedPluginFiles,
++} from "./hardlink-policy.js";
+ import { loadInstalledPluginIndexInstallRecordsSync } from "./installed-plugin-index-record-reader.js";
+ import { recordPluginManifestInstallOwner } from "./manifest-install-owner.js";
+ import type {
+@@ -727,3 +730,29 @@ function npmSpecMatchesPackage(value: string | undefined, packageName: string):
++function isTrustedOfficialNixStorePluginInstall(params: {
++  pluginId: string;
++  candidate: PluginCandidate;
++  env: NodeJS.ProcessEnv;
++}): boolean {
++  if (params.candidate.origin !== "config" || params.env.OPENCLAW_NIX_MODE !== "1") {
++    return false;
++  }
++  const packageName = params.candidate.packageName?.trim();
++  if (!packageName) {
++    return false;
++  }
++  const catalogEntry = getOfficialExternalPluginCatalogEntryForPackage(packageName);
++  if (!catalogEntry || resolveOfficialExternalPluginId(catalogEntry) !== params.pluginId) {
++    return false;
++  }
++  const rootDir = params.candidate.rootDir?.trim();
++  if (!rootDir) {
++    return false;
++  }
++  return isTrustedNixStorePluginRoot({
++    rootDir,
++    env: params.env,
++  });
++}
++
+ function isTrustedOfficialPluginInstall(params: {
+   pluginId: string;
+   candidate: PluginCandidate;
+@@ -731,6 +763,9 @@ function isTrustedOfficialPluginInstall(params: {
+   env: NodeJS.ProcessEnv;
+   installRecords: Record<string, PluginInstallRecord>;
+ }): boolean {
++  if (isTrustedOfficialNixStorePluginInstall(params)) {
++    return true;
++  }
+   const installOwner = resolveCandidateInstallOwner(params);
+   if (
+     !installOwner ||
+diff --git a/src/plugins/registry-registrars-operations.ts b/src/plugins/registry-registrars-operations.ts
+index 28a5ad1..5b52f3e 100644
+--- a/src/plugins/registry-registrars-operations.ts
++++ b/src/plugins/registry-registrars-operations.ts
+@@ -38,7 +38,10 @@ import type {
+ function isOfficialCodexPluginRecord(
+-  record: Pick<PluginRecord, "id" | "origin" | "packageName" | "rootDir" | "source">,
++  record: Pick<
++    PluginRecord,
++    "id" | "origin" | "packageName" | "rootDir" | "source" | "trustedOfficialInstall"
++  >,
+ ) {
+-  if (record.id !== "codex" || record.origin !== "global") {
++  if (record.id !== "codex" || (record.origin !== "global" && record.trustedOfficialInstall !== true)) {
+     return false;
+   }
+   if (record.packageName === "@openclaw/codex") {
+@@ -54,5 +57,8 @@ function isOfficialCodexPluginRecord(
+ export function canClaimReservedCommandOwnership(
+-  record: Pick<PluginRecord, "id" | "origin" | "packageName" | "rootDir" | "source">,
++  record: Pick<
++    PluginRecord,
++    "id" | "origin" | "packageName" | "rootDir" | "source" | "trustedOfficialInstall"
++  >,
+ ) {
+   return record.origin === "bundled" || isOfficialCodexPluginRecord(record);
+ }

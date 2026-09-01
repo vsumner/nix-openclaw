@@ -20,7 +20,9 @@ Older repository history is available in git.
 
 ### Fixed
 
-- Allow immutable Nix store plugin roots through OpenClaw's ownership check.
+- Allow immutable Nix store plugin roots through OpenClaw's ownership and
+  hardlink checks, and recognize catalog-matched roots as trusted official
+  installs in Nix mode.
 - Keep explicit development source overrides labeled as unstable while release
   source builds retain the pinned OpenClaw release version.
 - Build and run the gateway with Node 24 so OpenClaw's SQLite safety floor is

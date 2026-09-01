@@ -11,7 +11,7 @@ let
   packageName = "openclaw-runtime-plugin-${
     lib.replaceStrings [ "@" "/" ":" ] [ "" "-" "-" ] lock.id
   }";
-  pluginRoot = "${openclawPackage}/lib/openclaw/dist-runtime/extensions/${lock.id}";
+  pluginRoot = "${openclawPackage}/lib/openclaw/dist/extensions/${lock.id}";
 
   drv = stdenvNoCC.mkDerivation {
     pname = packageName;
@@ -58,11 +58,10 @@ let
         cp -R "$entry" "$out/$(basename "$entry")"
       done
 
-      # Preserve dependency resolution even when Node is run with symlink
-      # preservation enabled. The normal ESM path resolves through pluginRoot.
-      if [ ! -e "$out/node_modules" ]; then
-        ln -s "${openclawPackage}/lib/openclaw/node_modules" "$out/node_modules"
-      fi
+      # Workspace plugins import the public OpenClaw plugin SDK as a peer.
+      # Keep that peer explicit even when Node preserves the package symlink.
+      mkdir -p "$out/node_modules"
+      ln -s "${openclawPackage}/lib/openclaw" "$out/node_modules/openclaw"
     '';
 
     passthru.openclawRuntimePlugin = {

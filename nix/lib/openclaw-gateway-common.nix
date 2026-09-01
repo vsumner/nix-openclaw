@@ -165,6 +165,8 @@ let
         "${../patches/allow-nix-store-plugin-ownership.patch}"
       else
         "";
+    PATCH_BEFORE_MESSAGE_WRITE_RUN_ID =
+      "${../patches/forward-before-message-write-run-id.patch}";
     PROMOTE_PNPM_INTEGRITY_SH = "${../scripts/promote-pnpm-integrity.sh}";
     REMOVE_PACKAGE_MANAGER_FIELD_SH = "${../scripts/remove-package-manager-field.sh}";
     STDENV_SETUP = "${stdenv}/setup";

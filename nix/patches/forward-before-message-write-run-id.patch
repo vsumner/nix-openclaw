@@ -1,0 +1,37 @@
+diff --git a/src/agents/harness/hook-helpers.ts b/src/agents/harness/hook-helpers.ts
+index 69a0342..61ec998 100644
+--- a/src/agents/harness/hook-helpers.ts
++++ b/src/agents/harness/hook-helpers.ts
+@@ -70,6 +70,7 @@ export function runAgentHarnessBeforeMessageWriteHook(params: {
+   message: AgentMessage;
+   agentId?: string;
+   sessionKey?: string;
++  runId?: string;
+   prepareAssistantTranscriptMessage?: PrepareAssistantTranscriptMessage;
+   skipBeforeMessageWriteHooks?: boolean;
+ }): AgentMessage | null {
+@@ -89,7 +90,11 @@ export function runAgentHarnessBeforeMessageWriteHook(params: {
+       ? (applyTranscriptSenderIdentityToWrite(params.message, () => {
+           const result = hookRunner.runBeforeMessageWrite(
+             { message: params.message },
+-            { agentId: params.agentId, sessionKey: params.sessionKey },
++            {
++              agentId: params.agentId,
++              sessionKey: params.sessionKey,
++              runId: params.runId,
++            },
+           );
+           return result?.block ? null : (result?.message ?? params.message);
+         }) ?? null)
+diff --git a/src/agents/session-tool-result-guard-wrapper.ts b/src/agents/session-tool-result-guard-wrapper.ts
+index 5ab4ed8..22f46d5 100644
+--- a/src/agents/session-tool-result-guard-wrapper.ts
++++ b/src/agents/session-tool-result-guard-wrapper.ts
+@@ -144,6 +144,7 @@ export function guardSessionManager(
+         message,
+         agentId: opts?.agentId,
+         sessionKey: opts?.sessionKey,
++        runId: opts?.runId,
+         prepareAssistantTranscriptMessage,
+         skipBeforeMessageWriteHooks: skipUserWriteHook,
+       });

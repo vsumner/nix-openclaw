@@ -465,7 +465,7 @@ When you run `home-manager switch`:
    - What CLI packages to install
    - What skill directories to expose
    - What environment variables it needs
-3. Tools go on the gateway PATH, skills are added to OpenClaw's `skills.load.extraDirs`
+3. Tools go on the gateway PATH. Skills are copied into private regular-file directories and those directories are added to OpenClaw's `skills.load.extraDirs`; the gateway never reads Nix-store hardlinks as skill files.
 4. A launchd (macOS) or systemd user service (Linux) is created/updated to run the gateway
 5. The gateway starts, loads skills, connects to your providers
 

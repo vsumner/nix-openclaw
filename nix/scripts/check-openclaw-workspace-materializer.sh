@@ -34,3 +34,20 @@ printf '%s\n' "$empty_stale" > "$empty_work/manifest"
 
 test ! -e "$empty_stale"
 test ! -s "$empty_work/manifest"
+
+skill_work="$(mktemp -d)"
+skill_source="$skill_work/store-backed-skill"
+skill_target="$skill_work/materialized/skill"
+
+mkdir -p "$skill_source"
+printf '%s\n' '# skill' > "$skill_source/SKILL.md"
+ln "$skill_source/SKILL.md" "$skill_source/hardlinked.md"
+ln -s SKILL.md "$skill_source/symlinked.md"
+printf '%s\t%s\n' "$skill_source" "$skill_target" > "$skill_work/source.tsv"
+
+"$script" "$skill_work/manifest" "$skill_work/source.tsv"
+
+test -f "$skill_target/SKILL.md"
+test ! -L "$skill_target/symlinked.md"
+test "$(stat -c %h "$skill_target/SKILL.md")" -eq 1
+test "$(stat -c %h "$skill_target/hardlinked.md")" -eq 1

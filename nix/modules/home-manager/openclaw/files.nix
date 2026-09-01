@@ -69,12 +69,12 @@ let
         }
       ];
 
-  skillLoadDirsByInstance =
+  skillEntriesByInstance =
     let
-      dirsForInstance =
+      entriesForInstance =
         instName: inst:
         let
-          dirFor =
+          sourceFor =
             skill:
             let
               mode = skill.mode or "symlink";
@@ -92,19 +92,30 @@ let
           pluginsForInstance = plugins.resolvedPluginsByInstance.${instName} or [ ];
           pluginSkillDirs =
             plugin:
-            map (
-              skill:
-              builtins.path {
+            map (skill: {
+              name = builtins.baseNameOf skill;
+              source = builtins.path {
                 name = "openclaw-plugin-skill-${builtins.baseNameOf skill}";
                 path = skill;
-              }
-            ) plugin.skills;
+              };
+            }) plugin.skills;
+          userSkillDirs = map (skill: {
+            inherit (skill) name;
+            source = sourceFor skill;
+          }) cfg.skills;
+          targetRoot = "${openclawLib.homeDir}/.local/share/nix-openclaw/skills/${instName}";
         in
-        map toString ((map dirFor cfg.skills) ++ (lib.flatten (map pluginSkillDirs pluginsForInstance)));
+        map (skill: {
+          inherit (skill) source;
+          target = "${targetRoot}/${skill.name}";
+        }) (userSkillDirs ++ (lib.flatten (map pluginSkillDirs pluginsForInstance)));
     in
-    lib.mapAttrs dirsForInstance enabledInstances;
+    lib.mapAttrs entriesForInstance enabledInstances;
 
-  skillLoadDirsForInstance = instName: skillLoadDirsByInstance.${instName} or [ ];
+  skillLoadDirsForInstance =
+    instName: map (entry: entry.target) (skillEntriesByInstance.${instName} or [ ]);
+
+  skillMaterializedEntries = lib.flatten (lib.attrValues skillEntriesByInstance);
 
   bootstrapFileEntries =
     if bootstrapFilesEnabled then
@@ -356,7 +367,7 @@ let
     in
     lib.flatten (map entriesForDir instanceWorkspaceDirs);
 
-  materializedEntries = bootstrapEntries ++ workspaceFileEntries;
+  materializedEntries = bootstrapEntries ++ workspaceFileEntries ++ skillMaterializedEntries;
   materializedManifest =
     let
       renderEntry = entry: "${entry.source}\t${entry.target}";

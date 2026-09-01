@@ -108,6 +108,9 @@ let
                 enable = true;
                 launchd.enable = pkgs.stdenv.hostPlatform.isDarwin;
                 systemd.enable = pkgs.stdenv.hostPlatform.isLinux;
+                # Keep module evaluation hermetic. Bundled plugin resolution is
+                # covered by the opt-in plugin checks below.
+                bundledPlugins.goplaces.enable = false;
               }
               // openclawConfig;
             };
@@ -150,8 +153,7 @@ let
       qmdPath = builtins.unsafeDiscardStringContext (pkg.OPENCLAW_QMD_PATH or "");
     in
     qmdPath != "";
-  isPluginSkillPath =
-    path: lib.hasSuffix "/skill" path || lib.hasSuffix "-openclaw-plugin-skill-skill" path;
+  isPluginSkillPath = path: lib.hasSuffix "/.local/share/nix-openclaw/skills/default/skill" path;
 
   defaultEval = moduleEval { };
   defaultConfig = generatedConfig defaultEval ".openclaw/openclaw.json";
@@ -437,6 +439,10 @@ let
       throw "User skills.load.extraDirs entry was not preserved."
     else if generatedUserSkillExtraDirs == [ ] then
       throw "Nix-managed raw skill was not added to skills.load.extraDirs."
+    else if
+      generatedUserSkillExtraDirs != [ "/tmp/.local/share/nix-openclaw/skills/default/inline-skill" ]
+    then
+      throw "Nix-managed raw skill was not routed through its materialized regular-file directory."
     else if userSkillExtraDirs != generatedUserSkillExtraDirs ++ [ "/tmp/user-skill-root" ] then
       throw "User skills.load.extraDirs entries should remain after Nix-managed skill dirs."
     else

@@ -8,6 +8,16 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-01
+
+### Fixed
+
+- Materialize Nix-managed skills as private regular files before adding them
+  to `skills.load.extraDirs`, so OpenClaw 2 accepts them under its hardlink
+  safety checks instead of rejecting their Nix-store inodes.
+- Keep the default module-render check hermetic instead of resolving the
+  network-backed default `goplaces` plugin fixture during unrelated checks.
+
 ## 2026-08-31
 
 ### Changed

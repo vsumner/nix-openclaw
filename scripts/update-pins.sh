@@ -71,9 +71,17 @@ pin_file_paths() {
 
 set_gateway_npm_deps_hash() {
   local hash="$1"
+  local system
 
   if grep -q 'gatewayNpmDepsHash = ' "$source_file"; then
     perl -0pi -e "s|gatewayNpmDepsHash = \"[^\"]*\";|gatewayNpmDepsHash = \"${hash}\";|" "$source_file"
+  elif grep -q 'pnpmDepsHash = {' "$source_file"; then
+    system=$(nix --extra-experimental-features "nix-command flakes" eval --raw --impure --expr builtins.currentSystem)
+    if ! grep -q "^[[:space:]]*${system} = \"" "$source_file"; then
+      echo "pnpmDepsHash has no entry for current system ${system}" >&2
+      return 1
+    fi
+    perl -0pi -e "s|${system} = \"[^\"]*\";|${system} = \"${hash}\";|" "$source_file"
   fi
 }
 
@@ -176,7 +184,7 @@ prefetch_json() {
 
 unpacked_zip_hash() {
   local url="$1"
-  local archive_prefetch archive_path unpack_dir app_list app_count app_path app_hash
+  local archive_prefetch archive_path unpack_dir_raw unpack_dir app_list app_count app_path app_hash
 
   archive_prefetch=$(nix --extra-experimental-features "nix-command flakes" store prefetch-file --json "$url")
   archive_path=$(printf '%s' "$archive_prefetch" | jq -r '.path // .storePath // empty')
@@ -185,7 +193,11 @@ unpacked_zip_hash() {
     return 1
   fi
 
-  unpack_dir=$(mktemp -d)
+  unpack_dir_raw=$(mktemp -d)
+  # macOS exposes /var as a symlink to /private/var. Nix rejects a hash-path
+  # argument whose parent chain includes a symlink, so canonicalize mktemp's
+  # result before hashing the unpacked application bundle.
+  unpack_dir=$(cd "$unpack_dir_raw" && pwd -P)
   fail_zip() { rm -rf "$unpack_dir"; echo "$1" >&2; }
 
   if ! unzip -q "$archive_path" -d "$unpack_dir"; then

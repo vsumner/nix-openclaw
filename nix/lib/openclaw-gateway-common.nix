@@ -74,6 +74,24 @@ let
     sourceInfo.publicSurfaceHardlinksPatch or ../patches/allow-package-public-surface-hardlinks.patch;
 
   nodeAddonApi = import ../packages/node-addon-api.nix { inherit stdenv fetchurl; };
+  matrixSdkCryptoVersion = "0.6.6";
+  matrixSdkCryptoSource =
+    {
+      aarch64-darwin = {
+        file = "matrix-sdk-crypto.darwin-arm64.node";
+        hash = "sha256-mdx9kKqDDZttlrzaI1ic4Pty0Q+E7ER8nSQZN/7obZ8=";
+      };
+      x86_64-linux = {
+        file = "matrix-sdk-crypto.linux-x64-gnu.node";
+        hash = "sha256-rrIQKaxrspzQZJP2exmlp1s9A3Ghq0Uv5Z94JJNQ8Pc=";
+      };
+    }
+    .${stdenv.hostPlatform.system}
+      or (throw "Unsupported Matrix SDK crypto platform ${stdenv.hostPlatform.system}");
+  matrixSdkCryptoBinary = fetchurl {
+    url = "https://github.com/matrix-org/matrix-rust-sdk-crypto-nodejs/releases/download/v${matrixSdkCryptoVersion}/${matrixSdkCryptoSource.file}";
+    hash = matrixSdkCryptoSource.hash;
+  };
   pnpmMajor = toString (sourceInfo.pnpmMajor or "10");
   pnpmByMajor = {
     "10" = pnpm_10;
@@ -97,6 +115,11 @@ let
     inherit version;
     src = resolvedSrc;
     pnpm = selectedPnpm;
+    # fetchPnpmDeps normally inherits this impure variable. pnpm 11 tolerates
+    # the resulting empty --registry value, but pnpm 12 can wait indefinitely.
+    prePnpmInstall = ''
+      export NIX_NPM_REGISTRY=https://registry.npmjs.org
+    '';
     hash = if resolvedPnpmDepsHash != null then resolvedPnpmDepsHash else lib.fakeHash;
     fetcherVersion = if pnpmNeedsVerifiedStore then 4 else 3;
     pnpmInstallFlags = lib.optional pnpmHostOnly "--no-force";
@@ -130,6 +153,31 @@ let
           | .verifiedAt = "1970-01-01T00:00:01.000Z"
         ' "$verifiedCache" | LC_ALL=C sort -u > "$out/pnpm-lockfile-verified.jsonl"
       fi
+
+      metadataRoot="$(find "$HOME" -path '*/metadata/registry.npmjs.org' -type d -print -quit)"
+      fullMetadataRoot="$(find "$HOME" -path '*/metadata-full/registry.npmjs.org' -type d -print -quit)"
+      if [ -n "$metadataRoot" ] || [ -n "$fullMetadataRoot" ]; then
+        lockKeys="$(mktemp)"
+        yq -r '.packages | keys[]' pnpm-lock.yaml > "$lockKeys"
+        # Seed every locked package from the abbreviated cache, then overwrite
+        # with full metadata where pnpm fetched publication-time evidence.
+        if [ -n "$metadataRoot" ]; then
+          ${nodejs_24}/bin/node --no-warnings \
+            ${../scripts/normalize-pnpm-metadata.mjs} \
+            "$metadataRoot" "$lockKeys" "$out/pnpm-metadata/registry.npmjs.org"
+        fi
+        if [ -n "$fullMetadataRoot" ]; then
+          ${nodejs_24}/bin/node --no-warnings \
+            ${../scripts/normalize-pnpm-metadata.mjs} \
+            "$fullMetadataRoot" "$lockKeys" "$out/pnpm-metadata/registry.npmjs.org"
+        fi
+        # pnpm's policy verifier does not persist every full packument it
+        # checks. Hydrate only timestamp-free locked records from the registry;
+        # the fixed-output hash pins the exact resulting evidence.
+        ${nodejs_24}/bin/node --no-warnings \
+          ${../scripts/normalize-pnpm-metadata.mjs} \
+          --hydrate-missing-times "$out/pnpm-metadata/registry.npmjs.org" "$lockKeys"
+      fi
     '';
     npm_config_arch = pnpmArch;
     npm_config_platform = pnpmPlatform;
@@ -147,6 +195,13 @@ let
     npm_config_python = python3;
     NODE_PATH = "${nodeAddonApi}/lib/node_modules:${node-gyp}/lib/node_modules";
     PNPM_DEPS = pnpmDeps;
+    # pnpm 12's native CLI resolves and installs correctly but can deadlock in
+    # `rebuild` without spawning lifecycle children. The pnpm 11 JavaScript CLI
+    # replays those scripts against the same lockfile/store layout reliably.
+    PNPM_REBUILD = if pnpmMajor == "12" then "${pnpm_11}/bin/pnpm" else "${selectedPnpm}/bin/pnpm";
+    MATRIX_SDK_CRYPTO_BINARY = matrixSdkCryptoBinary;
+    MATRIX_SDK_CRYPTO_BINARY_NAME = matrixSdkCryptoSource.file;
+    MATRIX_SDK_CRYPTO_VERSION = matrixSdkCryptoVersion;
     OPENCLAW_BUILD_ROOT_SH = "${../scripts/build-root.sh}";
     NODE_GYP_WRAPPER_SH = "${../scripts/node-gyp-wrapper.sh}";
     GATEWAY_PREBUILD_SH = "${../scripts/gateway-prebuild.sh}";

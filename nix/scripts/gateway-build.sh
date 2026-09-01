@@ -47,6 +47,28 @@ log_step "pnpm install (offline, frozen, ignore-scripts)" env CI=true pnpm insta
 
 log_step "chmod node_modules writable" chmod -R u+w node_modules
 
+# @matrix-org/matrix-sdk-crypto-nodejs downloads its native library in
+# postinstall. Seed the fixed-output artifact so its installer remains offline.
+seed_matrix_sdk_crypto() {
+  matrix_sdk_crypto_dir="$(find node_modules/.pnpm \
+    -path '*/node_modules/@matrix-org/matrix-sdk-crypto-nodejs' -type d -print | head -n 1)"
+  if [ -z "$matrix_sdk_crypto_dir" ]; then
+    return
+  fi
+
+  matrix_sdk_crypto_actual_version="$(jq -r '.version' "$matrix_sdk_crypto_dir/package.json")"
+  if [ "$matrix_sdk_crypto_actual_version" != "$MATRIX_SDK_CRYPTO_VERSION" ]; then
+    echo "Matrix SDK crypto version changed: expected $MATRIX_SDK_CRYPTO_VERSION, found $matrix_sdk_crypto_actual_version" >&2
+    exit 1
+  fi
+  install -m 0444 "$MATRIX_SDK_CRYPTO_BINARY" \
+    "$matrix_sdk_crypto_dir/$MATRIX_SDK_CRYPTO_BINARY_NAME"
+  printf '%s' "$MATRIX_SDK_CRYPTO_VERSION" \
+    > "$matrix_sdk_crypto_dir/$MATRIX_SDK_CRYPTO_BINARY_NAME.version"
+}
+
+seed_matrix_sdk_crypto
+
 # sharp may leave build artifacts around; remove to keep output smaller + avoid stale builds.
 rm -rf node_modules/.pnpm/sharp@*/node_modules/sharp/src/build
 
@@ -54,6 +76,7 @@ rm -rf node_modules/.pnpm/sharp@*/node_modules/sharp/src/build
 # node-llama-cpp postinstall attempts to download/compile llama.cpp (network blocked in Nix).
 # Also defensively disable other common downloaders.
 rebuild_list="$(jq -r '.pnpm.onlyBuiltDependencies // [] | .[]' package.json 2>/dev/null || true)"
+pnpm_rebuild="${PNPM_REBUILD:-pnpm}"
 if [ -z "$rebuild_list" ]; then
   allow_builds_json="$(pnpm config get --json allowBuilds 2>/dev/null || true)"
   if [ -n "$allow_builds_json" ] && [ "$allow_builds_json" != "null" ]; then
@@ -66,14 +89,14 @@ if [ -n "$rebuild_list" ]; then
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
     PUPPETEER_SKIP_DOWNLOAD=1 \
     ELECTRON_SKIP_BINARY_DOWNLOAD=1 \
-    pnpm rebuild $rebuild_list
+    "$pnpm_rebuild" rebuild $rebuild_list
 else
   log_step "pnpm rebuild (all)" env \
     NODE_LLAMA_CPP_SKIP_DOWNLOAD=1 \
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
     PUPPETEER_SKIP_DOWNLOAD=1 \
     ELECTRON_SKIP_BINARY_DOWNLOAD=1 \
-    pnpm rebuild
+    "$pnpm_rebuild" rebuild
 fi
 
 log_step "patchShebangs node_modules/.bin" bash -e -c ". \"$STDENV_SETUP\"; patchShebangs node_modules/.bin"
@@ -206,12 +229,16 @@ esac
   log_step "ui:build" bash -e -c 'cd ui; node "$1" build' _ "$vite_cli_abs"
 fi
 
-log_step "pnpm prune --prod" env \
+log_step "pnpm prune --prod (ignore-scripts)" env \
   CI=true \
   PNPM_CONFIG_OFFLINE=true \
   PNPM_CONFIG_STORE_DIR="$store_path" \
   NPM_CONFIG_STORE_DIR="$store_path" \
-  pnpm prune --prod
+  pnpm prune --prod --ignore-scripts
+
+# Prune reconstructs the virtual store from the immutable pnpm cache, so seed
+# the fixed-output native library again in the final production tree.
+seed_matrix_sdk_crypto
 
 # Reduce output size (pnpm implementation detail; safe to remove)
 rm -rf node_modules/.pnpm/node_modules

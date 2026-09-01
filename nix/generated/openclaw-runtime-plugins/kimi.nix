@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.8";
   expectedIntegrity = "";
   packageName = "@openclaw/kimi-provider";
-  version = "2026.8.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/kimi-provider/-/kimi-provider-2026.8.1.tgz";
-  npmIntegrity = "sha512-buvI1UIhkAECpsNM5VSseu8LsrXvIqAEa9qb/XRGhHrlPCX3LiEXYnPjVuIyjC5J6J/dYIdInqz0HtatpCX/4w==";
-  npmShasum = "28b79dba808c5543281eaa4358de10f17c62b9a4";
-  nixHash = "sha256-O+cK1IpaFFhy75VfX1Ls5FdYwFgDJnjqnRcDfC1aBME=";
+  version = "2026.8.2";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/kimi-provider/-/kimi-provider-2026.8.2.tgz";
+  npmIntegrity = "sha512-EYhTdhE3k5LeXRiF7EKeP6OGdWqbMg2OySEPXFjdSCgVtsTtiW9tGS+xnDdygsw4o6mtj2oaJ19KWd6wFDNmNQ==";
+  npmShasum = "96310e7004e25d32b62e691a00af245d0a7e4659";
+  nixHash = "sha256-7fRgZyFV2VlJtF4vp3Guk4IwmOZtZNSINuNd9FwezWg=";
   dependencyMode = "none";
   manifestId = "kimi";
-  openclawCompat = ">=2026.8.1";
-  peerOpenClaw = ">=2026.8.1";
+  openclawCompat = ">=2026.8.2";
+  peerOpenClaw = ">=2026.8.2";
   runtimeExtensions = [
     "./dist/index.js"
   ];

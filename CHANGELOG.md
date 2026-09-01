@@ -8,6 +8,22 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-01
+
+### Changed
+
+- Updated the stable gateway and generated runtime plugin catalog to OpenClaw
+  `2026.8.2`.
+- Updated the source build to pnpm `12.2.1`, while retaining the pnpm 11
+  lifecycle runner needed for deterministic offline rebuilds.
+
+### Fixed
+
+- Preserve pnpm 12 publication-time policy metadata in the fixed-output cache
+  so source builds remain reproducible and do not wait on registry access.
+- Seed Matrix SDK Crypto's platform-native binary from a fixed-output source so
+  its postinstall remains offline on Linux and macOS.
+
 ## 2026-08-31
 
 ### Changed

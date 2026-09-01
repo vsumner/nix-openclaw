@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.7.2";
   expectedIntegrity = "";
   packageName = "@openclaw/teams-meetings";
-  version = "2026.8.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/teams-meetings/-/teams-meetings-2026.8.1.tgz";
-  npmIntegrity = "sha512-lRZw+NcWzLrvs+kue4+fgDULCxecVxxuxJDhYJtb1i0JUORZZuzcfhu8a+oUlwBQYbICB70uhMPTkHrdai+jpQ==";
-  npmShasum = "92c27f2d893d9f0db4f0b4acfd8edd6e4499cedb";
-  nixHash = "sha256-1c20TXqz4VPhu8Y55imQ+NdS4F1pMZ+hEzaWgPJWYts=";
+  version = "2026.8.2";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/teams-meetings/-/teams-meetings-2026.8.2.tgz";
+  npmIntegrity = "sha512-qflXzxs9CmGMh60P4yFkjcX4Oj9y2kpeQypvbmD3p1kf1nQnrUUxfdgg8ZaTRDJMKIcBIQ8KgztjMyxyKsAMsA==";
+  npmShasum = "813d27d7ecd9eee96cfc4a23404dbc85a6288c43";
+  nixHash = "sha256-TRQU4TVwkoqnD/Ezu0oQLjCsNWcjQeFYJvQz+ckLNm8=";
   dependencyMode = "bundled";
   manifestId = "teams-meetings";
-  openclawCompat = ">=2026.8.1";
-  peerOpenClaw = ">=2026.8.1";
+  openclawCompat = ">=2026.8.2";
+  peerOpenClaw = ">=2026.8.2";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -36,7 +36,7 @@
     ];
   };
   dependencies = {
-    typebox = "1.3.16";
+    typebox = "1.3.17";
   };
   optionalDependencies = { };
   bundleDependencies = [

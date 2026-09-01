@@ -35,7 +35,8 @@ fi
 printf "%s" "$store_path" > "$store_path_file"
 
 verified_lockfile_cache="$PNPM_DEPS/pnpm-lockfile-verified.jsonl"
-if [ -f "$verified_lockfile_cache" ]; then
+verified_metadata_cache="$PNPM_DEPS/pnpm-metadata/registry.npmjs.org"
+if [ -f "$verified_lockfile_cache" ] || [ -d "$verified_metadata_cache" ]; then
   if [ -n "${out:-}" ]; then
     pnpm_cache_dir="$PWD/.pnpm-cache"
     rm -rf "$pnpm_cache_dir"
@@ -43,7 +44,13 @@ if [ -f "$verified_lockfile_cache" ]; then
   else
     pnpm_cache_dir="$(mktemp -d)"
   fi
-  cp "$verified_lockfile_cache" "$pnpm_cache_dir/lockfile-verified.jsonl"
+  if [ -f "$verified_lockfile_cache" ]; then
+    cp "$verified_lockfile_cache" "$pnpm_cache_dir/lockfile-verified.jsonl"
+  fi
+  if [ -d "$verified_metadata_cache" ]; then
+    mkdir -p "$pnpm_cache_dir/v11/metadata-full/registry.npmjs.org"
+    cp -R "$verified_metadata_cache/." "$pnpm_cache_dir/v11/metadata-full/registry.npmjs.org/"
+  fi
   export PNPM_CONFIG_CACHE_DIR="$pnpm_cache_dir"
 fi
 

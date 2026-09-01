@@ -46,6 +46,7 @@ let
     "releaseTag"
     "releaseVersion"
     "runtimePluginVersion"
+    "workspaceRuntimePluginOverrides"
     "applyPublicSurfaceHardlinksPatch"
     "applySkipPluginAutoEnableNixModePatch"
     "applyNixStorePluginOwnershipPatch"
@@ -165,10 +166,8 @@ let
         "${../patches/allow-nix-store-plugin-ownership.patch}"
       else
         "";
-    PATCH_BEFORE_MESSAGE_WRITE_RUN_ID =
-      "${../patches/forward-before-message-write-run-id.patch}";
-    PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT =
-      "${../patches/fix-zai-coding-plan-system-prompt.patch}";
+    PATCH_BEFORE_MESSAGE_WRITE_RUN_ID = "${../patches/forward-before-message-write-run-id.patch}";
+    PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT = "${../patches/fix-zai-coding-plan-system-prompt.patch}";
     PROMOTE_PNPM_INTEGRITY_SH = "${../scripts/promote-pnpm-integrity.sh}";
     REMOVE_PACKAGE_MANAGER_FIELD_SH = "${../scripts/remove-package-manager-field.sh}";
     STDENV_SETUP = "${stdenv}/setup";

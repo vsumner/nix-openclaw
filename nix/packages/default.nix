@@ -28,6 +28,19 @@ let
     inherit toolNamesOverride excludeToolNames;
   };
   runtimePluginLocks = import ../generated/openclaw-runtime-plugins;
+  workspaceRuntimePluginOverrides = sourceInfo.workspaceRuntimePluginOverrides or [ ];
+  runtimePluginLockForBuild =
+    name: lock:
+    if builtins.elem name workspaceRuntimePluginOverrides then
+      lock
+      // {
+        selectedSource = "workspace";
+        workspacePath = "extensions/${lock.id}";
+        dependencyMode = "workspace";
+        runtimeExtensions = [ "./index.js" ];
+      }
+    else
+      lock;
   buildBundledRuntimePlugin = pkgs.callPackage ../lib/openclaw-runtime-plugin.nix {
     linkOpenClawPeer = false;
   };
@@ -44,7 +57,10 @@ let
     openclawPackage = openclawGateway;
   };
   openclawRuntimePlugins = pkgs.lib.mapAttrs (
-    _name: lock:
+    name: originalLock:
+    let
+      lock = runtimePluginLockForBuild name originalLock;
+    in
     if (lock.dependencyMode or null) == "workspace" then
       buildGatewayRuntimePlugin lock
     else

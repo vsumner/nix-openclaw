@@ -25,6 +25,10 @@ if [ -n "${PATCH_BEFORE_MESSAGE_WRITE_RUN_ID:-}" ]; then
   patch -p1 < "$PATCH_BEFORE_MESSAGE_WRITE_RUN_ID"
 fi
 
+if [ -n "${PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT:-}" ]; then
+  patch -p1 < "$PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT"
+fi
+
 if [ -f src/logging/logger.ts ]; then
   if ! grep -q "OPENCLAW_LOG_DIR" src/logging/logger.ts; then
     sed -i 's/export const DEFAULT_LOG_DIR = "\/tmp\/openclaw";/export const DEFAULT_LOG_DIR = process.env.OPENCLAW_LOG_DIR ?? "\/tmp\/openclaw";/' src/logging/logger.ts

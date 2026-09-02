@@ -18,8 +18,8 @@
   releaseTag = "v2026.8.2";
   releaseVersion = "2026.8.2";
   runtimePluginVersion = "2026.8.2";
-  rev = "9919a01de61e0d279b9ca449aee2ff9b316effc3";
-  hash = "sha256-S3BOyP78CiVwE5PURR3QH2zw1XD1BJgo1ZSmNVSE3Uo=";
+  rev = "a410b40c75fdfcd7ed62ac860885aa5280bb5fcc";
+  hash = "sha256-P67DSJUi7r/0Fg435tE69Wyby9ZEY+Zhpnyx3oRoxtE=";
   pnpmDepsHash = {
     aarch64-darwin = "sha256-AzK5q+RGy0KI7pbRiJ6XbOigQ8OqmWQdSCwkPwf7VfE=";
     x86_64-linux = "sha256-PIGHF8m2MAH20FTIzzKbs13F4xoUPdFl9JBF+P22xTg=";

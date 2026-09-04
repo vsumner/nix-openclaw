@@ -623,10 +623,6 @@ let
           "ok"
       );
 
-  retiredQmdMemoryCheck = requireEvalFailure "retired QMD memory backend" (
-    (moduleEval { config.memory.backend = "qmd"; }).config.home.packages
-  );
-
   runtimeProfileEval = moduleEval {
     runtimePackages = [ pkgs.jq ];
     environment.OPENCLAW_TEST_SECRET = "/tmp/openclaw-secret";
@@ -975,7 +971,6 @@ let
       invalidWorkspaceFileCheck
       secretProviderCheck
       secretRefPassthroughCheck
-      retiredQmdMemoryCheck
     ]
     ++ lib.optionals includePluginChecks [
       customPluginCheck

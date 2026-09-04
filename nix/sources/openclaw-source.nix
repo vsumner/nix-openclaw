@@ -26,6 +26,6 @@
   hash = "sha256-g7N+xotLQl0D+5vcBcAuNVyrPQNih9cDKJwwlC+4kBY=";
   pnpmDepsHash = {
     aarch64-darwin = "sha256-DYcRAOzYEy5ObEjletXUWFnamA0E6DOakt6ysQJzsCA=";
-    x86_64-linux = "sha256-Ad6z/4ROfLkoFe/tyOZ3pqJywYONh9wahux4yNzTxBg=";
+    x86_64-linux = "sha256-E/oZVbZXbHq8IEJdWWAqe7chJpDViHszRm2UfApcbnw=";
   };
 }

@@ -105,9 +105,7 @@
               package-contents = pkgs.callPackage ./nix/checks/openclaw-package-contents.nix {
                 openclawGateway = packageSetStable.openclaw-gateway;
               };
-              default-instance = pkgs.callPackage ./nix/checks/openclaw-default-instance.nix {
-                includeQmdChecks = false;
-              };
+              default-instance = pkgs.callPackage ./nix/checks/openclaw-default-instance.nix { };
               source-override-render = pkgs.callPackage ./nix/checks/openclaw-default-instance.nix {
                 includeSourceOverrideChecks = true;
               };
@@ -119,15 +117,6 @@
               gateway-smoke = pkgs.callPackage ./nix/checks/openclaw-gateway-smoke.nix {
                 openclawGateway = packageSetStable.openclaw-gateway;
                 includeRuntimePluginSmoke = false;
-              };
-            };
-            qmdChecks = {
-              qmd-instance = pkgs.callPackage ./nix/checks/openclaw-default-instance.nix {
-                includeQmdChecks = true;
-              };
-              qmd-runtime = pkgs.callPackage ./nix/checks/openclaw-qmd-runtime.nix {
-                openclawPackage = packageSetStable.openclaw;
-                inherit qmdPackage;
               };
             };
             pluginChecks = {
@@ -222,14 +211,6 @@
                   runtimePluginChecks.runtime-plugin-codex-gateway-smoke
                 ];
               };
-              # QMD opt-in: local memory backend only when users enable it.
-              qmd-opt-in = pkgs.symlinkJoin {
-                name = "openclaw-qmd-opt-in";
-                paths = [
-                  qmdChecks.qmd-instance
-                  qmdChecks.qmd-runtime
-                ];
-              };
             }
             // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
               platform-activation = linuxOnlyChecks.hm-activation;
@@ -239,7 +220,6 @@
             };
           in
           stableChecks
-          // qmdChecks
           // pluginChecks
           // runtimePluginChecks
           // linuxOnlyChecks

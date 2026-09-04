@@ -4,7 +4,6 @@
   stdenv,
   nodejs_22,
   includePluginChecks ? false,
-  includeQmdChecks ? false,
   includeSourceOverrideChecks ? false,
 }:
 
@@ -144,12 +143,6 @@ let
     if attempted.success then throw "${name}: expected evaluation failure." else "ok";
   generatedConfig = eval: path: builtins.fromJSON eval.config.home.file."${path}".text;
 
-  packageHasQmd =
-    pkg:
-    let
-      qmdPath = builtins.unsafeDiscardStringContext (pkg.OPENCLAW_QMD_PATH or "");
-    in
-    qmdPath != "";
   isPluginSkillPath =
     path: lib.hasSuffix "/skill" path || lib.hasSuffix "-openclaw-plugin-skill-skill" path;
 
@@ -164,8 +157,6 @@ let
       throw "Default OpenClaw instance missing launchd.label."
     else if (((defaultConfig.gateway or { }).mode or null) != "local") then
       throw "Default OpenClaw instance missing gateway.mode."
-    else if lib.any packageHasQmd defaultEval.config.home.packages then
-      throw "Default OpenClaw instance unexpectedly includes QMD on its runtime PATH."
     else
       "ok"
   );
@@ -632,32 +623,6 @@ let
           "ok"
       );
 
-  qmdPrewarmEval = moduleEval {
-    qmd.prewarmModels.enable = true;
-  };
-  qmdPrewarmActivation = builtins.toJSON qmdPrewarmEval.config.home.activation.openclawQmdPrewarm;
-  qmdPrewarmCheck = builtins.deepSeq (requireNoAssertionFailures "qmd.prewarmModels" qmdPrewarmEval) (
-    if
-      lib.hasInfix "OPENCLAW_QMD_BIN=" qmdPrewarmActivation
-      && lib.hasInfix "openclaw-qmd-prewarm.sh" qmdPrewarmActivation
-    then
-      "ok"
-    else
-      throw "qmd.prewarmModels did not wire QMD model-cache prewarm activation."
-  );
-
-  qmdMemoryEval = moduleEval {
-    config.memory.backend = "qmd";
-  };
-  qmdMemoryCheck = builtins.deepSeq (requireNoAssertionFailures "memory.backend qmd" qmdMemoryEval) (
-    if lib.any packageHasQmd qmdMemoryEval.config.home.packages then
-      "ok"
-    else
-      throw "memory.backend = qmd did not add QMD to the internal OpenClaw runtime."
-  );
-  qmdMemoryPackages = lib.filter packageHasQmd qmdMemoryEval.config.home.packages;
-  qmdMemoryPackage = if qmdMemoryPackages == [ ] then null else builtins.head qmdMemoryPackages;
-
   runtimeProfileEval = moduleEval {
     runtimePackages = [ pkgs.jq ];
     environment.OPENCLAW_TEST_SECRET = "/tmp/openclaw-secret";
@@ -731,13 +696,22 @@ let
     runtimePlugins = [
       "amazon-bedrock"
       "discord"
+      "llama-cpp"
     ];
+    config.memory.search = {
+      provider = "local";
+      fallback = "none";
+      local.modelPath = "/tmp/model.gguf";
+    };
   };
   runtimePluginCatalogGeneratedConfig = generatedConfig runtimePluginCatalogGeneratedEval ".openclaw/openclaw.json";
   runtimePluginCatalogGeneratedLoadPaths =
     ((runtimePluginCatalogGeneratedConfig.plugins or { }).load or { }).paths or [ ];
   runtimePluginCatalogGeneratedEntries = (
     (runtimePluginCatalogGeneratedConfig.plugins or { }).entries or { }
+  );
+  runtimePluginCatalogGeneratedMemoryProvider = (
+    ((runtimePluginCatalogGeneratedConfig.memory or { }).search or { }).provider or null
   );
   runtimePluginCatalogGeneratedCheck =
     builtins.deepSeq
@@ -755,10 +729,20 @@ let
           ) runtimePluginCatalogGeneratedLoadPaths)
         then
           throw "runtimePlugins did not accept generated channel plugin ids."
+        else if
+          !(lib.any (
+            path: lib.hasInfix "openclaw-runtime-plugin-llama-cpp" path
+          ) runtimePluginCatalogGeneratedLoadPaths)
+        then
+          throw "runtimePlugins did not accept the generated local embedding provider plugin."
         else if ((runtimePluginCatalogGeneratedEntries.amazon-bedrock or { }).enabled or false) != true then
           throw "runtimePlugins did not enable generated provider plugin entry."
         else if ((runtimePluginCatalogGeneratedEntries.discord or { }).enabled or false) != true then
           throw "runtimePlugins did not enable generated channel plugin entry."
+        else if ((runtimePluginCatalogGeneratedEntries.llama-cpp or { }).enabled or false) != true then
+          throw "runtimePlugins did not enable the local embedding provider plugin entry."
+        else if runtimePluginCatalogGeneratedMemoryProvider != "local" then
+          throw "runtimePlugins did not preserve builtin local memory configuration."
         else
           "ok"
       );
@@ -994,10 +978,6 @@ let
       duplicateSkillCheck
       userPluginSkillCollisionCheck
     ]
-    ++ lib.optionals includeQmdChecks [
-      qmdPrewarmCheck
-      qmdMemoryCheck
-    ]
     ++ lib.optionals includeSourceOverrideChecks [
       sourceOverrideCheck
     ]
@@ -1030,8 +1010,6 @@ stdenv.mkDerivation {
   pname =
     if includePluginChecks then
       "openclaw-plugin-instance"
-    else if includeQmdChecks then
-      "openclaw-qmd-instance"
     else if includeSourceOverrideChecks then
       "openclaw-source-override-instance"
     else
@@ -1039,11 +1017,9 @@ stdenv.mkDerivation {
   version = "1";
   dontUnpack = true;
   # Evaluation alone missed installPhase regressions in helper scripts.
-  nativeBuildInputs =
-    lib.optionals includePluginChecks [
-      nodejs_22
-    ]
-    ++ lib.optional (includeQmdChecks && qmdMemoryPackage != null) qmdMemoryPackage;
+  nativeBuildInputs = lib.optionals includePluginChecks [
+    nodejs_22
+  ];
   env = {
     OPENCLAW_DEFAULT_INSTANCE = checkKey;
   };

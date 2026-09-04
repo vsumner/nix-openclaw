@@ -7,8 +7,6 @@
 
 let
   cfg = config.services.openclaw-gateway;
-  qmdPackage = pkgs.openclawPackages.qmd or null;
-  qmdEnabled = (((cfg.config.memory or { }).backend or null) == "qmd");
   toJSONWithContext = import ../../lib/json-with-context.nix { inherit lib; };
 
   deepConfigType = lib.types.mkOptionType {
@@ -157,10 +155,6 @@ in
         assertion = lib.hasPrefix "/etc/" cfg.configPath;
         message = "services.openclaw-gateway.configPath must be under /etc (got: ${cfg.configPath}).";
       }
-      {
-        assertion = !qmdEnabled || qmdPackage != null;
-        message = "services.openclaw-gateway.config.memory.backend = \"qmd\" requires a qmd package in openclawPackages.";
-      }
     ];
 
     users.groups.${cfg.group} = lib.mkIf cfg.createUser { };
@@ -218,7 +212,6 @@ in
         pkgs.bash
         pkgs.coreutils
       ]
-      ++ lib.optional (qmdEnabled && qmdPackage != null) qmdPackage
       ++ cfg.servicePath;
     };
   };

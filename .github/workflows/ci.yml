@@ -21,9 +21,14 @@ jobs:
     # the build graph. This job intentionally builds no packages.
     if: >-
       ${{
-        github.repository == 'openclaw/nix-openclaw' &&
         (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
-        contains(fromJSON('["Asleep123","asleep123","badlogic","bjesuiter","christianklotz","cpojer","Evizero","evizero","gumadeiras","joshp123","mbelinky","mukhtharcm","obviyus","onutc","pasogott","sebslight","sergiopesch","shakkernerd","steipete","Takhoffman","takhoffman","thewilloftheshadow","tyler6204","vignesh07","github-actions[bot]"]'), github.actor)
+        (
+          github.repository == 'vsumner/nix-openclaw' ||
+          (
+            github.repository == 'openclaw/nix-openclaw' &&
+            contains(fromJSON('["Asleep123","asleep123","badlogic","bjesuiter","christianklotz","cpojer","Evizero","evizero","gumadeiras","joshp123","mbelinky","mukhtharcm","obviyus","onutc","pasogott","sebslight","sergiopesch","shakkernerd","steipete","Takhoffman","takhoffman","thewilloftheshadow","tyler6204","vignesh07","github-actions[bot]"]'), github.actor)
+          )
+        )
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -42,9 +47,14 @@ jobs:
     # or substituted once, while the attr list still documents each contract.
     if: >-
       ${{
-        github.repository == 'openclaw/nix-openclaw' &&
         (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) &&
-        contains(fromJSON('["Asleep123","asleep123","badlogic","bjesuiter","christianklotz","cpojer","Evizero","evizero","gumadeiras","joshp123","mbelinky","mukhtharcm","obviyus","onutc","pasogott","sebslight","sergiopesch","shakkernerd","steipete","Takhoffman","takhoffman","thewilloftheshadow","tyler6204","vignesh07","github-actions[bot]"]'), github.actor)
+        (
+          github.repository == 'vsumner/nix-openclaw' ||
+          (
+            github.repository == 'openclaw/nix-openclaw' &&
+            contains(fromJSON('["Asleep123","asleep123","badlogic","bjesuiter","christianklotz","cpojer","Evizero","evizero","gumadeiras","joshp123","mbelinky","mukhtharcm","obviyus","onutc","pasogott","sebslight","sergiopesch","shakkernerd","steipete","Takhoffman","takhoffman","thewilloftheshadow","tyler6204","vignesh07","github-actions[bot]"]'), github.actor)
+          )
+        )
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -67,7 +77,6 @@ jobs:
             .#checks.x86_64-linux.platform-activation \
             .#checks.x86_64-linux.runtime-plugin-packages \
             .#checks.x86_64-linux.runtime-plugin-host \
-            .#checks.x86_64-linux.qmd-opt-in \
             --accept-flake-config
 
       - name: Summarize Linux activation timing
@@ -106,8 +115,7 @@ jobs:
             .#checks.aarch64-darwin.runtime-smoke \
             .#checks.aarch64-darwin.platform-activation \
             .#checks.aarch64-darwin.runtime-plugin-packages \
-            .#checks.aarch64-darwin.runtime-plugin-host \
-            .#checks.aarch64-darwin.qmd-opt-in
+            .#checks.aarch64-darwin.runtime-plugin-host
 
       - name: Run launchd activation
         timeout-minutes: 10

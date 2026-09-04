@@ -10,7 +10,6 @@ let
   cfg = openclawLib.cfg;
   homeDir = openclawLib.homeDir;
   appPackage = openclawLib.appPackage;
-  qmdPackage = openclawLib.qmdPackage;
   toJSONWithContext = import ../../../lib/json-with-context.nix { inherit lib; };
 
   defaultInstance = {
@@ -117,11 +116,7 @@ let
           inst.package;
       pluginPackages = plugins.pluginPackagesFor name;
       runtimePackages = lib.unique (
-        openclawLib.toolSets.tools
-        ++ (lib.optional (qmdEnabled && qmdPackage != null) qmdPackage)
-        ++ pluginPackages
-        ++ cfg.runtimePackages
-        ++ inst.runtimePackages
+        openclawLib.toolSets.tools ++ pluginPackages ++ cfg.runtimePackages ++ inst.runtimePackages
       );
       runtimeProfile = pkgs.symlinkJoin {
         name = "openclaw-runtime-${name}";
@@ -213,24 +208,6 @@ let
           mergedConfig0;
       hasExecSecretFlow = containsExecSecretFlow mergedConfig;
       execSecretFlowWarning = "programs.openclaw.instances.${name}.config uses OpenClaw exec secrets. nix-openclaw passes this through, but does not support or verify runtime command-based secret resolution. Prefer host-managed secrets with env/file SecretRefs: ${execSecretFlowDocsUrl}";
-      qmdEnabled = (((mergedConfig.memory or { }).backend or null) == "qmd");
-      gatewayRuntimePackage =
-        if qmdEnabled && qmdPackage != null then
-          let
-            qmdPath = lib.makeBinPath [ qmdPackage ];
-          in
-          pkgs.stdenvNoCC.mkDerivation {
-            name = "${lib.getName gatewayPackage}-qmd";
-            dontUnpack = true;
-            nativeBuildInputs = [ pkgs.makeWrapper ];
-            OPENCLAW_GATEWAY_PACKAGE = "${gatewayPackage}";
-            OPENCLAW_GATEWAY_BIN = "${gatewayPackage}/bin/openclaw";
-            OPENCLAW_QMD_PATH = qmdPath;
-            STDENV_SETUP = "${pkgs.stdenvNoCC}/setup";
-            installPhase = "${../../../scripts/openclaw-qmd-wrapper-install.sh}";
-          }
-        else
-          gatewayPackage;
       rawConfigJson = toJSONWithContext mergedConfig;
       configJson =
         if hasExecSecretFlow then lib.warn execSecretFlowWarning rawConfigJson else rawConfigJson;
@@ -276,7 +253,7 @@ let
           ) runtimeEnvAll
         )}
 
-        exec "${gatewayRuntimePackage}/bin/openclaw" "$@"
+        exec "${gatewayPackage}/bin/openclaw" "$@"
       '';
       appDefaults = lib.optionalAttrs (pkgs.stdenv.hostPlatform.isDarwin && inst.appDefaults.enable) {
         attachExistingOnly = inst.appDefaults.attachExistingOnly;
@@ -297,7 +274,7 @@ let
             };
           };
 
-      package = gatewayRuntimePackage;
+      package = gatewayPackage;
     in
     {
       name = name;
@@ -376,7 +353,6 @@ let
       appDefaults = appDefaults;
       appInstall = appInstall;
       package = package;
-      qmdEnabled = qmdEnabled;
       runtimePluginPackages = runtimePluginConfig.packages;
       assertions = runtimePluginConfig.assertions ++ bootstrapAssertions;
       launchdLabel =
@@ -451,8 +427,6 @@ let
 
   appDefaults = lib.foldl' (acc: item: lib.recursiveUpdate acc item.appDefaults) { } instanceConfigs;
   appDefaultsEnabled = lib.filterAttrs (_: inst: inst.appDefaults.enable) enabledInstances;
-  qmdEnabledInstances = lib.filter (item: item.qmdEnabled) instanceConfigs;
-
 in
 {
   config = lib.mkIf (cfg.enable || cfg.instances != { }) {
@@ -461,21 +435,11 @@ in
         assertion = lib.length (lib.attrNames appDefaultsEnabled) <= 1;
         message = "Only one OpenClaw instance may enable appDefaults.";
       }
-      {
-        assertion = qmdEnabledInstances == [ ] || qmdPackage != null;
-        message = "OpenClaw config memory.backend = \"qmd\" requires a qmd package in openclawPackages.";
-      }
     ]
     ++ files.workspaceAssertions
     ++ files.duplicateSkillAssertion
     ++ plugins.pluginAssertions
-    ++ lib.flatten (map (item: item.assertions) instanceConfigs)
-    ++ [
-      {
-        assertion = !cfg.qmd.prewarmModels.enable || qmdPackage != null;
-        message = "programs.openclaw.qmd.prewarmModels.enable requires a qmd package in openclawPackages.";
-      }
-    ];
+    ++ lib.flatten (map (item: item.assertions) instanceConfigs);
 
     home.packages = lib.unique (
       (map (item: item.package) instanceConfigs)
@@ -545,18 +509,6 @@ in
       set -euo pipefail
       ${plugins.pluginGuards}
     '';
-
-    home.activation.openclawQmdPrewarm = lib.mkIf (cfg.qmd.prewarmModels.enable && qmdPackage != null) (
-      lib.hm.dag.entryAfter [ "openclawDirs" ] ''
-        run --quiet ${lib.getExe' pkgs.coreutils "env"} \
-          HOME=${lib.escapeShellArg homeDir} \
-          XDG_CACHE_HOME=${lib.escapeShellArg "${homeDir}/.cache"} \
-          XDG_CONFIG_HOME=${lib.escapeShellArg "${homeDir}/.config"} \
-          XDG_DATA_HOME=${lib.escapeShellArg "${homeDir}/.local/share"} \
-          OPENCLAW_QMD_BIN=${lib.escapeShellArg "${qmdPackage}/bin/qmd"} \
-          ${pkgs.bash}/bin/bash ${../../../scripts/openclaw-qmd-prewarm.sh}
-      ''
-    );
 
     home.activation.openclawAppDefaults =
       lib.mkIf (pkgs.stdenv.hostPlatform.isDarwin && appDefaults != { })

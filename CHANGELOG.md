@@ -8,6 +8,20 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-04
+
+### Changed
+
+- Removed the retired OpenClaw QMD memory-backend integration and
+  `programs.openclaw.qmd.prewarmModels` option. OpenClaw `2026.9.1` uses its
+  builtin memory engine; local embeddings use the packaged `llama-cpp` runtime
+  plugin and `memory.search.provider = "local"`.
+- Kept `openclawPackages.qmd` as a standalone compatibility output for explicit
+  external retrieval workflows. It is no longer injected automatically into
+  the OpenClaw runtime.
+- Corrected the Linux pnpm dependency hash for the pinned OpenClaw `2026.9.1`
+  gateway source build.
+
 ## 2026-09-01
 
 ### Changed

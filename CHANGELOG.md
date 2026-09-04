@@ -19,6 +19,8 @@ Older repository history is available in git.
 - Kept `openclawPackages.qmd` as a standalone compatibility output for explicit
   external retrieval workflows. It is no longer injected automatically into
   the OpenClaw runtime.
+- Corrected the Linux pnpm dependency hash for the pinned OpenClaw `2026.9.1`
+  gateway source build.
 
 ## 2026-09-01
 

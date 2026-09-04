@@ -360,23 +360,17 @@ let
     customPlugins = [
       { source = alphaPluginSource; }
     ];
-    config.agents.list = [
-      {
-        id = "writer";
-        workspace = "/tmp/openclaw-writer-workspace";
-      }
-      {
-        id = "research";
-        workspace = "/tmp/openclaw-research-workspace";
-      }
-    ];
+    config.agents.entries = {
+      writer.workspace = "/tmp/openclaw-writer-workspace";
+      research.workspace = "/tmp/openclaw-research-workspace";
+    };
   };
   multiAgentPluginSkillConfig = generatedConfig multiAgentPluginSkillEval ".openclaw/openclaw.json";
   multiAgentPluginSkillExtraDirs = (
     ((multiAgentPluginSkillConfig.skills or { }).load or { }).extraDirs or [ ]
   );
   multiAgentWorkspaces = map (agent: agent.workspace) (
-    ((multiAgentPluginSkillConfig.agents or { }).list or [ ])
+    builtins.attrValues ((multiAgentPluginSkillConfig.agents or { }).entries or { })
   );
   multiAgentPluginSkillCheck =
     builtins.deepSeq (requireNoAssertionFailures "multi-agent plugin skills" multiAgentPluginSkillEval)

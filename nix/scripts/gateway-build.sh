@@ -47,6 +47,11 @@ log_step "pnpm install (offline, frozen, ignore-scripts)" env CI=true pnpm insta
 
 log_step "chmod node_modules writable" chmod -R u+w node_modules
 
+# pnpm 12's links store can reconstruct platform-native payloads without their
+# executable bit. Restore the known package-owned modes before lifecycle and
+# artifact checks execute them.
+log_step "restore pnpm executable modes" "$RESTORE_PNPM_EXECUTABLES_SH" node_modules/.pnpm
+
 # @matrix-org/matrix-sdk-crypto-nodejs downloads its native library in
 # postinstall. Seed the fixed-output artifact so its installer remains offline.
 seed_matrix_sdk_crypto() {

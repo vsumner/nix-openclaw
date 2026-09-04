@@ -1,9 +1,13 @@
 # Pinned OpenClaw source for nix-openclaw
 {
-  # Temporary 2026.8.2 backport for openclaw/openclaw#136326. Return to the
-  # upstream owner once a release contains openclaw/openclaw#136343.
-  owner = "vsumner";
+  owner = "openclaw";
   repo = "openclaw";
+  # The fix is merged to main but missed the frozen 2026.9.1 release lineage.
+  # Remove this backport once a release contains openclaw/openclaw#136343.
+  backupManagedLinksPatch = {
+    url = "https://github.com/openclaw/openclaw/commit/0aa9ae9f3e3ee94fbc3233f07b9653ef1402e7e5.patch";
+    hash = "sha256-flTsbiybC7q3/5phv1ppg5nG2bGPHLgHcah8hSwrMBA=";
+  };
   # pnpm 12's native fetcher emits relative tarball URLs inside Nix's Darwin
   # fixed-output sandbox. The committed v9 lock remains pnpm 11 compatible.
   pnpmMajor = "12";
@@ -15,13 +19,13 @@
   # export that plugin from this exact built workspace rather than the
   # unpatched npm tarball for the same release.
   workspaceRuntimePluginOverrides = [ "zai" ];
-  releaseTag = "v2026.8.2";
-  releaseVersion = "2026.8.2";
-  runtimePluginVersion = "2026.8.2";
-  rev = "683e20882caf73987776e9211099e25ac18fa421";
-  hash = "sha256-V3pw06gXajL+u16VIgyepIvaE7xJ//so1Gg0g3M3epY=";
+  releaseTag = "v2026.9.1";
+  releaseVersion = "2026.9.1";
+  runtimePluginVersion = "2026.9.1";
+  rev = "ad6fe23aecb9b833d68139b0ddc9f239b894d2f1";
+  hash = "sha256-g7N+xotLQl0D+5vcBcAuNVyrPQNih9cDKJwwlC+4kBY=";
   pnpmDepsHash = {
-    aarch64-darwin = "sha256-AzK5q+RGy0KI7pbRiJ6XbOigQ8OqmWQdSCwkPwf7VfE=";
-    x86_64-linux = "sha256-PIGHF8m2MAH20FTIzzKbs13F4xoUPdFl9JBF+P22xTg=";
+    aarch64-darwin = "sha256-DYcRAOzYEy5ObEjletXUWFnamA0E6DOakt6ysQJzsCA=";
+    x86_64-linux = "sha256-Ad6z/4ROfLkoFe/tyOZ3pqJywYONh9wahux4yNzTxBg=";
   };
 }

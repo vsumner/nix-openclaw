@@ -115,6 +115,14 @@ index 43c4e8c..476b591 100644
  import { loadInstalledPluginIndexInstallRecordsSync } from "./installed-plugin-index-record-reader.js";
  import { recordPluginManifestInstallOwner } from "./manifest-install-owner.js";
  import type {
+@@ -49,6 +52,7 @@ import { isTrustedOfficialPluginInstallRecord } from "./official-external-install-records.js";
+ import {
+   getOfficialExternalPluginCatalogEntryForPackage,
+   getOfficialExternalPluginCatalogManifest,
++  resolveOfficialExternalPluginId,
+ } from "./official-external-plugin-catalog.js";
+ import { satisfiesPluginApiRange, resolvePackagePluginApiRange } from "./package-compat.js";
+ import { isPathInside } from "./path-safety.js";
 @@ -727,3 +730,29 @@ function npmSpecMatchesPackage(value: string | undefined, packageName: string):
 +function isTrustedOfficialNixStorePluginInstall(params: {
 +  pluginId: string;

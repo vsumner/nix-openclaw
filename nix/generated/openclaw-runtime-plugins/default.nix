@@ -41,8 +41,10 @@
   kilocode = import ./kilocode.nix;
   kimi = import ./kimi.nix;
   line = import ./line.nix;
+  llama-cpp = import ./llamaCpp.nix;
   lobster = import ./lobster.nix;
   longcat = import ./longcat.nix;
+  matrix = import ./matrix.nix;
   mattermost = import ./mattermost.nix;
   meta = import ./meta.nix;
   mistral = import ./mistral.nix;
@@ -76,6 +78,7 @@
   volcengine = import ./volcengine.nix;
   voyage = import ./voyage.nix;
   vydra = import ./vydra.nix;
+  whatsapp = import ./whatsapp.nix;
   xiaomi = import ./xiaomi.nix;
   zai = import ./zai.nix;
   zalo = import ./zalo.nix;

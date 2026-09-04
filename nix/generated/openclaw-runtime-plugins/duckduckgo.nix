@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.7.2";
   expectedIntegrity = "";
   packageName = "@openclaw/duckduckgo-plugin";
-  version = "2026.8.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/duckduckgo-plugin/-/duckduckgo-plugin-2026.8.2.tgz";
-  npmIntegrity = "sha512-7ekWFH3yQcZ7bUU7pOACExar9W4dBXlFqrn6qpVnYUYmF3gagUCJd4rFwgLLg8l1F+Z0i0Bd5Au2vfYk72kHTQ==";
-  npmShasum = "08efa652c3d934b4f6e5e75a6127b4655108b694";
-  nixHash = "sha256-suaYk99mlgJ39W3/An3RVrUYNGJoflQWhmJnya54NSA=";
+  version = "2026.9.1";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/duckduckgo-plugin/-/duckduckgo-plugin-2026.9.1.tgz";
+  npmIntegrity = "sha512-pDNyYWSsHWEZIGx0zFTXS4DhGVGCt3vpU2PnIwz5xPcGviVUE3elp/X8rWwp60v3OBsk1Fc/Hx2DRXHF3egZOg==";
+  npmShasum = "ac7724723e266d37966f85e450a5b3f82e70e606";
+  nixHash = "sha256-BwbrrbCKkftojPeBnXULuIzhqimgPn+db7PXgq5wh3g=";
   dependencyMode = "none";
   manifestId = "duckduckgo";
-  openclawCompat = ">=2026.8.2";
-  peerOpenClaw = ">=2026.8.2";
+  openclawCompat = ">=2026.9.1";
+  peerOpenClaw = ">=2026.9.1";
   runtimeExtensions = [
     "./dist/index.js"
   ];

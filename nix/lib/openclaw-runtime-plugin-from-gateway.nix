@@ -61,6 +61,18 @@ let
       cp -R "${pluginRoot}" "$out/${packagedPluginRoot}"
       chmod -R u+w "$out/${packagedPluginRoot}"
 
+      # pnpm leaves workspace-only links in compiled extension trees. They are
+      # build conveniences, not runtime dependencies: plugin SDK imports use
+      # the explicit `openclaw` peer below, while `.bin` is never loaded at
+      # runtime. Remove only symlinks so a future real directory is preserved.
+      for build_only_link in \
+        "$out/${packagedPluginRoot}/node_modules/.bin" \
+        "$out/${packagedPluginRoot}/node_modules/@openclaw/plugin-sdk"; do
+        if [ -L "$build_only_link" ]; then
+          rm "$build_only_link"
+        fi
+      done
+
       # Preserve the shared compiled runtime addressed by those relative
       # imports. Copying the complete dist tree also keeps later generated
       # chunk edges correct without guessing a transitive file closure.

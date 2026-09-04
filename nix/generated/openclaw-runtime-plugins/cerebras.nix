@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.8";
   expectedIntegrity = "";
   packageName = "@openclaw/cerebras-provider";
-  version = "2026.8.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/cerebras-provider/-/cerebras-provider-2026.8.2.tgz";
-  npmIntegrity = "sha512-/+O4e5oSFYxpx/A+tFb5KVAaTseMk8RwEoSYan2lJibwnGrvT1UyLeGNbhtlYmXyNPrxMNYW6W9NiHjSVeOi6w==";
-  npmShasum = "6dc38a7a032e9b8e83082f1eae86b9c83a7c3a66";
-  nixHash = "sha256-xNbWzH6nEI8addtDw3BU1aIsg1I3HUnaq5OmRjqOtDc=";
+  version = "2026.9.1";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/cerebras-provider/-/cerebras-provider-2026.9.1.tgz";
+  npmIntegrity = "sha512-aSImEhC1OC4mGCqExqOBKkEsrokiXXrODT67Jc0jrcIq3L3IH38Ii5NV292bZOF3Z45IM6QhIcABp1Fx1nhjdg==";
+  npmShasum = "4ca1c76d5cc5d27aa76ee3e63bed3ea884d93aae";
+  nixHash = "sha256-LrG74dX+tMoFL8bF8gqA8YZkGUACpWIVZxLsUVjUC3s=";
   dependencyMode = "none";
   manifestId = "cerebras";
-  openclawCompat = ">=2026.8.2";
-  peerOpenClaw = ">=2026.8.2";
+  openclawCompat = ">=2026.9.1";
+  peerOpenClaw = ">=2026.9.1";
   runtimeExtensions = [
     "./dist/index.js"
   ];

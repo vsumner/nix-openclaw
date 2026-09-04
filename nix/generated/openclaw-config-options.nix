@@ -1,4 +1,4 @@
-# Generated from upstream OpenClaw schema at rev 0965053fe6b9341776df147a6934b7485c60b5ca. DO NOT EDIT.
+# Generated from upstream OpenClaw schema at rev ad6fe23aecb9b833d68139b0ddc9f239b894d2f1. DO NOT EDIT.
 # Generator: nix/scripts/generate-config-options.ts
 { lib }:
 let
@@ -314,6 +314,10 @@ in
           default = null;
         };
       }; });
+        default = null;
+      };
+      cwd = lib.mkOption {
+        type = t.nullOr (t.str);
         default = null;
       };
       elevatedDefault = lib.mkOption {
@@ -1124,6 +1128,10 @@ in
           default = null;
         };
       }; });
+        default = null;
+      };
+      cwd = lib.mkOption {
+        type = t.nullOr (t.str);
         default = null;
       };
       default = lib.mkOption {
@@ -2852,6 +2860,10 @@ in
         type = t.nullOr (t.listOf (t.str));
         default = null;
       };
+      blockedHostnames = lib.mkOption {
+        type = t.nullOr (t.listOf (t.str));
+        default = null;
+      };
       dangerouslyAllowPrivateNetwork = lib.mkOption {
         type = t.nullOr (t.bool);
         default = null;
@@ -3085,6 +3097,10 @@ in
       type = t.nullOr (t.oneOf [ (t.str) (t.enum [ false ]) ]);
       default = null;
     };
+    skipMissedJobs = lib.mkOption {
+      type = t.nullOr (t.bool);
+      default = null;
+    };
     triggers = lib.mkOption {
       type = t.nullOr (t.submodule { options = {
       enabled = lib.mkOption {
@@ -3105,6 +3121,10 @@ in
         default = null;
       };
       allowedHostnames = lib.mkOption {
+        type = t.nullOr (t.listOf (t.str));
+        default = null;
+      };
+      blockedHostnames = lib.mkOption {
         type = t.nullOr (t.listOf (t.str));
         default = null;
       };
@@ -8843,6 +8863,10 @@ in
             type = t.nullOr (t.listOf (t.str));
             default = null;
           };
+          blockedHostnames = lib.mkOption {
+            type = t.nullOr (t.listOf (t.str));
+            default = null;
+          };
           dangerouslyAllowPrivateNetwork = lib.mkOption {
             type = t.nullOr (t.bool);
             default = null;
@@ -9215,6 +9239,11 @@ in
       default = null;
     };
   }; });
+    default = null;
+  };
+
+  worktreeRoot = lib.mkOption {
+    type = t.nullOr (t.str);
     default = null;
   };
 }

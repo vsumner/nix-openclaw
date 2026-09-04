@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.7.2";
   expectedIntegrity = "";
   packageName = "@openclaw/xiaomi-provider";
-  version = "2026.8.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/xiaomi-provider/-/xiaomi-provider-2026.8.2.tgz";
-  npmIntegrity = "sha512-fwF8ZlGT8OJBl23kjvOZozkTU2UkkAfw/glLFUqbSeee6p3uGwwem4IFrkMbFrM9HQBQ2yE9kBbAHJqefsV4HA==";
-  npmShasum = "782823b1ba403dd5cf946b928f77f0ffa2ad692c";
-  nixHash = "sha256-QSRPHIeZI0TJsY5F3U5shP69gOBMIXNxBXZ2WHpQwV4=";
+  version = "2026.9.1";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/xiaomi-provider/-/xiaomi-provider-2026.9.1.tgz";
+  npmIntegrity = "sha512-jW5ORz4738TdY2xLu/rU2HgqFzBgy+5F7tO5uaPQ40APA43AZ0TjKZgHZl+RnyW5TsmZwQT02deOKvA/OX220g==";
+  npmShasum = "0400c2b403162d3ea74662aa858f27d14adc257b";
+  nixHash = "sha256-r/l1DEwNdtz6TQaQcpUZBUH0+v4+ZfpYKKES0/wVRMA=";
   dependencyMode = "none";
   manifestId = "xiaomi";
-  openclawCompat = ">=2026.8.2";
-  peerOpenClaw = ">=2026.8.2";
+  openclawCompat = ">=2026.9.1";
+  peerOpenClaw = ">=2026.9.1";
   runtimeExtensions = [
     "./dist/index.js"
   ];

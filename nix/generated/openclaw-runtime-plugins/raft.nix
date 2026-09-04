@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.8";
   expectedIntegrity = "";
   packageName = "@openclaw/raft";
-  version = "2026.8.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/raft/-/raft-2026.8.2.tgz";
-  npmIntegrity = "sha512-mbgPh14AVSjM0YQxGp7MUe0dLKwSI4t6DrDTOq7VN+oGaMPwkZ4FZvNc8lMTfH/bpcwSlm12ym67SzWWfHu3pg==";
-  npmShasum = "4feb0bc2c534b948fec8a045c2813def3abd9b9a";
-  nixHash = "sha256-mvswdQ5TDK2Y7ur38D3QNeg0+Qft7MutUNS2SEaBvMc=";
+  version = "2026.9.1";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/raft/-/raft-2026.9.1.tgz";
+  npmIntegrity = "sha512-G37p4eyRmO7lUckoMgvEx7w67kEGW67rg+nvZqbzw54uryAxMlIT7maAjM4v62z4MEMG1Zozobw7yC4pS+u8ew==";
+  npmShasum = "f8dcba3897a1ac3824d003f39bf913d2af5b1af6";
+  nixHash = "sha256-YHmClGFmAWNxxQU03Ce1qrwBC27WHG+iiL/bqrz2w4g=";
   dependencyMode = "bundled";
   manifestId = "raft";
-  openclawCompat = ">=2026.8.2";
-  peerOpenClaw = ">=2026.8.2";
+  openclawCompat = ">=2026.9.1";
+  peerOpenClaw = ">=2026.9.1";
   runtimeExtensions = [
     "./dist/index.js"
   ];

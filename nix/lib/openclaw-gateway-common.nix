@@ -47,6 +47,7 @@ let
     "releaseVersion"
     "runtimePluginVersion"
     "workspaceRuntimePluginOverrides"
+    "backupManagedLinksPatch"
     "applyPublicSurfaceHardlinksPatch"
     "applySkipPluginAutoEnableNixModePatch"
     "applyNixStorePluginOwnershipPatch"
@@ -70,6 +71,8 @@ let
       fetchFromGitHub sourceFetch;
 
   fsSafeSource = if sourceInfo ? fsSafeSource then fetchFromGitHub sourceInfo.fsSafeSource else null;
+  backupManagedLinksPatch =
+    if sourceInfo ? backupManagedLinksPatch then fetchurl sourceInfo.backupManagedLinksPatch else null;
   publicSurfaceHardlinksPatch =
     sourceInfo.publicSurfaceHardlinksPatch or ../patches/allow-package-public-surface-hardlinks.patch;
 
@@ -110,7 +113,7 @@ let
     else
       pnpmDepsHash;
 
-  pnpmDeps = fetchPnpmDeps {
+  pnpmDepsBase = fetchPnpmDeps {
     pname = pnpmDepsPname;
     inherit version;
     src = resolvedSrc;
@@ -187,6 +190,27 @@ let
     ];
   };
 
+  # fetchPnpmDeps assumes every file ending in .json is strict JSON. Some
+  # packages ship JSON5 or other fixture payloads under that suffix, so keep
+  # those byte-for-byte while normalizing real pnpm metadata as usual.
+  pnpmDeps = pnpmDepsBase.overrideAttrs (previous: {
+    fixupPhase =
+      let
+        original = ''
+          for f in $(find $storePath -name "*.json"); do
+            jq --sort-keys "del(.. | .checkedAt?)" $f | sponge $f
+          done
+        '';
+        replacement = ''
+          ${stdenv.shell} ${../scripts/normalize-pnpm-json-files.sh} "$storePath"
+        '';
+        replaced = lib.replaceStrings [ original ] [ replacement ] previous.fixupPhase;
+      in
+      assert lib.assertMsg (replaced != previous.fixupPhase)
+        "fetchPnpmDeps JSON normalization phase changed; update the OpenClaw compatibility replacement";
+      replaced;
+  });
+
   envBase = {
     npm_config_arch = pnpmArch;
     npm_config_platform = pnpmPlatform;
@@ -206,6 +230,7 @@ let
     NODE_GYP_WRAPPER_SH = "${../scripts/node-gyp-wrapper.sh}";
     GATEWAY_PREBUILD_SH = "${../scripts/gateway-prebuild.sh}";
     PATCH_BUNDLED_RUNTIME_DEPS_SCRIPT = "${../patches/stage-bundled-plugin-runtime-deps.mjs}";
+    PATCH_BACKUP_MANAGED_LINKS = if backupManagedLinksPatch != null then "${backupManagedLinksPatch}" else "";
     PATCH_PUBLIC_SURFACE_HARDLINKS =
       if sourceInfo.applyPublicSurfaceHardlinksPatch or true then
         "${publicSurfaceHardlinksPatch}"
@@ -224,6 +249,7 @@ let
     PATCH_BEFORE_MESSAGE_WRITE_RUN_ID = "${../patches/forward-before-message-write-run-id.patch}";
     PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT = "${../patches/fix-zai-coding-plan-system-prompt.patch}";
     PROMOTE_PNPM_INTEGRITY_SH = "${../scripts/promote-pnpm-integrity.sh}";
+    RESTORE_PNPM_EXECUTABLES_SH = "${../scripts/restore-pnpm-executables.sh}";
     REMOVE_PACKAGE_MANAGER_FIELD_SH = "${../scripts/remove-package-manager-field.sh}";
     STDENV_SETUP = "${stdenv}/setup";
   }

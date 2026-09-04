@@ -77,7 +77,6 @@ jobs:
             .#checks.x86_64-linux.platform-activation \
             .#checks.x86_64-linux.runtime-plugin-packages \
             .#checks.x86_64-linux.runtime-plugin-host \
-            .#checks.x86_64-linux.qmd-opt-in \
             --accept-flake-config
 
       - name: Summarize Linux activation timing
@@ -116,8 +115,7 @@ jobs:
             .#checks.aarch64-darwin.runtime-smoke \
             .#checks.aarch64-darwin.platform-activation \
             .#checks.aarch64-darwin.runtime-plugin-packages \
-            .#checks.aarch64-darwin.runtime-plugin-host \
-            .#checks.aarch64-darwin.qmd-opt-in
+            .#checks.aarch64-darwin.runtime-plugin-host
 
       - name: Run launchd activation
         timeout-minutes: 10

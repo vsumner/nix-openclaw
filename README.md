@@ -355,9 +355,9 @@ What I need you to do:
    - If ~/.openclaw/workspace already has files you want to keep, adopt them into the flake first (use copy/rsync that dereferences symlinks, e.g. `cp -L`)
 5. Help me create or connect the channel account I choose
 6. Set up secrets (bot token, provider key) - plain files at ~/.secrets/ are fine unless I already have a secret manager
-7. Ask whether I want local memory through QMD; if yes, set `memory.backend = "qmd"` in OpenClaw config
+7. Ask whether I want local semantic search; if yes, configure builtin memory with the packaged `llama-cpp` runtime plugin
 8. Fill in the template placeholders and run home-manager switch
-9. Verify end-to-end: package builds, service is running, gateway health works, QMD works if enabled, and the bot/channel responds if configured
+9. Verify end-to-end: package builds, service is running, gateway health and memory search work, and the bot/channel responds if configured
 
 My setup:
 - OS: [macOS / Linux]
@@ -370,10 +370,9 @@ Reference the README and templates/agent-first/flake.nix in the repo for the mod
 
 Your agent should do the setup work. You answer its short questions and confirm before it sends messages or changes external services.
 
-QMD packaging note for agents: Linux uses upstream `github:tobi/qmd`; Darwin
-uses the `nix-openclaw-tools` QMD repair package until upstream Darwin packaging
-is fixed. Keep both pinned to the same QMD release unless there is a tested
-reason to diverge.
+QMD packaging note for agents: `pkgs.openclawPackages.qmd` remains available for
+explicit external knowledge-base workflows. OpenClaw 2026.9.1 removed QMD as a
+memory backend, so do not set `memory.backend` or inject QMD into the gateway.
 
 **What happens next:**
 1. Your agent sets everything up and runs `home-manager switch`
@@ -1056,30 +1055,31 @@ and `pkgs.openclawPackages.pnpm_12` when needed for packaging or debugging.
 
 ### Local memory
 
-QMD is the supported local memory backend when OpenClaw config opts into it. The default `openclaw` package does not build or install QMD unless `memory.backend = "qmd"` is set. Linux uses upstream `tobi/qmd`; Darwin uses the repaired `nix-openclaw-tools` package until upstream QMD is fixed there.
+OpenClaw 2026.9.1 uses its builtin memory engine exclusively. The retired QMD
+backend options (`memory.backend`, `memory.qmd`, and `memory.search.qmd`) are not
+part of the generated module schema.
 
-Opt in through normal OpenClaw config:
+Builtin memory can run keyword-only without an embedding provider. For local
+semantic search, enable the packaged `llama-cpp` runtime plugin and select the
+local provider through normal OpenClaw config:
 
 ```nix
-programs.openclaw.config = {
-  memory.backend = "qmd";
+programs.openclaw = {
+  runtimePlugins = [ "llama-cpp" ];
+  config.memory.search = {
+    provider = "local";
+    fallback = "none";
+    local.modelPath = "/path/to/model.gguf";
+  };
 };
 ```
 
-When enabled through the nix-openclaw modules, QMD stays inside the OpenClaw runtime PATH, so users do not need to install a separate `qmd` command. The builtin `memorySearch.provider = "local"` path is an escape hatch for people who want to manage `node-llama-cpp` themselves; it is not the primary Nix-supported path.
+The standalone `pkgs.openclawPackages.qmd` output is still available for
+explicit knowledge-base workflows outside OpenClaw memory. Add it to
+`programs.openclaw.runtimePackages` only when an OpenClaw tool or plugin needs
+the `qmd` command; it is not installed automatically.
 
 Plugin CLIs are also kept on the OpenClaw runtime PATH by default, not on the user's login shell PATH. Set `programs.openclaw.exposePluginPackages = true` only when you explicitly want plugin CLIs in `home.packages`.
-
-Optional model prewarming is also declarative:
-
-```nix
-programs.openclaw.qmd.prewarmModels.enable = true;
-```
-
-That runs a temporary QMD collection through `qmd update`, `qmd embed`, and
-`qmd query` during Home Manager activation, which warms the default embedding,
-expansion, and reranking models in the user's QMD cache. Expect about 2.25GB of
-cache use.
 
 ### What we manage vs what you manage
 
@@ -1088,7 +1088,7 @@ cache use.
 | Gateway binary | ✓ | |
 | macOS app | ✓ | |
 | Service (launchd/systemd) | ✓ | |
-| Runtime tools and QMD | ✓ | |
+| Runtime tools | ✓ | |
 | Telegram bot token | | ✓ |
 | Anthropic API key | | ✓ |
 | Chat IDs | | ✓ |
@@ -1101,7 +1101,7 @@ The default `openclaw` package uses these tools internally and does not expose t
 
 **Core**: nodejs, pnpm, git, curl, jq, python3, ffmpeg, sox, ripgrep
 
-**Local memory**: QMD, pulled in only when `memory.backend = "qmd"` is set
+**Local memory**: builtin engine; optional local embeddings through the `llama-cpp` runtime plugin
 
 **Default first-party tools** come from `nix-openclaw-tools`: gogcli (`gog`), goplaces, summarize, camsnap, sonoscli.
 

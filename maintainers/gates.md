@@ -12,11 +12,11 @@ Use targeted checks while debugging, then run the full relevant gate before hand
 - Linux supported surface:
   `checks.x86_64-linux.package-artifacts`, `module-render` including
   `source-override-render`, `runtime-smoke`, `platform-activation`,
-  `runtime-plugin-packages`, `runtime-plugin-host`, and `qmd-opt-in`
+  `runtime-plugin-packages`, and `runtime-plugin-host`
 - Darwin supported surface when available:
   `checks.aarch64-darwin.package-artifacts`, `module-render` including
   `source-override-render`, `runtime-smoke`, `platform-activation`,
-  `runtime-plugin-packages`, `runtime-plugin-host`, and `qmd-opt-in`
+  `runtime-plugin-packages`, and `runtime-plugin-host`
 - `scripts/hm-activation-macos.sh` when a macOS runner is available
 
 ## CI Verification

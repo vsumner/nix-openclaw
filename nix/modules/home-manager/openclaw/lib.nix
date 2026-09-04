@@ -22,7 +22,6 @@ let
     else
       cfg.package;
   appPackage = if cfg.appPackage != null then cfg.appPackage else defaultPackage;
-  qmdPackage = pkgs.openclawPackages.qmd or null;
   generatedConfigOptions = import ../../../generated/openclaw-config-options.nix { lib = lib; };
   pluginCatalog = import ./plugin-catalog.nix;
 
@@ -68,7 +67,6 @@ in
     toolSets
     defaultPackage
     appPackage
-    qmdPackage
     generatedConfigOptions
     bundledPluginSources
     bundledPlugins

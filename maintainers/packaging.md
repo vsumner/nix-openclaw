@@ -34,16 +34,16 @@ This repo ships a working Nix package for OpenClaw users, not just a pin mirror.
 - The gateway package must include Control UI assets.
 - No inline scripts or inline file contents in Nix code. Use repo scripts and explicit file paths.
 - Keep runtime tools internal to the `openclaw` wrapper unless they are intentionally part of the public package surface.
-- QMD is the Nix-supported local memory backend. Keep `qmd` internal to the OpenClaw runtime PATH, and pull it into the closure only when users opt in with upstream config.
+- OpenClaw 2026.9.1 and newer use the builtin memory engine. Do not inject QMD into the gateway runtime or restore the retired `memory.backend` configuration.
+- Keep the standalone `qmd` package output available for explicit downstream retrieval workflows until that compatibility surface is retired separately.
 - ACPX compatibility files are staged at build time from locked package inputs,
   not installed or repaired by npm at runtime.
 - Keep files under 400 lines unless a maintainer explicitly accepts the larger file.
 
 ## Investigations
 
-### mcporter and QMD
+### External QMD workflows
 
-- `mcporter` is an OpenClaw-owned optional MCP/CLI bridge, not a QMD requirement.
-- OpenClaw defaults to direct `qmd` CLI execution. Keep that as the Nix-supported baseline until measured startup or per-query overhead proves otherwise.
-- Package `mcporter` in `nix-openclaw-tools` as an optional tool when needed, but do not add it to the default `openclaw` runtime PATH just because QMD is bundled.
-- If `memory.qmd.mcporter.enabled = true`, nix-openclaw should make `mcporter` visible to that instance and require the matching mcporter server config for `qmd mcp`.
+- QMD is not an OpenClaw memory backend after 2026.9.1.
+- Downstream tools may consume `openclawPackages.qmd` explicitly, but it is not added to the gateway runtime unless a user includes it in `runtimePackages`.
+- OpenClaw local embeddings use the official `llama-cpp` runtime plugin and `memory.search.provider = "local"`.

@@ -42,8 +42,8 @@ GitHub Actions now has three jobs:
 | Job | Proves | Notes |
 | --- | --- | --- |
 | `flake-input-provenance` | `flake.lock` owner policy | Runs before any package build; no Nix build graph. |
-| `linux-supported-surface` | Linux package, module, runtime, activation, plugin, and QMD surface | One Nix invocation to avoid repeated setup/substitution work. |
-| `macos-supported-surface` | Darwin package, module, runtime, activation, plugin, and QMD surface | Builds the activation package, then applies it through `scripts/hm-activation-macos.sh`. |
+| `linux-supported-surface` | Linux package, module, runtime, activation, and plugin surface | One Nix invocation to avoid repeated setup/substitution work. |
+| `macos-supported-surface` | Darwin package, module, runtime, activation, and plugin surface | Builds the activation package, then applies it through `scripts/hm-activation-macos.sh`. |
 
 Supported-surface attrs:
 
@@ -53,7 +53,6 @@ Supported-surface attrs:
 - `platform-activation`
 - `runtime-plugin-packages`
 - `runtime-plugin-host`
-- `qmd-opt-in`
 
 Deleted surface:
 
@@ -104,8 +103,7 @@ maintainers/scripts/ci-nix-build.sh local-macos-supported-surface-current \
   .#checks.aarch64-darwin.runtime-smoke \
   .#checks.aarch64-darwin.platform-activation \
   .#checks.aarch64-darwin.runtime-plugin-packages \
-  .#checks.aarch64-darwin.runtime-plugin-host \
-  .#checks.aarch64-darwin.qmd-opt-in
+  .#checks.aarch64-darwin.runtime-plugin-host
 
 nix build --accept-flake-config --dry-run --no-link \
   .#checks.x86_64-linux.package-artifacts \
@@ -113,6 +111,5 @@ nix build --accept-flake-config --dry-run --no-link \
   .#checks.x86_64-linux.runtime-smoke \
   .#checks.x86_64-linux.platform-activation \
   .#checks.x86_64-linux.runtime-plugin-packages \
-  .#checks.x86_64-linux.runtime-plugin-host \
-  .#checks.x86_64-linux.qmd-opt-in
+  .#checks.x86_64-linux.runtime-plugin-host
 ```

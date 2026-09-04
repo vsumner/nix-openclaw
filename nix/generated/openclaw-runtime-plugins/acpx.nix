@@ -8,31 +8,28 @@
   catalogFile = "official-external-plugin-catalog.json";
   catalogEntryName = "@openclaw/acpx";
   catalogDefaultChoice = "npm";
-  selectedSource = "npm";
+  selectedSource = "workspace";
   npmSpec = "@openclaw/acpx";
   minHostVersion = ">=2026.4.25";
   expectedIntegrity = "";
   packageName = "@openclaw/acpx";
-  version = "2026.7.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/acpx/-/acpx-2026.7.1.tgz";
-  npmIntegrity = "sha512-aAR3XixxhKTEMwfK4EKupbA45gEQJKAEh7BFSeU2ohEoSmUoPS2ynk35xsY2YcDNJjQQZ2MYVQYL5wC3G6oihg==";
-  npmShasum = "a0112d416c6ebe3dac721ceb338674a74c05dde5";
-  nixHash = "sha256-UcTv/0oQDyHwPqEQlNSvNFZ79a6feGc1uLFGF18sUqk=";
-  dependencyMode = "shrinkwrap";
-  npmDepsHash = "sha256-XzA7A091BT8VFqZkiJzOUYYMbqHLn1NyEJpqn77Dbr0=";
+  version = "2026.9.1";
+  workspacePath = "extensions/acpx";
+  dependencyMode = "workspace";
   manifestId = "acpx";
-  openclawCompat = ">=2026.7.1";
-  peerOpenClaw = ">=2026.7.1";
+  openclawCompat = ">=2026.9.1";
+  peerOpenClaw = "";
   runtimeExtensions = [
-    "./dist/index.js"
+    "./index.js"
   ];
   runtimeSetupEntry = null;
   channels = [ ];
   contracts = { };
   dependencies = {
-    "@agentclientprotocol/claude-agent-acp" = "0.55.0";
-    "@zed-industries/codex-acp" = "0.16.0";
-    acpx = "0.11.2";
+    "@agentclientprotocol/claude-agent-acp" = "0.70.0";
+    "@agentclientprotocol/codex-acp" = "1.6.2";
+    acpx = "0.13.1";
+    smol-toml = "1.8.0";
     zod = "4.4.3";
   };
   optionalDependencies = { };

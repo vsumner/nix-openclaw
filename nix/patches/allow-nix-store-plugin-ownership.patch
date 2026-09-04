@@ -1,29 +1,28 @@
 diff --git a/src/plugins/discovery.ts b/src/plugins/discovery.ts
-index 1437836a44..7622c7b66e 100644
+index 00ecf0e..5e34e67 100644
 --- a/src/plugins/discovery.ts
 +++ b/src/plugins/discovery.ts
-@@ -15,7 +15,10 @@ import {
-   resolvePackagedBundledLoadPathAlias,
- } from "./bundled-load-path-aliases.js";
- import { listBundledSourceOverlayDirs } from "./bundled-source-overlays.js";
+@@ -25,7 +25,10 @@ import {
+   resolvePluginCandidateInstallOwner,
+ } from "./candidate-install-owner.js";
+ import type { PluginCandidate, PluginDiscoveryResult } from "./discovery.types.js";
 -import { shouldRejectHardlinkedPluginFiles } from "./hardlink-policy.js";
 +import {
 +  isTrustedNixStorePluginRoot,
 +  shouldRejectHardlinkedPluginFiles,
 +} from "./hardlink-policy.js";
+ import { hashStableJson } from "./installed-plugin-index-hash.js";
  import { readLegacyNpmPluginDeclaration } from "./legacy-npm-declaration.js";
  import type { PluginBundleFormat, PluginDiagnostic, PluginFormat } from "./manifest-types.js";
- import {
-@@ -141,6 +144,8 @@ function checkPathStatAndPermissions(params: {
+@@ -135,6 +138,7 @@ function checkPathStatAndPermissions(params: {
    rootDir: string;
    origin: PluginOrigin;
    uid: number | null;
 +  env: NodeJS.ProcessEnv;
-+  realpathCache: Map<string, string>;
  }): CandidateBlockIssue | null {
    if (process.platform === "win32") {
      return null;
-@@ -196,6 +201,7 @@ function checkPathStatAndPermissions(params: {
+@@ -190,6 +194,7 @@ function checkPathStatAndPermissions(params: {
      if (
        params.origin !== "bundled" &&
        params.uid !== null &&
@@ -31,116 +30,49 @@ index 1437836a44..7622c7b66e 100644
        typeof stat.uid === "number" &&
        stat.uid !== params.uid &&
        stat.uid !== 0
-@@ -219,6 +225,7 @@ function findCandidateBlockIssue(params: {
+@@ -212,6 +217,7 @@ function findCandidateBlockIssue(params: {
+   rootDir: string;
    origin: PluginOrigin;
    ownershipUid?: number | null;
-   realpathCache: Map<string, string>;
 +  env: NodeJS.ProcessEnv;
  }): CandidateBlockIssue | null {
    const escaped = checkSourceEscapesRoot({
      source: params.source,
-@@ -233,6 +240,8 @@ function findCandidateBlockIssue(params: {
+@@ -225,5 +231,6 @@ function findCandidateBlockIssue(params: {
      rootDir: params.rootDir,
      origin: params.origin,
      uid: currentUid(params.ownershipUid),
 +    env: params.env,
-+    realpathCache: params.realpathCache,
    });
  }
-
-@@ -257,6 +266,7 @@ function isUnsafePluginCandidate(params: {
+@@ -248,12 +255,14 @@ function isUnsafePluginCandidate(params: {
+   pluginId?: string;
    diagnostics: PluginDiagnostic[];
    ownershipUid?: number | null;
-   realpathCache: Map<string, string>;
 +  env: NodeJS.ProcessEnv;
  }): boolean {
    const issue = findCandidateBlockIssue({
      source: params.source,
-@@ -264,6 +274,7 @@ function isUnsafePluginCandidate(params: {
+     rootDir: params.rootDir,
      origin: params.origin,
      ownershipUid: params.ownershipUid,
-     realpathCache: params.realpathCache,
 +    env: params.env,
    });
    if (!issue) {
      return false;
-@@ -665,6 +676,7 @@ function addCandidate(params: {
-   bundledManifest?: PluginManifest;
-   bundledManifestPath?: string;
-   realpathCache: Map<string, string>;
-+  env: NodeJS.ProcessEnv;
- }) {
-   const resolved = path.resolve(params.source);
-   if (params.seen.has(resolved)) {
-@@ -681,6 +693,7 @@ function addCandidate(params: {
-       diagnostics: params.diagnostics,
-       ownershipUid: params.ownershipUid,
-       realpathCache: params.realpathCache,
-+      env: params.env,
-     })
-   ) {
-     params.seen.add(resolved);
-@@ -769,6 +782,7 @@ function discoverBundleInRoot(params: {
-     bundledManifestId: bundleManifest.manifest.id,
-     bundledManifestPath: bundleManifest.manifestPath,
-     realpathCache: params.realpathCache,
-+    env: params.env,
-   });
-   return "added";
- }
-@@ -849,6 +863,7 @@ function discoverInDirectory(params: {
-         ownershipUid: params.ownershipUid,
-         workspaceDir: params.workspaceDir,
-         realpathCache: params.realpathCache,
-+        env: params.env,
-       });
-       continue;
-     }
-@@ -944,6 +959,7 @@ function discoverInDirectory(params: {
-           manifest,
-           packageDir: fullPath,
-           realpathCache: params.realpathCache,
-+          env: params.env,
-         });
-       }
-       continue;
-@@ -983,6 +999,7 @@ function discoverInDirectory(params: {
-         manifest,
-         packageDir: fullPath,
-         realpathCache: params.realpathCache,
-+        env: params.env,
-       });
-       continue;
-     }
-@@ -1106,6 +1123,7 @@ function discoverFromPath(params: {
-       ownershipUid: params.ownershipUid,
-       workspaceDir: params.workspaceDir,
-       realpathCache: params.realpathCache,
-+      env: params.env,
-     });
-     return;
-   }
-@@ -1189,6 +1207,7 @@ function discoverFromPath(params: {
-           manifest,
-           packageDir: resolved,
-           realpathCache: params.realpathCache,
-+          env: params.env,
-         });
-       }
-       return;
-@@ -1229,6 +1248,7 @@ function discoverFromPath(params: {
-         manifest,
-         packageDir: resolved,
-         realpathCache: params.realpathCache,
-+        env: params.env,
-       });
-       return;
-     }
+@@ -782,6 +791,7 @@ function createPluginScanner(env: NodeJS.ProcessEnv, ownershipUid?: number | nul
+         pluginId: params.idHint,
+         diagnostics,
+         ownershipUid,
++        env,
+       })
+     ) {
+       attemptedSources.set(resolved, undefined);
 diff --git a/src/plugins/hardlink-policy.ts b/src/plugins/hardlink-policy.ts
-index c1f7b72561..96bc8579a6 100644
+index 8938d76..e3c3e78 100644
 --- a/src/plugins/hardlink-policy.ts
 +++ b/src/plugins/hardlink-policy.ts
-@@ -22,6 +22,14 @@ export function isNixStorePluginRoot(
+@@ -21,18 +21,25 @@ function isNixStorePluginRoot(rootDir: string): boolean {
    return rootRealPath === NIX_STORE_ROOT || rootRealPath.startsWith(`${NIX_STORE_ROOT}/`);
  }
 -
@@ -148,20 +80,113 @@ index c1f7b72561..96bc8579a6 100644
 +export function isTrustedNixStorePluginRoot(params: {
 +  rootDir: string;
 +  env?: NodeJS.ProcessEnv;
-+  realpathCache?: Map<string, string>;
 +}): boolean {
-+  return resolveIsNixMode(params.env) && isNixStorePluginRoot(params.rootDir, params.realpathCache);
++  return resolveIsNixMode(params.env) && isNixStorePluginRoot(params.rootDir);
 +}
 +
+ /** Decides whether plugin file hardlinks should fail boundary validation for one root. */
  export function shouldRejectHardlinkedPluginFiles(params: {
    origin: PluginOrigin;
    rootDir: string;
-@@ -31,7 +39,7 @@ export function shouldRejectHardlinkedPluginFiles(params: {
+   env?: NodeJS.ProcessEnv;
+   realpathCache?: Map<string, string>;
+ }): boolean {
    if (params.origin === "bundled") {
      return false;
    }
--  if (resolveIsNixMode(params.env) && isNixStorePluginRoot(params.rootDir, params.realpathCache)) {
+-  if (resolveIsNixMode(params.env) && isNixStorePluginRoot(params.rootDir)) {
 +  if (isTrustedNixStorePluginRoot(params)) {
      return false;
    }
    return true;
+ }
+diff --git a/src/plugins/manifest-registry.ts b/src/plugins/manifest-registry.ts
+index 43c4e8c..476b591 100644
+--- a/src/plugins/manifest-registry.ts
++++ b/src/plugins/manifest-registry.ts
+@@ -20,6 +20,9 @@ import {
+   type PluginDiscoveryResult,
+ } from "./discovery.js";
+-import { shouldRejectHardlinkedPluginFiles } from "./hardlink-policy.js";
++import {
++  isTrustedNixStorePluginRoot,
++  shouldRejectHardlinkedPluginFiles,
++} from "./hardlink-policy.js";
+ import { loadInstalledPluginIndexInstallRecordsSync } from "./installed-plugin-index-record-reader.js";
+ import { recordPluginManifestInstallOwner } from "./manifest-install-owner.js";
+ import type {
+@@ -49,6 +52,7 @@ import { isTrustedOfficialPluginInstallRecord } from "./official-external-install-records.js";
+ import {
+   getOfficialExternalPluginCatalogEntryForPackage,
+   getOfficialExternalPluginCatalogManifest,
++  resolveOfficialExternalPluginId,
+ } from "./official-external-plugin-catalog.js";
+ import { satisfiesPluginApiRange, resolvePackagePluginApiRange } from "./package-compat.js";
+ import { isPathInside } from "./path-safety.js";
+@@ -727,3 +730,29 @@ function npmSpecMatchesPackage(value: string | undefined, packageName: string):
++function isTrustedOfficialNixStorePluginInstall(params: {
++  pluginId: string;
++  candidate: PluginCandidate;
++  env: NodeJS.ProcessEnv;
++}): boolean {
++  if (params.candidate.origin !== "config" || params.env.OPENCLAW_NIX_MODE !== "1") {
++    return false;
++  }
++  const packageName = params.candidate.packageName?.trim();
++  if (!packageName) {
++    return false;
++  }
++  const catalogEntry = getOfficialExternalPluginCatalogEntryForPackage(packageName);
++  if (!catalogEntry || resolveOfficialExternalPluginId(catalogEntry) !== params.pluginId) {
++    return false;
++  }
++  const rootDir = params.candidate.rootDir?.trim();
++  if (!rootDir) {
++    return false;
++  }
++  return isTrustedNixStorePluginRoot({
++    rootDir,
++    env: params.env,
++  });
++}
++
+ function isTrustedOfficialPluginInstall(params: {
+   pluginId: string;
+   candidate: PluginCandidate;
+@@ -731,6 +763,9 @@ function isTrustedOfficialPluginInstall(params: {
+   env: NodeJS.ProcessEnv;
+   installRecords: Record<string, PluginInstallRecord>;
+ }): boolean {
++  if (isTrustedOfficialNixStorePluginInstall(params)) {
++    return true;
++  }
+   const installOwner = resolveCandidateInstallOwner(params);
+   if (
+     !installOwner ||
+diff --git a/src/plugins/registry-registrars-operations.ts b/src/plugins/registry-registrars-operations.ts
+index 28a5ad1..5b52f3e 100644
+--- a/src/plugins/registry-registrars-operations.ts
++++ b/src/plugins/registry-registrars-operations.ts
+@@ -38,7 +38,10 @@ import type {
+ function isOfficialCodexPluginRecord(
+-  record: Pick<PluginRecord, "id" | "origin" | "packageName" | "rootDir" | "source">,
++  record: Pick<
++    PluginRecord,
++    "id" | "origin" | "packageName" | "rootDir" | "source" | "trustedOfficialInstall"
++  >,
+ ) {
+-  if (record.id !== "codex" || record.origin !== "global") {
++  if (record.id !== "codex" || (record.origin !== "global" && record.trustedOfficialInstall !== true)) {
+     return false;
+   }
+   if (record.packageName === "@openclaw/codex") {
+@@ -54,5 +57,8 @@ function isOfficialCodexPluginRecord(
+ export function canClaimReservedCommandOwnership(
+-  record: Pick<PluginRecord, "id" | "origin" | "packageName" | "rootDir" | "source">,
++  record: Pick<
++    PluginRecord,
++    "id" | "origin" | "packageName" | "rootDir" | "source" | "trustedOfficialInstall"
++  >,
+ ) {
+   return record.origin === "bundled" || isOfficialCodexPluginRecord(record);
+ }

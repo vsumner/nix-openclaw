@@ -3,7 +3,7 @@
   stdenv,
   fetchFromGitHub,
   fetchurl,
-  nodejs_22,
+  nodejs_24,
   pnpm_10,
   pnpm_11,
   pnpm_12,
@@ -16,6 +16,7 @@
   makeWrapper,
   vips,
   git,
+  sqlite,
   zstd,
   sourceInfo,
   gatewaySrc ? null,
@@ -33,7 +34,7 @@ let
           stdenv
           fetchFromGitHub
           fetchurl
-          nodejs_22
+          nodejs_24
           pnpm_10
           pnpm_11
           pnpm_12
@@ -43,6 +44,7 @@ let
           python3
           node-gyp
           git
+          sqlite
           zstd
           ;
       }
@@ -52,6 +54,7 @@ let
         pnpmDepsHash = pnpmDepsHash;
         pnpmDepsPname = "openclaw-gateway";
         gatewaySrc = gatewaySrc;
+        packageVersion = if gatewaySrc == null then sourceInfo.releaseVersion else null;
         enableSharp = true;
         extraNativeBuildInputs = [
           perl
@@ -59,7 +62,7 @@ let
         ];
         extraBuildInputs = [ vips ];
         extraEnv = {
-          NODE_BIN = "${nodejs_22}/bin/node";
+          NODE_BIN = "${nodejs_24}/bin/node";
           PATCH_CLIPBOARD_SH = "${../scripts/patch-clipboard.sh}";
           PATCH_CLIPBOARD_WRAPPER = "${../scripts/clipboard-wrapper.cjs}";
         };

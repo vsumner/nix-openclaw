@@ -9,6 +9,10 @@ if [ -n "${PATCH_BUNDLED_RUNTIME_DEPS_SCRIPT:-}" ] && [ -f scripts/stage-bundled
   chmod u+w scripts/stage-bundled-plugin-runtime-deps.mjs
 fi
 
+if [ -n "${PATCH_BACKUP_MANAGED_LINKS:-}" ]; then
+  patch -p1 < "$PATCH_BACKUP_MANAGED_LINKS"
+fi
+
 if [ -n "${PATCH_PUBLIC_SURFACE_HARDLINKS:-}" ]; then
   patch -p1 < "$PATCH_PUBLIC_SURFACE_HARDLINKS"
 fi
@@ -19,6 +23,14 @@ fi
 
 if [ -n "${PATCH_NIX_STORE_PLUGIN_OWNERSHIP:-}" ]; then
   patch -p1 < "$PATCH_NIX_STORE_PLUGIN_OWNERSHIP"
+fi
+
+if [ -n "${PATCH_BEFORE_MESSAGE_WRITE_RUN_ID:-}" ]; then
+  patch -p1 < "$PATCH_BEFORE_MESSAGE_WRITE_RUN_ID"
+fi
+
+if [ -n "${PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT:-}" ]; then
+  patch -p1 < "$PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT"
 fi
 
 if [ -f src/logging/logger.ts ]; then

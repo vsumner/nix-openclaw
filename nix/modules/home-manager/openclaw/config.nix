@@ -526,7 +526,10 @@ in
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         ${lib.concatStringsSep "\n" (
           map (
-            package: "run --quiet ${lib.getExe' pkgs.coreutils "test"} -f ${package}/openclaw.plugin.json"
+            package:
+            "run --quiet ${lib.getExe' pkgs.coreutils "test"} -f ${
+              package.openclawRuntimePlugin.loadPath or package
+            }/openclaw.plugin.json"
           ) runtimePluginPackagesAll
         )}
       ''

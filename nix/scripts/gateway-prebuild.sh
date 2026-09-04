@@ -35,7 +35,8 @@ fi
 printf "%s" "$store_path" > "$store_path_file"
 
 verified_lockfile_cache="$PNPM_DEPS/pnpm-lockfile-verified.jsonl"
-if [ -f "$verified_lockfile_cache" ]; then
+verified_metadata_cache="$PNPM_DEPS/pnpm-metadata/registry.npmjs.org"
+if [ -f "$verified_lockfile_cache" ] || [ -d "$verified_metadata_cache" ]; then
   if [ -n "${out:-}" ]; then
     pnpm_cache_dir="$PWD/.pnpm-cache"
     rm -rf "$pnpm_cache_dir"
@@ -43,7 +44,13 @@ if [ -f "$verified_lockfile_cache" ]; then
   else
     pnpm_cache_dir="$(mktemp -d)"
   fi
-  cp "$verified_lockfile_cache" "$pnpm_cache_dir/lockfile-verified.jsonl"
+  if [ -f "$verified_lockfile_cache" ]; then
+    cp "$verified_lockfile_cache" "$pnpm_cache_dir/lockfile-verified.jsonl"
+  fi
+  if [ -d "$verified_metadata_cache" ]; then
+    mkdir -p "$pnpm_cache_dir/v11/metadata-full/registry.npmjs.org"
+    cp -R "$verified_metadata_cache/." "$pnpm_cache_dir/v11/metadata-full/registry.npmjs.org/"
+  fi
   export PNPM_CONFIG_CACHE_DIR="$pnpm_cache_dir"
 fi
 
@@ -63,6 +70,16 @@ else
 fi
 
 log_step "chmod pnpm store writable" chmod -R +w "$store_path"
+
+# fetchPnpmDeps v4 replaces pnpm's SQLite package index with a deterministic
+# SQL dump. Restore it before asking pnpm to replay the store offline, matching
+# nixpkgs' pnpmConfigHook.
+if [ -f "$store_path/v11/index.db.sql" ]; then
+  log_step "restore pnpm store index" sh -c '
+    sqlite3 "$1/v11/index.db" < "$1/v11/index.db.sql"
+    rm "$1/v11/index.db.sql"
+  ' sh "$store_path"
+fi
 
 # pnpm --ignore-scripts marks tarball deps as "not built" and offline install
 # later refuses to use them; if a dep doesn't require build, promote it.

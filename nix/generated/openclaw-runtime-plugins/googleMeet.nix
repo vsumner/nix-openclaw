@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.4.20";
   expectedIntegrity = "";
   packageName = "@openclaw/google-meet";
-  version = "2026.7.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/google-meet/-/google-meet-2026.7.1.tgz";
-  npmIntegrity = "sha512-jaHMk7s+plpZf3XRe/b3BuSnK9/ZVc/vToMioRZoIB8wFyruLzA3JH9cnfPBZglwjkZGwaT16f2HHELIZdI0hQ==";
-  npmShasum = "e119cad186b350ed6c36e0e16a5b3f1619ab9d76";
-  nixHash = "sha256-78ZnHmnSi3jO9aDd4Qw9+KiuHMXgkyFzmDwR42RMGc8=";
+  version = "2026.9.1";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/google-meet/-/google-meet-2026.9.1.tgz";
+  npmIntegrity = "sha512-EW6rrV1Kv8aCh4Cw4c8z0bxKWINl6BGz9Kw6npm7nWz0ZuRKMVcYqm17nCNDaR0ciN7FTWTsNsgcnXfDr1bzmA==";
+  npmShasum = "ec20b1bde69bcd96e76fde023c9e5b06fe898933";
+  nixHash = "sha256-h6XLEgkD5LnSGk7/WP7ntdELvIklCr2V2vSKDYIgrH0=";
   dependencyMode = "bundled";
   manifestId = "google-meet";
-  openclawCompat = ">=2026.7.1";
-  peerOpenClaw = ">=2026.7.1";
+  openclawCompat = ">=2026.9.1";
+  peerOpenClaw = ">=2026.9.1";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -31,18 +31,33 @@
     tools = [
       "google_meet"
     ];
+    transcriptSourceProviders = [
+      "google-meet"
+    ];
   };
   dependencies = {
-    commander = "15.0.0";
-    typebox = "1.3.3";
+    jszip = "3.10.1";
+    typebox = "1.3.17";
   };
   optionalDependencies = { };
   bundleDependencies = [
-    "commander"
+    "jszip"
     "typebox"
   ];
   bundledPackageRoots = [
-    "node_modules/commander"
+    "node_modules/jszip"
+    "node_modules/jszip/node_modules/core-util-is"
+    "node_modules/jszip/node_modules/immediate"
+    "node_modules/jszip/node_modules/inherits"
+    "node_modules/jszip/node_modules/isarray"
+    "node_modules/jszip/node_modules/lie"
+    "node_modules/jszip/node_modules/pako"
+    "node_modules/jszip/node_modules/process-nextick-args"
+    "node_modules/jszip/node_modules/readable-stream"
+    "node_modules/jszip/node_modules/safe-buffer"
+    "node_modules/jszip/node_modules/setimmediate"
+    "node_modules/jszip/node_modules/string_decoder"
+    "node_modules/jszip/node_modules/util-deprecate"
     "node_modules/typebox"
   ];
 }

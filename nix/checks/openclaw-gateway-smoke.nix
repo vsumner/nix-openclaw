@@ -2,9 +2,10 @@
   lib,
   pkgs,
   stdenv,
-  nodejs_22,
+  nodejs_24,
   openclawGateway,
   includeRuntimePluginSmoke ? false,
+  runtimePluginSmokeId ? "diagnostics-prometheus",
 }:
 
 stdenv.mkDerivation {
@@ -19,19 +20,21 @@ stdenv.mkDerivation {
   dontConfigure = true;
   dontBuild = true;
 
-  nativeBuildInputs = [ nodejs_22 ];
+  nativeBuildInputs = [ nodejs_24 ];
 
   env = {
     OPENCLAW_GATEWAY = openclawGateway;
   }
   // lib.optionalAttrs includeRuntimePluginSmoke {
-    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ID = "diagnostics-prometheus";
-    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ROOT = "${pkgs.openclawRuntimePlugins.diagnostics-prometheus}";
+    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ID = runtimePluginSmokeId;
+    OPENCLAW_RUNTIME_PLUGIN_SMOKE_ROOT = "${pkgs.openclawRuntimePlugins.${runtimePluginSmokeId}.openclawRuntimePlugin.loadPath
+      or pkgs.openclawRuntimePlugins.${runtimePluginSmokeId}
+    }";
   };
 
   __darwinAllowLocalNetworking = true;
 
   doCheck = true;
-  checkPhase = "${nodejs_22}/bin/node ${../scripts/gateway-smoke.mjs}";
+  checkPhase = "${nodejs_24}/bin/node ${../scripts/gateway-smoke.mjs}";
   installPhase = "${../scripts/empty-install.sh}";
 }

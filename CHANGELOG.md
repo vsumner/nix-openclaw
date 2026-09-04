@@ -8,6 +8,42 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-01
+
+### Changed
+
+- Updated the stable gateway and generated runtime plugin catalog to OpenClaw
+  `2026.8.2`.
+- Updated the source build to pnpm `12.2.1`, while retaining the pnpm 11
+  lifecycle runner needed for deterministic offline rebuilds.
+
+### Fixed
+
+- Preserve pnpm 12 publication-time policy metadata in the fixed-output cache
+  so source builds remain reproducible and do not wait on registry access.
+- Seed Matrix SDK Crypto's platform-native binary from a fixed-output source so
+  its postinstall remains offline on Linux and macOS.
+
+## 2026-08-31
+
+### Changed
+
+- Updated the stable OpenClaw package to release `2026.8.1` (OpenClaw 2), built
+  reproducibly from the pinned upstream source and pnpm lock.
+- Materialized the ACPX and Codex runtime plugins from the same pinned OpenClaw
+  workspace so their code and dependency graphs stay aligned with the gateway.
+- Refreshed the generated runtime plugin catalog for OpenClaw `2026.8.1`.
+
+### Fixed
+
+- Allow immutable Nix store plugin roots through OpenClaw's ownership and
+  hardlink checks, and recognize catalog-matched roots as trusted official
+  installs in Nix mode.
+- Keep explicit development source overrides labeled as unstable while release
+  source builds retain the pinned OpenClaw release version.
+- Build and run the gateway with Node 24 so OpenClaw's SQLite safety floor is
+  preserved when nix-openclaw is consumed from older compatible nixpkgs pins.
+
 ## 2026-08-30
 
 ### Fixed

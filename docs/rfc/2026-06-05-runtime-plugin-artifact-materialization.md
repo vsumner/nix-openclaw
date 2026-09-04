@@ -16,7 +16,9 @@ Nix builder can materialize every packageable runtime plugin artifact shape:
 1. plugin roots with no runtime dependencies;
 2. plugin roots with bundled `node_modules`;
 3. plugin roots with runtime dependencies locked by a materializer-valid
-   `npm-shrinkwrap.json`.
+   `npm-shrinkwrap.json`;
+4. explicitly approved first-party plugin workspaces already built into the
+   pinned gateway output.
 
 For OpenClaw official inventory plugins, the user-facing API remains:
 
@@ -39,6 +41,8 @@ Concrete cases:
 | `openclaw plugins enable workboard` | `programs.openclaw.config.plugins.entries.workboard.enabled = true;` | Already inside the packaged gateway; no generated external root. |
 | `openclaw plugins install @openclaw/brave-plugin` | `programs.openclaw.runtimePlugins = [ "brave" ];` | Fixed npm package root with no runtime dependencies. |
 | `openclaw plugins install @openclaw/slack` | `programs.openclaw.runtimePlugins = [ "slack" ];` | Fixed npm package root with bundled `node_modules`. |
+| `openclaw plugins install @openclaw/acpx` | `programs.openclaw.runtimePlugins = [ "acpx" ];` | ACPX workspace output from the same pinned gateway source and pnpm lock. |
+| `openclaw plugins install @openclaw/codex` | `programs.openclaw.runtimePlugins = [ "codex" ];` | Codex workspace output from the same pinned gateway source and pnpm lock. |
 | `openclaw plugins install npm:@openclaw/memory-lancedb` | `programs.openclaw.runtimePlugins = [ "memory-lancedb" ];` | Fixed npm package root with `npm-shrinkwrap.json` and generated `npmDepsHash`. |
 | `openclaw plugins install clawhub:@openclaw/whatsapp` | `programs.openclaw.runtimePlugins = [ "whatsapp" ];` | ClawHub resolves to a fixed npm-pack tarball, then uses the same shrinkwrap path. |
 | `openclaw plugins install npm:@scope/plugin@1.2.3` | `programs.openclaw.runtimePluginSources = [{ id = "..."; spec = "npm:@scope/plugin@1.2.3"; hash = lib.fakeHash; }];` | Fixed-output npm resolver fetches the exact tarball, then the same builder validates the plugin root. |
@@ -81,10 +85,10 @@ instead of being pre-bundled.
 This RFC is about external inventory/package artifacts. Bundled OpenClaw runtime
 plugins that already ship inside the packaged gateway, including bundled Codex
 or ACPX entries when present in the pinned OpenClaw release, remain a separate
-upstream runtime source. In OpenClaw 2026.6.1 the external Codex and ACPX npm
-package roots are also Nix-packaged through the shrinkwrap materializer. If a
-future external package row is skipped, that does not imply that a separately
-bundled gateway entry disappeared.
+upstream runtime source. In OpenClaw 2026.8.1 the Codex and ACPX runtime roots
+are built directly from their pinned gateway workspaces. If a future external
+package row is skipped, that does not imply that a separately bundled gateway
+entry disappeared.
 
 ## Upstream Contract
 
@@ -103,6 +107,23 @@ ClawHub is a resolver and distribution surface, not a separate dependency
 graph. Modern ClawHub plugin artifacts are npm-pack `.tgz` files. Once a
 ClawHub spec resolves to an npm-pack artifact, nix-openclaw can treat the
 downloaded payload like any other OpenClaw plugin package tarball.
+
+## Gateway Workspace Resolution
+
+An official runtime plugin may use the gateway workspace only when the pinned
+OpenClaw source contains that plugin and the gateway build emits its complete
+runtime root under `dist-runtime/extensions/<id>`. The generated lock records
+`selectedSource = "workspace"`, the source-relative workspace path, package
+identity, compatibility, and runtime entries. The gateway source hash and
+`pnpm-lock.yaml` then own both plugin code and dependency identity; there is no
+second npm tarball or shrinkwrap pin.
+
+Workspace-backed plugins are an explicit maintainer allowlist, not an automatic
+fallback for broken registry artifacts. Their thin Nix package must fail closed
+unless the gateway output's manifest id, package name, exact version, and every
+runtime entry match the generated lock. Other external catalog rows continue to
+use their selected npm or ClawHub artifact and remain explicitly skipped when
+that artifact cannot be materialized offline.
 
 ## Packageability Rule
 
@@ -124,7 +145,9 @@ true:
    - already bundled in `node_modules` and matching the lock's expected package
      roots;
    - declared in `package.json` and locked by a complete `npm-shrinkwrap.json`
-     that the selected Nix materializer can install offline.
+     that the selected Nix materializer can install offline;
+   - provided by the same pinned gateway workspace dependency graph for an
+     explicitly approved workspace-backed plugin.
 5. The built output contains no invalid symlinks and links any
    `node_modules/openclaw` peer to the packaged OpenClaw host.
 

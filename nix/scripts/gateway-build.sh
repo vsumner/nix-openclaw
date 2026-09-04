@@ -47,6 +47,33 @@ log_step "pnpm install (offline, frozen, ignore-scripts)" env CI=true pnpm insta
 
 log_step "chmod node_modules writable" chmod -R u+w node_modules
 
+# pnpm 12's links store can reconstruct platform-native payloads without their
+# executable bit. Restore the known package-owned modes before lifecycle and
+# artifact checks execute them.
+log_step "restore pnpm executable modes" "$RESTORE_PNPM_EXECUTABLES_SH" node_modules/.pnpm
+
+# @matrix-org/matrix-sdk-crypto-nodejs downloads its native library in
+# postinstall. Seed the fixed-output artifact so its installer remains offline.
+seed_matrix_sdk_crypto() {
+  matrix_sdk_crypto_dir="$(find node_modules/.pnpm \
+    -path '*/node_modules/@matrix-org/matrix-sdk-crypto-nodejs' -type d -print | head -n 1)"
+  if [ -z "$matrix_sdk_crypto_dir" ]; then
+    return
+  fi
+
+  matrix_sdk_crypto_actual_version="$(jq -r '.version' "$matrix_sdk_crypto_dir/package.json")"
+  if [ "$matrix_sdk_crypto_actual_version" != "$MATRIX_SDK_CRYPTO_VERSION" ]; then
+    echo "Matrix SDK crypto version changed: expected $MATRIX_SDK_CRYPTO_VERSION, found $matrix_sdk_crypto_actual_version" >&2
+    exit 1
+  fi
+  install -m 0444 "$MATRIX_SDK_CRYPTO_BINARY" \
+    "$matrix_sdk_crypto_dir/$MATRIX_SDK_CRYPTO_BINARY_NAME"
+  printf '%s' "$MATRIX_SDK_CRYPTO_VERSION" \
+    > "$matrix_sdk_crypto_dir/$MATRIX_SDK_CRYPTO_BINARY_NAME.version"
+}
+
+seed_matrix_sdk_crypto
+
 # sharp may leave build artifacts around; remove to keep output smaller + avoid stale builds.
 rm -rf node_modules/.pnpm/sharp@*/node_modules/sharp/src/build
 
@@ -54,6 +81,7 @@ rm -rf node_modules/.pnpm/sharp@*/node_modules/sharp/src/build
 # node-llama-cpp postinstall attempts to download/compile llama.cpp (network blocked in Nix).
 # Also defensively disable other common downloaders.
 rebuild_list="$(jq -r '.pnpm.onlyBuiltDependencies // [] | .[]' package.json 2>/dev/null || true)"
+pnpm_rebuild="${PNPM_REBUILD:-pnpm}"
 if [ -z "$rebuild_list" ]; then
   allow_builds_json="$(pnpm config get --json allowBuilds 2>/dev/null || true)"
   if [ -n "$allow_builds_json" ] && [ "$allow_builds_json" != "null" ]; then
@@ -66,14 +94,14 @@ if [ -n "$rebuild_list" ]; then
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
     PUPPETEER_SKIP_DOWNLOAD=1 \
     ELECTRON_SKIP_BINARY_DOWNLOAD=1 \
-    pnpm rebuild $rebuild_list
+    "$pnpm_rebuild" rebuild $rebuild_list
 else
   log_step "pnpm rebuild (all)" env \
     NODE_LLAMA_CPP_SKIP_DOWNLOAD=1 \
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 \
     PUPPETEER_SKIP_DOWNLOAD=1 \
     ELECTRON_SKIP_BINARY_DOWNLOAD=1 \
-    pnpm rebuild
+    "$pnpm_rebuild" rebuild
 fi
 
 log_step "patchShebangs node_modules/.bin" bash -e -c ". \"$STDENV_SETUP\"; patchShebangs node_modules/.bin"
@@ -116,27 +144,32 @@ if [ -d "node_modules/.pnpm/node_modules/.bin" ]; then
   export PATH="$PWD/node_modules/.pnpm/node_modules/.bin:$PATH"
 fi
 
-# Break down `pnpm build` (upstream package.json) so we can profile it while
-# still using upstream's asset hooks. v2026.5.7 has the older canvas-only helper;
-# newer OpenClaw has the generic bundled-plugin asset runner.
-if [ -f "scripts/bundled-plugin-assets.mjs" ]; then
-  log_step "build: plugins:assets:build" node scripts/bundled-plugin-assets.mjs --phase build
-else
-  log_step "build: canvas:a2ui:bundle" node scripts/bundle-a2ui.mjs
-fi
 tsdown_max_old_space_mb="${OPENCLAW_NIX_TSDOWN_MAX_OLD_SPACE_MB:-}"
 if [ -z "$tsdown_max_old_space_mb" ]; then
   case "$(uname -s)" in
-    Darwin) tsdown_max_old_space_mb=512 ;;
+    Darwin) tsdown_max_old_space_mb=6144 ;;
     *) tsdown_max_old_space_mb=8192 ;;
   esac
 fi
 
-tsdown_node_options="${NODE_OPTIONS:-}"
-case "$tsdown_node_options" in
-  *--max-old-space-size*) ;;
-  *) tsdown_node_options="${tsdown_node_options:+$tsdown_node_options }--max-old-space-size=$tsdown_max_old_space_mb" ;;
-esac
+# OpenClaw 2 owns its multi-package build graph in build-all.mts. Use that
+# upstream package profile as one unit so new build stages cannot silently fall
+# out of Nix packaging. Older releases retain the profiled legacy sequence.
+if [ -f "scripts/build-all.mts" ]; then
+  log_step "build: package" env \
+    OPENCLAW_BUILD_ALL_NO_PNPM=1 \
+    OPENCLAW_TSDOWN_MAX_OLD_SPACE_MB="$tsdown_max_old_space_mb" \
+    pnpm build:package
+elif [ -f "scripts/bundled-plugin-assets.mjs" ]; then
+  log_step "build: plugins:assets:build" node scripts/bundled-plugin-assets.mjs --phase build
+else
+  log_step "build: canvas:a2ui:bundle" node scripts/bundle-a2ui.mjs
+
+  tsdown_node_options="${NODE_OPTIONS:-}"
+  case "$tsdown_node_options" in
+    *--max-old-space-size*) ;;
+    *) tsdown_node_options="${tsdown_node_options:+$tsdown_node_options }--max-old-space-size=$tsdown_max_old_space_mb" ;;
+  esac
 
 tsc_max_old_space_mb="${OPENCLAW_NIX_TSC_MAX_OLD_SPACE_MB:-4096}"
 tsc_node_options="${NODE_OPTIONS:-}"
@@ -198,14 +231,19 @@ case "$vite_cli" in
   /*) vite_cli_abs="$vite_cli" ;;
   *) vite_cli_abs="$PWD/$vite_cli" ;;
 esac
-log_step "ui:build" bash -e -c 'cd ui; node "$1" build' _ "$vite_cli_abs"
+  log_step "ui:build" bash -e -c 'cd ui; node "$1" build' _ "$vite_cli_abs"
+fi
 
-log_step "pnpm prune --prod" env \
+log_step "pnpm prune --prod (ignore-scripts)" env \
   CI=true \
   PNPM_CONFIG_OFFLINE=true \
   PNPM_CONFIG_STORE_DIR="$store_path" \
   NPM_CONFIG_STORE_DIR="$store_path" \
-  pnpm prune --prod
+  pnpm prune --prod --ignore-scripts
+
+# Prune reconstructs the virtual store from the immutable pnpm cache, so seed
+# the fixed-output native library again in the final production tree.
+seed_matrix_sdk_crypto
 
 # Reduce output size (pnpm implementation detail; safe to remove)
 rm -rf node_modules/.pnpm/node_modules
@@ -213,3 +251,7 @@ rm -rf node_modules/.pnpm/node_modules
 # pnpm prune can leave orphaned .bin links behind for removed prod deps.
 # Keep install-phase symlink validation strict by dropping only broken links here.
 find node_modules -xtype l -delete
+
+# pnpm keeps local workspace links resolvable while the source tree is present,
+# including this development-only package. It is not part of the runtime output.
+rm -f node_modules/@openclaw/session-url-contract

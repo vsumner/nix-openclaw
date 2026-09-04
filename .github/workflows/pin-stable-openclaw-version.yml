@@ -156,7 +156,13 @@ jobs:
 
   validate-macos:
     needs: select
-    if: needs.select.outputs.has_update == 'true'
+    # The named downstream fork intentionally validates only its Linux surface.
+    # Upstream continues to prove and publish the supported Darwin package.
+    if: >-
+      ${{
+        github.repository == 'openclaw/nix-openclaw' &&
+        needs.select.outputs.has_update == 'true'
+      }}
     runs-on: macos-14
     timeout-minutes: 60
     outputs:
@@ -258,9 +264,19 @@ jobs:
       - validate-macos
     if: >-
       ${{
+        always() &&
+        contains(fromJSON('["openclaw/nix-openclaw","vsumner/nix-openclaw"]'), github.repository) &&
+        needs.select.result == 'success' &&
         needs.select.outputs.has_update == 'true' &&
+        needs.validate-linux.result == 'success' &&
         needs.validate-linux.outputs.validation_ok == 'true' &&
-        needs.validate-macos.outputs.validation_ok == 'true'
+        (
+          github.repository == 'vsumner/nix-openclaw' ||
+          (
+            needs.validate-macos.result == 'success' &&
+            needs.validate-macos.outputs.validation_ok == 'true'
+          )
+        )
       }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -268,15 +284,25 @@ jobs:
     outputs:
       materialization_digest: ${{ steps.verify.outputs.materialization_digest }}
     steps:
-      - name: Verify cross-platform materialization
+      - name: Verify required materialization
         id: verify
         env:
           LINUX_MATERIALIZATION_DIGEST: ${{ needs.validate-linux.outputs.materialization_digest }}
           MACOS_MATERIALIZATION_DIGEST: ${{ needs.validate-macos.outputs.materialization_digest }}
         run: |
           set -euo pipefail
-          if [[ -z "$LINUX_MATERIALIZATION_DIGEST" || -z "$MACOS_MATERIALIZATION_DIGEST" ]]; then
-            echo "Missing validation materialization digest." >&2
+          if [[ -z "$LINUX_MATERIALIZATION_DIGEST" ]]; then
+            echo "Missing Linux validation materialization digest." >&2
+            exit 1
+          fi
+
+          if [[ "$GITHUB_REPOSITORY" == "vsumner/nix-openclaw" ]]; then
+            echo "materialization_digest=$LINUX_MATERIALIZATION_DIGEST" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [[ -z "$MACOS_MATERIALIZATION_DIGEST" ]]; then
+            echo "Missing macOS validation materialization digest." >&2
             exit 1
           fi
           if [[ "$LINUX_MATERIALIZATION_DIGEST" != "$MACOS_MATERIALIZATION_DIGEST" ]]; then
@@ -350,6 +376,13 @@ jobs:
 
           git add "${pin_files[@]}"
 
+          validation_tests="- nix build .#checks.x86_64-linux.package-artifacts .#checks.x86_64-linux.module-render .#checks.x86_64-linux.runtime-smoke .#checks.x86_64-linux.platform-activation .#checks.x86_64-linux.runtime-plugin-packages .#checks.x86_64-linux.runtime-plugin-host .#checks.x86_64-linux.qmd-opt-in --accept-flake-config"
+          if [[ "$GITHUB_REPOSITORY" == "openclaw/nix-openclaw" ]]; then
+            validation_tests="${validation_tests}
+          - nix build --accept-flake-config --option max-jobs 2 .#checks.aarch64-darwin.package-artifacts .#checks.aarch64-darwin.module-render .#checks.aarch64-darwin.runtime-smoke .#checks.aarch64-darwin.platform-activation .#checks.aarch64-darwin.runtime-plugin-packages .#checks.aarch64-darwin.runtime-plugin-host .#checks.aarch64-darwin.qmd-opt-in
+          - scripts/hm-activation-macos.sh"
+          fi
+
           git commit -F - <<EOF
           🤖 codex: mirror OpenClaw stable source ${{ needs.select.outputs.source_tag }}
 
@@ -362,9 +395,7 @@ jobs:
           - keep the npm-shrinkwrapped OpenClaw gateway current without blocking on public macOS app asset lag
 
           Tests:
-          - nix build .#checks.x86_64-linux.package-artifacts .#checks.x86_64-linux.module-render .#checks.x86_64-linux.runtime-smoke .#checks.x86_64-linux.platform-activation .#checks.x86_64-linux.runtime-plugin-packages .#checks.x86_64-linux.runtime-plugin-host .#checks.x86_64-linux.qmd-opt-in --accept-flake-config
-          - nix build --accept-flake-config --option max-jobs 2 .#checks.aarch64-darwin.package-artifacts .#checks.aarch64-darwin.module-render .#checks.aarch64-darwin.runtime-smoke .#checks.aarch64-darwin.platform-activation .#checks.aarch64-darwin.runtime-plugin-packages .#checks.aarch64-darwin.runtime-plugin-host .#checks.aarch64-darwin.qmd-opt-in
-          - scripts/hm-activation-macos.sh
+          ${validation_tests}
           EOF
 
           git fetch origin main

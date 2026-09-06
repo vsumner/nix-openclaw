@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.11";
   expectedIntegrity = "";
   packageName = "@openclaw/meta-provider";
-  version = "2026.9.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/meta-provider/-/meta-provider-2026.9.1.tgz";
-  npmIntegrity = "sha512-TtNzkZw638akqpGEAOZWnlx0ENw/WXuhTX8y1xjkdFAQjxDOm6+cF5svvguPlUgML9WbJ/SXWLvGlrrHUvyCOw==";
-  npmShasum = "266d642cf8839f4f857f3406926fbef613dc594f";
-  nixHash = "sha256-MuAx2XEFWAIxg4HjOg3w4dh6RsrhaDTZp9UsWrcuAlY=";
+  version = "2026.9.2";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/meta-provider/-/meta-provider-2026.9.2.tgz";
+  npmIntegrity = "sha512-Ea1B6shIgeMcvHom3IuQjULCRo49pd8j6qDgyhePmKgxIBxA7WPbfZjEYWzfEfRM6Nsnkeq0HdK8GqOh5JhWnQ==";
+  npmShasum = "e5133806da5ee033eaa64f106dfecb39c8c31a90";
+  nixHash = "sha256-BHGcl69ixs/RUoaKRl2QWMndlh9NC2pevYQ69nCNdRc=";
   dependencyMode = "none";
   manifestId = "meta";
-  openclawCompat = ">=2026.9.1";
-  peerOpenClaw = ">=2026.9.1";
+  openclawCompat = ">=2026.9.2";
+  peerOpenClaw = ">=2026.9.2";
   runtimeExtensions = [
     "./dist/index.js"
   ];

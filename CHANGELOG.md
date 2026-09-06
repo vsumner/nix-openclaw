@@ -8,6 +8,17 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-05
+
+### Changed
+
+- Updated the gateway source, generated configuration schema, and runtime
+  plugin catalog to OpenClaw `2026.9.2`.
+- Adapted immutable Nix-store plugin recognition to upstream's structured
+  plugin trust result, retaining ambiguous-owner rejection.
+- Removed the managed-link backup backport now included in the upstream release.
+- Kept the macOS app on `2026.8.2`; `2026.9.2` has no public app zip.
+
 ## 2026-09-04
 
 ### Changed

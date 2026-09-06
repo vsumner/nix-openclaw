@@ -1,4 +1,4 @@
-# Generated from upstream OpenClaw schema at rev ad6fe23aecb9b833d68139b0ddc9f239b894d2f1. DO NOT EDIT.
+# Generated from upstream OpenClaw schema at rev 3928bad9badfcb6c7d140530435e806fb8092190. DO NOT EDIT.
 # Generator: nix/scripts/generate-config-options.ts
 { lib }:
 let
@@ -3454,6 +3454,10 @@ in
         type = t.nullOr (t.str);
         default = null;
       };
+      communityInvite = lib.mkOption {
+        type = t.nullOr (t.bool);
+        default = null;
+      };
       dangerouslyAllowHostHeaderOriginFallback = lib.mkOption {
         type = t.nullOr (t.bool);
         default = null;
@@ -3477,6 +3481,15 @@ in
         };
         label = lib.mkOption {
           type = t.str;
+        };
+      }; });
+        default = null;
+      };
+      experimental = lib.mkOption {
+        type = t.nullOr (t.submodule { options = {
+        customPlugins = lib.mkOption {
+          type = t.nullOr (t.bool);
+          default = null;
         };
       }; });
         default = null;
@@ -3505,10 +3518,6 @@ in
         default = null;
       };
       sessionObserver = lib.mkOption {
-        type = t.nullOr (t.bool);
-        default = null;
-      };
-      toolTitles = lib.mkOption {
         type = t.nullOr (t.bool);
         default = null;
       };
@@ -4734,10 +4743,6 @@ in
         default = null;
       };
     }; });
-      default = null;
-    };
-    suppressToolErrors = lib.mkOption {
-      type = t.nullOr (t.bool);
       default = null;
     };
     usageTemplate = lib.mkOption {
@@ -8975,6 +8980,10 @@ in
       };
       title = lib.mkOption {
         type = t.nullOr (t.str);
+        default = null;
+      };
+      whenOccupied = lib.mkOption {
+        type = t.nullOr (t.bool);
         default = null;
       };
     }; }));

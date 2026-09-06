@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.7.2";
   expectedIntegrity = "";
   packageName = "@openclaw/comfy-provider";
-  version = "2026.9.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/comfy-provider/-/comfy-provider-2026.9.1.tgz";
-  npmIntegrity = "sha512-7Y4cU0XOSsVP3ItVcoRj6iHHyzrnPVZlSz+nRPd7vXN8zqWpVBGnetadDJtOgI2EPAShfbJ+K4FihZcVN77ikA==";
-  npmShasum = "bf1d0d5a734674c0cc9c1377373488dacddde30e";
-  nixHash = "sha256-YlTJcHhlJTg7UVFmzTFnDJBglJUddeqt8vSDxttewls=";
+  version = "2026.9.2";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/comfy-provider/-/comfy-provider-2026.9.2.tgz";
+  npmIntegrity = "sha512-UqZJBRvyOlpHTlE0Kv2iPdKm+4rkNGmjmBEO6j1uucnXJ4iHlvUpqh0/AiQ/VP14Zf5wYIe8zREnPmEBvt3KLA==";
+  npmShasum = "b7115e4190d4e3111b6e5b629e4900f76b5a9316";
+  nixHash = "sha256-0Jb6VrrlGj+BCLWwy/Ju9Gtkm3IdUhDu9GNZ0rEhAHo=";
   dependencyMode = "none";
   manifestId = "comfy";
-  openclawCompat = ">=2026.9.1";
-  peerOpenClaw = ">=2026.9.1";
+  openclawCompat = ">=2026.9.2";
+  peerOpenClaw = ">=2026.9.2";
   runtimeExtensions = [
     "./dist/index.js"
   ];

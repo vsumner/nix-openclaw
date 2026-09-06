@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.9";
   expectedIntegrity = "";
   packageName = "@openclaw/mattermost";
-  version = "2026.9.1";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/mattermost/-/mattermost-2026.9.1.tgz";
-  npmIntegrity = "sha512-Y018h1e8tyhYeO7Lg8ZxnvTMExxXr+2SpSAaQz2PL4khR3djLgBiTTfETAqJ5nvTATYlqruRbYH8Wl1bif06RA==";
-  npmShasum = "03eb45fec4d5ac6cdc607e64bb1c9da15bc7460d";
-  nixHash = "sha256-esZ9uX6VgQ+wbO7tBSJ/QuYrUN7rb5gQS6LLaCrromc=";
+  version = "2026.9.2";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/mattermost/-/mattermost-2026.9.2.tgz";
+  npmIntegrity = "sha512-dyIV91/r1AkMRq+ImatCa51REzmRXFbpGpJ6RBzXyWn6JTFDuRfJgWzhQT0CsgVacLtIHPzNymsVy4JoYBsqrA==";
+  npmShasum = "a1918c106c954984c61c47a295dedb86514e724d";
+  nixHash = "sha256-A3Yo0UuL0SykObeOKgC53IuaD91VvoD6Da3dYPYTfsA=";
   dependencyMode = "bundled";
   manifestId = "mattermost";
-  openclawCompat = ">=2026.9.1";
-  peerOpenClaw = ">=2026.9.1";
+  openclawCompat = ">=2026.9.2";
+  peerOpenClaw = ">=2026.9.2";
   runtimeExtensions = [
     "./dist/index.js"
   ];

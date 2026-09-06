@@ -101,10 +101,10 @@ index 8938d76..e3c3e78 100644
    return true;
  }
 diff --git a/src/plugins/manifest-registry.ts b/src/plugins/manifest-registry.ts
-index 43c4e8c..476b591 100644
 --- a/src/plugins/manifest-registry.ts
 +++ b/src/plugins/manifest-registry.ts
-@@ -20,6 +20,9 @@ import {
+@@ -25,7 +25,10 @@
+   type PluginCandidate,
    type PluginDiscoveryResult,
  } from "./discovery.js";
 -import { shouldRejectHardlinkedPluginFiles } from "./hardlink-policy.js";
@@ -113,9 +113,9 @@ index 43c4e8c..476b591 100644
 +  shouldRejectHardlinkedPluginFiles,
 +} from "./hardlink-policy.js";
  import { loadInstalledPluginIndexInstallRecordsSync } from "./installed-plugin-index-record-reader.js";
+ import { resolveInstalledPluginIndexStorePath } from "./installed-plugin-index-store-path.js";
  import { recordPluginManifestInstallOwner } from "./manifest-install-owner.js";
- import type {
-@@ -49,6 +52,7 @@ import { isTrustedOfficialPluginInstallRecord } from "./official-external-install-records.js";
+@@ -51,6 +54,7 @@
  import {
    getOfficialExternalPluginCatalogEntryForPackage,
    getOfficialExternalPluginCatalogManifest,
@@ -123,7 +123,7 @@ index 43c4e8c..476b591 100644
  } from "./official-external-plugin-catalog.js";
  import { satisfiesPluginApiRange, resolvePackagePluginApiRange } from "./package-compat.js";
  import { isPathInside } from "./path-safety.js";
-@@ -727,3 +730,29 @@ function npmSpecMatchesPackage(value: string | undefined, packageName: string):
+@@ -769,3 +773,29 @@
 +function isTrustedOfficialNixStorePluginInstall(params: {
 +  pluginId: string;
 +  candidate: PluginCandidate;
@@ -150,19 +150,18 @@ index 43c4e8c..476b591 100644
 +  });
 +}
 +
- function isTrustedOfficialPluginInstall(params: {
+ function resolvePluginTrust(params: {
    pluginId: string;
    candidate: PluginCandidate;
-@@ -731,6 +763,9 @@ function isTrustedOfficialPluginInstall(params: {
-   env: NodeJS.ProcessEnv;
-   installRecords: Record<string, PluginInstallRecord>;
- }): boolean {
-+  if (isTrustedOfficialNixStorePluginInstall(params)) {
-+    return true;
-+  }
-   const installOwner = resolveCandidateInstallOwner(params);
-   if (
-     !installOwner ||
+@@ -781,6 +811,8 @@
+     reason = "bundled";
+   } else if (isPluginCandidateInstallOwnerAmbiguous(params.candidate)) {
+     reason = "owner-ambiguous";
++  } else if (isTrustedOfficialNixStorePluginInstall(params)) {
++    reason = "trusted-official";
+   } else if (
+     origin === "workspace" ||
+     record?.source === "path" ||
 diff --git a/src/plugins/registry-registrars-operations.ts b/src/plugins/registry-registrars-operations.ts
 index 28a5ad1..5b52f3e 100644
 --- a/src/plugins/registry-registrars-operations.ts

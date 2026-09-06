@@ -1,0 +1,83 @@
+diff --git a/src/plugins/manifest-registry.test.ts b/src/plugins/manifest-registry.test.ts
+--- a/src/plugins/manifest-registry.test.ts
++++ b/src/plugins/manifest-registry.test.ts
+@@ -11,0 +12 @@
++import * as pluginManifest from "./manifest.js";
+@@ -1262,0 +1264,77 @@
++
++  it.each([
++    {
++      name: "catalog-matched store root",
++      rootDir: "/nix/store/test-codex-plugin",
++      nixMode: "1",
++      packageName: "@openclaw/codex",
++      ambiguous: false,
++      trusted: true,
++    },
++    {
++      name: "ambiguous owner",
++      rootDir: "/nix/store/test-codex-plugin",
++      nixMode: "1",
++      packageName: "@openclaw/codex",
++      ambiguous: true,
++      trusted: false,
++    },
++    {
++      name: "non-store root",
++      rootDir: "/tmp/test-codex-plugin",
++      nixMode: "1",
++      packageName: "@openclaw/codex",
++      ambiguous: false,
++      trusted: false,
++    },
++    {
++      name: "Nix mode disabled",
++      rootDir: "/nix/store/test-codex-plugin",
++      nixMode: "0",
++      packageName: "@openclaw/codex",
++      ambiguous: false,
++      trusted: false,
++    },
++    {
++      name: "catalog id mismatch",
++      rootDir: "/nix/store/test-codex-plugin",
++      nixMode: "1",
++      packageName: "@openclaw/diffs",
++      ambiguous: false,
++      trusted: false,
++    },
++  ])(
++    "keeps Nix official trust bounded: $name",
++    ({ rootDir, nixMode, packageName, ambiguous, trusted }) => {
++      // Discovery owns filesystem admission. Supply a parsed manifest here to
++      // exercise registry trust without requiring a writable /nix/store fixture.
++      const manifestSpy = vi.spyOn(pluginManifest, "loadPluginManifest").mockReturnValue({
++        ok: true,
++        manifest: { id: "codex", configSchema: { type: "object" } },
++        manifestPath: path.join(rootDir, "openclaw.plugin.json"),
++      });
++      try {
++        const candidate = createPluginCandidate({
++          idHint: "codex",
++          rootDir,
++          packageName,
++          origin: "config",
++        });
++        if (ambiguous) {
++          recordPluginCandidateInstallOwner(candidate, undefined, true);
++        }
++        const registry = loadPluginManifestRegistryCore({
++          env: hermeticEnv({ OPENCLAW_NIX_MODE: nixMode }),
++          installRecords: {},
++          candidates: [candidate],
++        });
++        expect(registry.plugins).toHaveLength(1);
++        expect(registry.plugins[0]?.trustedOfficialInstall).toBe(trusted ? true : undefined);
++        expect(registry.plugins[0]?.trust?.reason).toBe(
++          ambiguous ? "owner-ambiguous" : trusted ? "trusted-official" : "record-missing",
++        );
++      } finally {
++        manifestSpy.mockRestore();
++      }
++    },
++  );

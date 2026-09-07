@@ -1,0 +1,48 @@
+--- a/src/auto-reply/command-auth.ts
++++ b/src/auto-reply/command-auth.ts
+@@ -70,6 +70,7 @@
+ type OwnerAuthorizationState = {
+   commandOwnerCandidates: string[];
+   explicitOwners: string[];
++  ownerAllowlistConfigured: boolean;
+ };
+ 
+ function resolveProviderFromContext(
+@@ -320,6 +321,20 @@
+     (params.allowFromList.length === 0 || hasWildcardAllowFrom(params.allowFromList));
+   const channelCommandOwners = resolveOwnerCandidatesForCommands({ ...params, allowAll });
+   const explicitOwners = Array.from(new Set(stripWildcardAllowFrom(configOwnerAllowFromList)));
++  // A global owner policy remains configured even when this provider has no
++  // matching identity. In particular, webchat must still require admin scope.
++  const ownerAllowlistConfigured = (params.configOwnerAllowFrom ?? []).some((entry) => {
++    const value = String(entry).trim();
++    if (value.endsWith(":*")) {
++      return false;
++    }
++    const separatorIndex = value.indexOf(":");
++    const owner =
++      separatorIndex > 0 && normalizeAnyChannelId(value.slice(0, separatorIndex))
++        ? value.slice(separatorIndex + 1).trim()
++        : value;
++    return owner.length > 0 && !isWildcardAllowFromEntry(owner);
++  });
+   const contextCommandOwners = stripWildcardAllowFrom(contextOwnerAllowFromList);
+   // Channel and context lists can authorize commands within one transport, but only the global
+   // owner list grants owner-only command and action authority.
+@@ -335,6 +350,7 @@
+   return {
+     commandOwnerCandidates,
+     explicitOwners,
++    ownerAllowlistConfigured,
+   };
+ }
+ 
+@@ -534,7 +550,7 @@
+     isInternalMessageChannel(ctx.Provider) &&
+     Array.isArray(ctx.GatewayClientScopes) &&
+     ctx.GatewayClientScopes.includes("operator.admin");
+-  const ownerAllowlistConfigured = ownerState.explicitOwners.length > 0;
++  const ownerAllowlistConfigured = ownerState.ownerAllowlistConfigured;
+   const senderIsOwner = senderIsOwnerByIdentity || senderIsOwnerByScope;
+   const requireOwner = enforceOwner || ownerAllowlistConfigured;
+   const isOwnerForCommands = !requireOwner

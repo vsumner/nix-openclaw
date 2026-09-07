@@ -248,6 +248,7 @@ let
         "";
     PATCH_BEFORE_MESSAGE_WRITE_RUN_ID = "${../patches/forward-before-message-write-run-id.patch}";
     PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT = "${../patches/fix-zai-coding-plan-system-prompt.patch}";
+    PATCH_QUALIFIED_OWNER_POLICY = "${../patches/preserve-qualified-owner-policy.patch}";
     PROMOTE_PNPM_INTEGRITY_SH = "${../scripts/promote-pnpm-integrity.sh}";
     RESTORE_PNPM_EXECUTABLES_SH = "${../scripts/restore-pnpm-executables.sh}";
     REMOVE_PACKAGE_MANAGER_FIELD_SH = "${../scripts/remove-package-manager-field.sh}";

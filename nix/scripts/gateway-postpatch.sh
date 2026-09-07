@@ -33,6 +33,10 @@ if [ -n "${PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT:-}" ]; then
   patch -p1 < "$PATCH_ZAI_CODING_PLAN_SYSTEM_PROMPT"
 fi
 
+if [ -n "${PATCH_QUALIFIED_OWNER_POLICY:-}" ]; then
+  patch -p1 < "$PATCH_QUALIFIED_OWNER_POLICY"
+fi
+
 if [ -f src/logging/logger.ts ]; then
   if ! grep -q "OPENCLAW_LOG_DIR" src/logging/logger.ts; then
     sed -i 's/export const DEFAULT_LOG_DIR = "\/tmp\/openclaw";/export const DEFAULT_LOG_DIR = process.env.OPENCLAW_LOG_DIR ?? "\/tmp\/openclaw";/' src/logging/logger.ts

@@ -8,6 +8,14 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-06
+
+### Fixed
+
+- Preserve the global owner-command restriction when all owner identities are
+  channel-qualified. Browser callers still need admin scope; filtering out
+  other channels' identities no longer removes the configured restriction.
+
 ## 2026-09-05
 
 ### Changed

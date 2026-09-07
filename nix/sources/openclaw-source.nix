@@ -20,6 +20,6 @@
   hash = "sha256-VRY5aJDmctoblL9hPb//Y3H1+1zWoKa0sbApdHu4saY=";
   pnpmDepsHash = {
     aarch64-darwin = "sha256-8KllrIDUmoxRnmn5YNTmAqqxgH1zB//tQsiSTk0u3ss=";
-    x86_64-linux = "sha256-src8YYepkQncSvFGFZ0YBzmyWGcB+YbfURO1OJps0wU=";
+    x86_64-linux = "sha256-L9TdAhOq/vwyYJJudyQIzcBMSjTpzLduuHkyJLKGtYg=";
   };
 }

@@ -317,7 +317,10 @@ jobs:
       - verify-materialization
     if: >-
       ${{
+        !cancelled() &&
         github.ref == 'refs/heads/main' &&
+        needs.select.result == 'success' &&
+        needs.verify-materialization.result == 'success' &&
         needs.select.outputs.has_update == 'true'
       }}
     runs-on: ubuntu-latest

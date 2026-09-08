@@ -43,7 +43,7 @@ if find "${root}/node_modules" -path "*/form-data/package.json" -type f -print |
 fi
 
 public_surface_loader="$(
-  find "${root}/dist" -name "*.js" -type f -exec grep -sl "function loadBundledPluginPublicArtifactModuleSync" {} + | head -1
+  find "${root}/dist" \( -name "*.js" -o -name "*.mjs" \) -type f -exec grep -sl "function loadBundledPluginPublicArtifactModuleSync" {} + | head -1
 )"
 if [ -z "$public_surface_loader" ]; then
   echo "Missing bundled plugin public surface loader" >&2

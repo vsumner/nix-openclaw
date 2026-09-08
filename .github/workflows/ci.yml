@@ -66,7 +66,7 @@ jobs:
         uses: cachix/install-nix-action@v31
 
       - name: Test JavaScript contracts
-        run: nix shell nixpkgs#nodejs_22 --command node --test maintainers/scripts/markdown-table.test.mjs
+        run: nix shell nixpkgs#nodejs_22 --command node --test maintainers/scripts/markdown-table.test.mjs nix/scripts/normalize-pnpm-metadata.test.mjs
 
       - name: Build Linux supported surface
         run: |

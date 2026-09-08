@@ -8,6 +8,14 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-08
+
+### Fixed
+
+- Recognize `.mjs` plugin loaders in package-content checks for OpenClaw 2026.9.3.
+- Stabilize dependency metadata serialization against registry JSON key ordering,
+  while preserving conditional export/import ordering and publication evidence.
+
 ## 2026-09-06
 
 ### Fixed

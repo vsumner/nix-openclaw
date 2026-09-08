@@ -4,6 +4,28 @@ import path from "node:path";
 
 const HEADER = "pacquet-meta-v1";
 
+function compareJsonKeys(left, right) {
+  return left < right ? -1 : left > right ? 1 : 0;
+}
+
+function canonicalizeJson(value, preserveObjectOrder = false) {
+  if (Array.isArray(value)) {
+    return value.map((entry) => canonicalizeJson(entry, preserveObjectOrder));
+  }
+  if (!value || typeof value !== "object") return value;
+
+  const entries = Object.entries(value);
+  if (!preserveObjectOrder) entries.sort(([left], [right]) => compareJsonKeys(left, right));
+  return Object.fromEntries(entries.map(([key, entry]) => [
+    key,
+    canonicalizeJson(entry, preserveObjectOrder || key === "exports" || key === "imports"),
+  ]));
+}
+
+function stringifyCanonicalJson(value) {
+  return JSON.stringify(canonicalizeJson(value));
+}
+
 function parseLockKey(raw) {
   const key = raw.startsWith("/") ? raw.slice(1) : raw;
   const separator = key.lastIndexOf("@");
@@ -34,12 +56,17 @@ export function decodePacquet(buffer) {
 export function normalizePacquet(buffer, wantedVersions) {
   const decoded = decodePacquet(buffer);
   const records = [];
-  let offset = 0;
   for (const [version, sourceOffset, length] of decoded.index.versions ?? []) {
     if (!wantedVersions.has(version)) continue;
-    const content = decoded.versions.subarray(sourceOffset, sourceOffset + length);
-    records.push([version, offset, content.length, content]);
-    offset += content.length;
+    const manifest = JSON.parse(decoded.versions.subarray(sourceOffset, sourceOffset + length).toString());
+    const content = Buffer.from(stringifyCanonicalJson(manifest));
+    records.push([version, 0, content.length, content]);
+  }
+  records.sort(([left], [right]) => compareJsonKeys(left, right));
+  let offset = 0;
+  for (const record of records) {
+    record[1] = offset;
+    offset += record[2];
   }
   if (records.length === 0) return undefined;
 
@@ -49,8 +76,8 @@ export function normalizePacquet(buffer, wantedVersions) {
       .filter(([, published]) => typeof published === "string"),
   );
   const modified = Object.values(times).sort().at(-1);
-  const metadata = Buffer.from(JSON.stringify(modified ? { modified } : {}));
-  const index = Buffer.from(JSON.stringify({
+  const metadata = Buffer.from(stringifyCanonicalJson(modified ? { modified } : {}));
+  const index = Buffer.from(stringifyCanonicalJson({
     name: decoded.index.name,
     distTags: {},
     time: modified ? { ...times, modified } : {},
@@ -77,7 +104,7 @@ export function normalizeRegistryDocument(document, wantedVersions) {
     if (typeof published !== "string") {
       throw new Error(`registry metadata for ${document.name}@${version} has no publication time`);
     }
-    const content = Buffer.from(JSON.stringify(manifest));
+    const content = Buffer.from(stringifyCanonicalJson(manifest));
     records.push([version, offset, content.length, content, published]);
     offset += content.length;
   }
@@ -85,8 +112,8 @@ export function normalizeRegistryDocument(document, wantedVersions) {
 
   const times = Object.fromEntries(records.map(([version, , , , published]) => [version, published]));
   const modified = Object.values(times).sort().at(-1);
-  const metadata = Buffer.from(JSON.stringify({ modified }));
-  const index = Buffer.from(JSON.stringify({
+  const metadata = Buffer.from(stringifyCanonicalJson({ modified }));
+  const index = Buffer.from(stringifyCanonicalJson({
     name: document.name,
     distTags: {},
     time: { ...times, modified },

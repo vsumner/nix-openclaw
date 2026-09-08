@@ -38,6 +38,32 @@ function fixture() {
   ]);
 }
 
+function pacquetFixture(records) {
+  let offset = 0;
+  const versions = records.map(([version, manifest]) => {
+    const content = Buffer.from(JSON.stringify(manifest));
+    const record = [version, offset, content.length, content];
+    offset += content.length;
+    return record;
+  });
+  const metadata = Buffer.from(JSON.stringify({}));
+  const index = Buffer.from(JSON.stringify({
+    name: "stable-package",
+    distTags: {},
+    time: Object.fromEntries(records.map(([version]) => [
+      version,
+      version === "1.0.0" ? "2026-01-01T00:00:00.000Z" : "2026-01-02T00:00:00.000Z",
+    ])),
+    versions: versions.map(([version, recordOffset, length]) => [version, recordOffset, length]),
+  }));
+  return Buffer.concat([
+    Buffer.from(`pacquet-meta-v1 ${metadata.length} ${index.length}\n`),
+    metadata,
+    index,
+    ...versions.map((record) => record[3]),
+  ]);
+}
+
 test("normalization retains only lockfile versions and stable publication evidence", () => {
   const normalized = normalizePacquet(fixture(), new Set(["1.1.0"]));
   const decoded = decodePacquet(normalized);
@@ -71,6 +97,53 @@ test("normalization preserves timestamp absence without inventing policy evidenc
   const normalizedDecoded = decodePacquet(normalized);
   assert.deepEqual(normalizedDecoded.metadata, {});
   assert.deepEqual(normalizedDecoded.index.time, {});
+});
+
+test("normalization canonicalizes manifest objects but preserves export and import condition order", () => {
+  const first = {
+    version: "1.0.0",
+    dependencies: { zebra: "1.0.0", alpha: "1.0.0" },
+    exports: { ".": { node: "./node.js", default: "./default.js" } },
+    imports: { "#internal": { development: "./dev.js", default: "./prod.js" } },
+    files: ["node.js", "default.js"],
+    name: "stable-package",
+  };
+  const reordered = {
+    name: "stable-package",
+    files: ["node.js", "default.js"],
+    imports: { "#internal": { development: "./dev.js", default: "./prod.js" } },
+    exports: { ".": { node: "./node.js", default: "./default.js" } },
+    dependencies: { alpha: "1.0.0", zebra: "1.0.0" },
+    version: "1.0.0",
+  };
+  const other = { name: "stable-package", version: "2.0.0" };
+  const wanted = new Set(["1.0.0", "2.0.0"]);
+
+  const nativeFirst = normalizePacquet(pacquetFixture([["2.0.0", other], ["1.0.0", first]]), wanted);
+  const nativeReordered = normalizePacquet(pacquetFixture([["1.0.0", reordered], ["2.0.0", other]]), wanted);
+  assert.deepEqual(nativeFirst, nativeReordered);
+
+  const registryFirst = normalizeRegistryDocument({
+    name: "stable-package",
+    time: { "2.0.0": "2026-01-02T00:00:00.000Z", "1.0.0": "2026-01-01T00:00:00.000Z" },
+    versions: { "2.0.0": other, "1.0.0": first },
+  }, wanted);
+  const registryReordered = normalizeRegistryDocument({
+    name: "stable-package",
+    time: { "1.0.0": "2026-01-01T00:00:00.000Z", "2.0.0": "2026-01-02T00:00:00.000Z" },
+    versions: { "1.0.0": reordered, "2.0.0": other },
+  }, wanted);
+  assert.deepEqual(registryFirst, registryReordered);
+  assert.deepEqual(nativeFirst, registryFirst);
+
+  const decoded = decodePacquet(nativeFirst);
+  assert.deepEqual(decoded.index.versions.map(([version]) => version), ["1.0.0", "2.0.0"]);
+  const [, manifestOffset, manifestLength] = decoded.index.versions[0];
+  const manifest = JSON.parse(decoded.versions.subarray(manifestOffset, manifestOffset + manifestLength));
+  assert.deepEqual(Object.keys(manifest.dependencies), ["alpha", "zebra"]);
+  assert.deepEqual(Object.keys(manifest.exports["."]), ["node", "default"]);
+  assert.deepEqual(Object.keys(manifest.imports["#internal"]), ["development", "default"]);
+  assert.deepEqual(manifest.files, ["node.js", "default.js"]);
 });
 
 test("higher-quality metadata can replace a read-only normalized record", async (t) => {

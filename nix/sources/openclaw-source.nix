@@ -19,7 +19,7 @@
   rev = "3928bad9badfcb6c7d140530435e806fb8092190";
   hash = "sha256-VRY5aJDmctoblL9hPb//Y3H1+1zWoKa0sbApdHu4saY=";
   pnpmDepsHash = {
-    aarch64-darwin = "sha256-8KllrIDUmoxRnmn5YNTmAqqxgH1zB//tQsiSTk0u3ss=";
-    x86_64-linux = "sha256-L9TdAhOq/vwyYJJudyQIzcBMSjTpzLduuHkyJLKGtYg=";
+    aarch64-darwin = "sha256-iyRuJsWegwdvrfC6C6rlXO/OKxxFnmsAlLvLGVThR4k=";
+    x86_64-linux = "sha256-qzFwVe/T1xgOFwuHHkY6yVokgn/1kGkN89EqYDxevKE=";
   };
 }

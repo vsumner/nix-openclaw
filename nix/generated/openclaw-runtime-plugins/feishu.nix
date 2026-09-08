@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.5.29";
   expectedIntegrity = "";
   packageName = "@openclaw/feishu";
-  version = "2026.9.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/feishu/-/feishu-2026.9.2.tgz";
-  npmIntegrity = "sha512-Ac0HUvYTAd/W2XV6QL+whzLJWXCkmrFPXYREnqSUTK6O4uw8Sw27Jh0sCxRlZE3tKLzvjxxPY4nNbAI2zhNYeQ==";
-  npmShasum = "7532218c844e2aeae2ff6f53b0cef6de5d39e85b";
-  nixHash = "sha256-k/qr/s1eaYDsV5COCIvoSwv60prs6EY4avCf2xiY4Ds=";
+  version = "2026.9.3";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/feishu/-/feishu-2026.9.3.tgz";
+  npmIntegrity = "sha512-sJpiyDonGSWvV+PPUqu9MXmUB1dopMN1CyoizGwGOwPrAeQN2agWVzXyeIIkCosSSil9/XvwRcFWZ+fy+8w92Q==";
+  npmShasum = "395fe231fef9d521b8e5d665690fc19461d307e3";
+  nixHash = "sha256-AytwPSK55J7GvsD3qgQbBHTNRjeEqGV4IXEd+RtJwEE=";
   dependencyMode = "bundled";
   manifestId = "feishu";
-  openclawCompat = ">=2026.9.2";
-  peerOpenClaw = ">=2026.9.2";
+  openclawCompat = ">=2026.9.3";
+  peerOpenClaw = ">=2026.9.3";
   runtimeExtensions = [
     "./dist/index.js"
   ];

@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.5.28";
   expectedIntegrity = "";
   packageName = "@openclaw/slack";
-  version = "2026.9.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/slack/-/slack-2026.9.2.tgz";
-  npmIntegrity = "sha512-6M1M6gL3iXahpalNsYAUuA+wvnV8lbMlNNH2ToegFvaSJcIll4S9kFa5mv3GFoquhMRHQjEjnkXPHP/pXwaWcA==";
-  npmShasum = "97503580dffd3d0b26d384ad4669cda3c69c300c";
-  nixHash = "sha256-ea1AIzsEHCCBQI7+Wck8LTjKUIQp4BbdmEPMz/yM9Jo=";
+  version = "2026.9.3";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/slack/-/slack-2026.9.3.tgz";
+  npmIntegrity = "sha512-0J4J85rtEgeIctkjZTU/tK4PixOEPqL0M6s6mZ8zPCnIQHB64XG90GEXmjq8cl6JDxX7i0PmPWhuYShTrPDdog==";
+  npmShasum = "f37bb98b71ba1a223ae8fba811d6f194f40e3e01";
+  nixHash = "sha256-OmWRjPGrUwiZ9YaYIbwZAHnQUW+Rg2SKSD4xLb0s068=";
   dependencyMode = "bundled";
   manifestId = "slack";
-  openclawCompat = ">=2026.9.2";
-  peerOpenClaw = ">=2026.9.2";
+  openclawCompat = ">=2026.9.3";
+  peerOpenClaw = ">=2026.9.3";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -32,9 +32,9 @@
   contracts = { };
   dependencies = {
     "@slack/bolt" = "5.0.0";
-    "@slack/socket-mode" = "3.0.0";
-    "@slack/types" = "3.0.0";
-    "@slack/web-api" = "8.0.0";
+    "@slack/socket-mode" = "3.0.1";
+    "@slack/types" = "3.1.0";
+    "@slack/web-api" = "8.1.1";
     get-east-asian-width = "1.6.0";
     typebox = "1.3.18";
     undici = "7.29.1";
@@ -146,12 +146,23 @@
     "node_modules/@slack/bolt/node_modules/wrappy"
     "node_modules/@slack/socket-mode"
     "node_modules/@slack/socket-mode/node_modules/@slack/logger"
+    "node_modules/@slack/socket-mode/node_modules/@slack/logger/node_modules/@types/node"
+    "node_modules/@slack/socket-mode/node_modules/@slack/types"
+    "node_modules/@slack/socket-mode/node_modules/@slack/web-api"
     "node_modules/@slack/socket-mode/node_modules/@types/node"
+    "node_modules/@slack/socket-mode/node_modules/@types/retry"
     "node_modules/@slack/socket-mode/node_modules/eventemitter3"
+    "node_modules/@slack/socket-mode/node_modules/p-finally"
+    "node_modules/@slack/socket-mode/node_modules/p-queue"
+    "node_modules/@slack/socket-mode/node_modules/p-queue/node_modules/eventemitter3"
+    "node_modules/@slack/socket-mode/node_modules/p-retry"
+    "node_modules/@slack/socket-mode/node_modules/p-timeout"
+    "node_modules/@slack/socket-mode/node_modules/retry"
     "node_modules/@slack/socket-mode/node_modules/undici-types"
     "node_modules/@slack/types"
     "node_modules/@slack/web-api"
     "node_modules/@slack/web-api/node_modules/@slack/logger"
+    "node_modules/@slack/web-api/node_modules/@slack/logger/node_modules/@types/node"
     "node_modules/@slack/web-api/node_modules/@types/node"
     "node_modules/@slack/web-api/node_modules/@types/retry"
     "node_modules/@slack/web-api/node_modules/eventemitter3"
@@ -159,6 +170,7 @@
     "node_modules/@slack/web-api/node_modules/p-queue"
     "node_modules/@slack/web-api/node_modules/p-queue/node_modules/eventemitter3"
     "node_modules/@slack/web-api/node_modules/p-retry"
+    "node_modules/@slack/web-api/node_modules/p-retry/node_modules/@types/retry"
     "node_modules/@slack/web-api/node_modules/p-timeout"
     "node_modules/@slack/web-api/node_modules/retry"
     "node_modules/@slack/web-api/node_modules/undici-types"

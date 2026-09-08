@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.7.2";
   expectedIntegrity = "";
   packageName = "@openclaw/mistral-provider";
-  version = "2026.9.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/mistral-provider/-/mistral-provider-2026.9.2.tgz";
-  npmIntegrity = "sha512-YoTYo0DLweNgJqEmjIsaQGxH3PM8ML+neAM6qYsDDaL94eDHLbRvu762DrJr6ojicb7aIvvqJUhv+hdJp8pvBg==";
-  npmShasum = "316e59189c28a0d641d2506fbc74599184aaa02d";
-  nixHash = "sha256-FzLbbCXucKvea+PxQWz45WcQSZzRF+6ha98k6JzIfJ4=";
+  version = "2026.9.3";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/mistral-provider/-/mistral-provider-2026.9.3.tgz";
+  npmIntegrity = "sha512-sIPjGHYHOQ7OY8UCRCkBUC7I4bChLNVBh/BY9m2L+siJ1GaFHnd5rjFfW2JvYk8sDTAU16nRpUWrFBYJV6ch2g==";
+  npmShasum = "a6e8d2eba1aa8806fe6e3310d14320e3e883a817";
+  nixHash = "sha256-XN4i+VImqeQKfHq3033rm/oQA/Vb8Ie6yZbZYSnZ49c=";
   dependencyMode = "none";
   manifestId = "mistral";
-  openclawCompat = ">=2026.9.2";
-  peerOpenClaw = ">=2026.9.2";
+  openclawCompat = ">=2026.9.3";
+  peerOpenClaw = ">=2026.9.3";
   runtimeExtensions = [
     "./dist/index.js"
   ];

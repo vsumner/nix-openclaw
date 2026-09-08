@@ -13,13 +13,13 @@
   # export that plugin from this exact built workspace rather than the
   # unpatched npm tarball for the same release.
   workspaceRuntimePluginOverrides = [ "zai" ];
-  releaseTag = "v2026.9.2";
-  releaseVersion = "2026.9.2";
-  runtimePluginVersion = "2026.9.2";
-  rev = "3928bad9badfcb6c7d140530435e806fb8092190";
-  hash = "sha256-VRY5aJDmctoblL9hPb//Y3H1+1zWoKa0sbApdHu4saY=";
+  releaseTag = "v2026.9.3";
+  releaseVersion = "2026.9.3";
+  runtimePluginVersion = "2026.9.3";
+  rev = "1391f7cd2d40ab5bbcf2f5f831d3a64f520e72d7";
+  hash = "sha256-ZahFh0aNN3C/+IPFUXbnZOTymrsPy/LwbnVGPXcRSiw=";
   pnpmDepsHash = {
     aarch64-darwin = "sha256-iyRuJsWegwdvrfC6C6rlXO/OKxxFnmsAlLvLGVThR4k=";
-    x86_64-linux = "sha256-qzFwVe/T1xgOFwuHHkY6yVokgn/1kGkN89EqYDxevKE=";
+    x86_64-linux = "sha256-/CgtESKVkdGgCrVCql1QzxRfJgQ/CDvR8Wch8Jt1Fhw=";
   };
 }

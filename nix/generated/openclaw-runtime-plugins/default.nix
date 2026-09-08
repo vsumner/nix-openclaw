@@ -69,6 +69,7 @@
   synology-chat = import ./synologyChat.nix;
   synthetic = import ./synthetic.nix;
   tavily = import ./tavily.nix;
+  team-reports = import ./teamReports.nix;
   teams-meetings = import ./teamsMeetings.nix;
   tencent = import ./tencent.nix;
   tokenjuice = import ./tokenjuice.nix;

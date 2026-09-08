@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.5.26";
   expectedIntegrity = "";
   packageName = "@openclaw/discord";
-  version = "2026.9.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/discord/-/discord-2026.9.2.tgz";
-  npmIntegrity = "sha512-j+fSHxbXA+DSxwbL8SvtsDNL6tvBX4+RmH+EerVW6dCbeIwSconXj6J/+AaN/mhzZI4g0jPPj30TUhdCRRbc2w==";
-  npmShasum = "4f82bff33742a9977c9b62a27556769d8abbe087";
-  nixHash = "sha256-NYuIdj52l+KesYByQKtc3ATjhmJGL7k8FOK1Y8p1IdY=";
+  version = "2026.9.3";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/discord/-/discord-2026.9.3.tgz";
+  npmIntegrity = "sha512-m6V9wg6OljheSXwOJlT+ZZlyfYrzkNGAA5gky0PfwSg64aEsjdkSEqsPg3acCuufHlyBVerToEpmK4PVc7rrgw==";
+  npmShasum = "bdc23a6ce6187844e3850cf50e4023b203cd081b";
+  nixHash = "sha256-jArxDeAtailtYXbUgqv3oY9DrBvTZHZmKQSl2IwhYqY=";
   dependencyMode = "bundled";
   manifestId = "discord";
-  openclawCompat = ">=2026.9.2";
-  peerOpenClaw = ">=2026.9.2";
+  openclawCompat = ">=2026.9.3";
+  peerOpenClaw = ">=2026.9.3";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -37,7 +37,7 @@
   dependencies = {
     "@discord/embedded-app-sdk" = "2.5.0";
     "@discordjs/voice" = "0.19.2";
-    discord-api-types = "0.38.53";
+    discord-api-types = "0.38.54";
     libopus-wasm = "0.2.0";
     mdast-util-from-markdown = "2.0.3";
     typebox = "1.3.18";
@@ -59,62 +59,76 @@
   ];
   bundledPackageRoots = [
     "node_modules/@discord/embedded-app-sdk"
-    "node_modules/@discord/embedded-app-sdk/node_modules/@types/lodash"
-    "node_modules/@discord/embedded-app-sdk/node_modules/@types/lodash.transform"
-    "node_modules/@discord/embedded-app-sdk/node_modules/@types/uuid"
-    "node_modules/@discord/embedded-app-sdk/node_modules/big-integer"
-    "node_modules/@discord/embedded-app-sdk/node_modules/decimal.js-light"
-    "node_modules/@discord/embedded-app-sdk/node_modules/eventemitter3"
-    "node_modules/@discord/embedded-app-sdk/node_modules/lodash.transform"
-    "node_modules/@discord/embedded-app-sdk/node_modules/uuid"
     "node_modules/@discord/embedded-app-sdk/node_modules/zod"
     "node_modules/@discordjs/voice"
-    "node_modules/@discordjs/voice/node_modules/@snazzah/davey"
-    "node_modules/@discordjs/voice/node_modules/@snazzah/davey-linux-x64-gnu"
-    "node_modules/@discordjs/voice/node_modules/@snazzah/davey-linux-x64-musl"
-    "node_modules/@discordjs/voice/node_modules/@types/node"
-    "node_modules/@discordjs/voice/node_modules/@types/ws"
-    "node_modules/@discordjs/voice/node_modules/prism-media"
-    "node_modules/@discordjs/voice/node_modules/tslib"
-    "node_modules/@discordjs/voice/node_modules/undici-types"
+    "node_modules/@napi-rs/wasm-runtime"
+    "node_modules/@snazzah/davey"
+    "node_modules/@snazzah/davey-android-arm-eabi"
+    "node_modules/@snazzah/davey-android-arm64"
+    "node_modules/@snazzah/davey-darwin-arm64"
+    "node_modules/@snazzah/davey-darwin-x64"
+    "node_modules/@snazzah/davey-freebsd-x64"
+    "node_modules/@snazzah/davey-linux-arm-gnueabihf"
+    "node_modules/@snazzah/davey-linux-arm64-gnu"
+    "node_modules/@snazzah/davey-linux-arm64-musl"
+    "node_modules/@snazzah/davey-linux-x64-gnu"
+    "node_modules/@snazzah/davey-linux-x64-musl"
+    "node_modules/@snazzah/davey-wasm32-wasi"
+    "node_modules/@snazzah/davey-win32-arm64-msvc"
+    "node_modules/@snazzah/davey-win32-ia32-msvc"
+    "node_modules/@snazzah/davey-win32-x64-msvc"
+    "node_modules/@tybys/wasm-util"
+    "node_modules/@types/debug"
+    "node_modules/@types/lodash"
+    "node_modules/@types/lodash.transform"
+    "node_modules/@types/mdast"
+    "node_modules/@types/ms"
+    "node_modules/@types/node"
+    "node_modules/@types/unist"
+    "node_modules/@types/uuid"
+    "node_modules/@types/ws"
+    "node_modules/big-integer"
+    "node_modules/character-entities"
+    "node_modules/debug"
+    "node_modules/decimal.js-light"
+    "node_modules/decode-named-character-reference"
+    "node_modules/dequal"
+    "node_modules/devlop"
     "node_modules/discord-api-types"
+    "node_modules/eventemitter3"
     "node_modules/libopus-wasm"
+    "node_modules/lodash.transform"
     "node_modules/mdast-util-from-markdown"
-    "node_modules/mdast-util-from-markdown/node_modules/@types/debug"
-    "node_modules/mdast-util-from-markdown/node_modules/@types/mdast"
-    "node_modules/mdast-util-from-markdown/node_modules/@types/ms"
-    "node_modules/mdast-util-from-markdown/node_modules/@types/unist"
-    "node_modules/mdast-util-from-markdown/node_modules/character-entities"
-    "node_modules/mdast-util-from-markdown/node_modules/debug"
-    "node_modules/mdast-util-from-markdown/node_modules/decode-named-character-reference"
-    "node_modules/mdast-util-from-markdown/node_modules/dequal"
-    "node_modules/mdast-util-from-markdown/node_modules/devlop"
-    "node_modules/mdast-util-from-markdown/node_modules/mdast-util-to-string"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-core-commonmark"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-factory-destination"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-factory-label"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-factory-space"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-factory-title"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-factory-whitespace"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-character"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-chunked"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-classify-character"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-combine-extensions"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-decode-numeric-character-reference"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-decode-string"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-encode"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-html-tag-name"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-normalize-identifier"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-resolve-all"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-sanitize-uri"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-subtokenize"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-symbol"
-    "node_modules/mdast-util-from-markdown/node_modules/micromark-util-types"
-    "node_modules/mdast-util-from-markdown/node_modules/ms"
-    "node_modules/mdast-util-from-markdown/node_modules/unist-util-stringify-position"
+    "node_modules/mdast-util-to-string"
+    "node_modules/micromark"
+    "node_modules/micromark-core-commonmark"
+    "node_modules/micromark-factory-destination"
+    "node_modules/micromark-factory-label"
+    "node_modules/micromark-factory-space"
+    "node_modules/micromark-factory-title"
+    "node_modules/micromark-factory-whitespace"
+    "node_modules/micromark-util-character"
+    "node_modules/micromark-util-chunked"
+    "node_modules/micromark-util-classify-character"
+    "node_modules/micromark-util-combine-extensions"
+    "node_modules/micromark-util-decode-numeric-character-reference"
+    "node_modules/micromark-util-decode-string"
+    "node_modules/micromark-util-encode"
+    "node_modules/micromark-util-html-tag-name"
+    "node_modules/micromark-util-normalize-identifier"
+    "node_modules/micromark-util-resolve-all"
+    "node_modules/micromark-util-sanitize-uri"
+    "node_modules/micromark-util-subtokenize"
+    "node_modules/micromark-util-symbol"
+    "node_modules/micromark-util-types"
+    "node_modules/ms"
+    "node_modules/prism-media"
+    "node_modules/tslib"
     "node_modules/typebox"
     "node_modules/undici"
+    "node_modules/undici-types"
+    "node_modules/unist-util-stringify-position"
+    "node_modules/uuid"
     "node_modules/ws"
     "node_modules/zod"
   ];

@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.7.2";
   expectedIntegrity = "";
   packageName = "@openclaw/novita-provider";
-  version = "2026.9.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/novita-provider/-/novita-provider-2026.9.2.tgz";
-  npmIntegrity = "sha512-F+TXYNtwatRTlTFOE/zY6+g4Y6E7M4/SMdAxX084qHUGnnGs9uTENLMqB3Pr+TekTC3fjDmcz5gI8n27PSWxgw==";
-  npmShasum = "4d96721ff9d59b801e5b9bd96bf32199bd96e1f6";
-  nixHash = "sha256-jlityFnz1y2oPhtRK3ajhBlYplkfrsW9WQ4mDGrqdGc=";
+  version = "2026.9.3";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/novita-provider/-/novita-provider-2026.9.3.tgz";
+  npmIntegrity = "sha512-0f5Ad1bRji+JPvNzZQ/QpyhZ3tv6+NjpiaoxYc87HiibEXZyNQspV61GCmvTdTRXZ56gMzW9vhYdpjlbmBKq9A==";
+  npmShasum = "bf1beb99edc4852aa37eb31b7c871b7fa2cd4c00";
+  nixHash = "sha256-rdZjdqzQphzLQ8virCl6zIiVms/8og+G+cE1qPl88UI=";
   dependencyMode = "none";
   manifestId = "novita";
-  openclawCompat = ">=2026.9.2";
-  peerOpenClaw = ">=2026.9.2";
+  openclawCompat = ">=2026.9.3";
+  peerOpenClaw = ">=2026.9.3";
   runtimeExtensions = [
     "./dist/index.js"
   ];

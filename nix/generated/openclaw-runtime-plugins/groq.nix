@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.8";
   expectedIntegrity = "";
   packageName = "@openclaw/groq-provider";
-  version = "2026.9.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/groq-provider/-/groq-provider-2026.9.2.tgz";
-  npmIntegrity = "sha512-DJmG16XlRmOfz1ACOXURCugwHywrlVcFXj2iyGZc70XHFdvlQGlPf577OW25f+lhX3cCAOyx9fPSQkoJWorY4A==";
-  npmShasum = "6c14cb06be32f67dbcc82b9985786dfe2c539ba7";
-  nixHash = "sha256-qlaRweG/D052eJlwvWfrqdVj6W7SBEb94/Tq+b4+Wco=";
+  version = "2026.9.3";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/groq-provider/-/groq-provider-2026.9.3.tgz";
+  npmIntegrity = "sha512-iXm2P1RN+kiOLFhTJCMzaWujLdAjTkgyqb3VemRs/YLmwMQnB7qMdKVdWWjTpn42mMGuFmsO59w2O4YasCjgbQ==";
+  npmShasum = "3397b7cbd1efa2fba4dc8b754086d9cc3bdd3361";
+  nixHash = "sha256-Fzle20zYIk8WDk9xpO8j2kSEvsBao9WVql/zLfIoIkU=";
   dependencyMode = "none";
   manifestId = "groq";
-  openclawCompat = ">=2026.9.2";
-  peerOpenClaw = ">=2026.9.2";
+  openclawCompat = ">=2026.9.3";
+  peerOpenClaw = ">=2026.9.3";
   runtimeExtensions = [
     "./dist/index.js"
   ];

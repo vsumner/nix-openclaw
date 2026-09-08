@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.4.25";
   expectedIntegrity = "";
   packageName = "@openclaw/lobster";
-  version = "2026.9.2";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/lobster/-/lobster-2026.9.2.tgz";
-  npmIntegrity = "sha512-9WYsQoOCHaHUzGTmXAzrXlcNqymYzKS7gWcXG5XFkzkU04yI1tgyGMGt+w6IUiKMu/dFHaPfxo1JVyNfrtPFPQ==";
-  npmShasum = "c30451597e4928ca4e119b6a1c0e7ce73184386e";
-  nixHash = "sha256-Y03q03Wfu8iI0L5uXhuiDql8uTBWtrEro/rLf1NSg54=";
+  version = "2026.9.3";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/lobster/-/lobster-2026.9.3.tgz";
+  npmIntegrity = "sha512-0DAcAzkwPPziCQeAjJJ5HyclQeu/zBlkqwhGjvvrDLw6sXjp2q6vTqrUjR0u4VMgBQTkLdWHDvltHyGYhL4u/Q==";
+  npmShasum = "124034a04ed669533ac6e5a87d56c21e8bb8039b";
+  nixHash = "sha256-A/ZjsqtPlreYUicyqYAEwna8LPPhEul0y8Aw3EwXD8M=";
   dependencyMode = "bundled";
   manifestId = "lobster";
-  openclawCompat = ">=2026.9.2";
-  peerOpenClaw = ">=2026.9.2";
+  openclawCompat = ">=2026.9.3";
+  peerOpenClaw = ">=2026.9.3";
   runtimeExtensions = [
     "./dist/index.js"
   ];

@@ -13,11 +13,11 @@
   minHostVersion = ">=2026.4.25";
   expectedIntegrity = "";
   packageName = "@openclaw/acpx";
-  version = "2026.9.2";
+  version = "2026.9.3";
   workspacePath = "extensions/acpx";
   dependencyMode = "workspace";
   manifestId = "acpx";
-  openclawCompat = ">=2026.9.2";
+  openclawCompat = ">=2026.9.3";
   peerOpenClaw = "";
   runtimeExtensions = [
     "./index.js"
@@ -28,7 +28,7 @@
   dependencies = {
     "@agentclientprotocol/claude-agent-acp" = "0.70.0";
     "@agentclientprotocol/codex-acp" = "1.6.2";
-    acpx = "0.13.1";
+    acpx = "0.13.2";
     smol-toml = "1.8.0";
     zod = "4.4.3";
   };

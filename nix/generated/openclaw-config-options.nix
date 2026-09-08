@@ -1,4 +1,4 @@
-# Generated from upstream OpenClaw schema at rev 3928bad9badfcb6c7d140530435e806fb8092190. DO NOT EDIT.
+# Generated from upstream OpenClaw schema at rev 1391f7cd2d40ab5bbcf2f5f831d3a64f520e72d7. DO NOT EDIT.
 # Generator: nix/scripts/generate-config-options.ts
 { lib }:
 let
@@ -1004,7 +1004,7 @@ in
         maxSpawnDepth = lib.mkOption {
           type = t.nullOr (t.int);
           default = null;
-          description = "Maximum nesting depth for sub-agent spawning. 1 = no nesting (default), 2 = sub-agents can spawn sub-sub-agents.";
+          description = "Maximum nesting depth for sub-agent spawning. Default: 5; 1 makes direct children leaves.";
         };
         model = lib.mkOption {
           type = t.nullOr (t.oneOf [ (t.str) (t.submodule { options = {
@@ -4419,6 +4419,10 @@ in
     }; }));
       default = null;
     };
+    sessionIdleTtlMs = lib.mkOption {
+      type = t.nullOr (t.number);
+      default = null;
+    };
   }; });
     default = null;
   };
@@ -6494,10 +6498,6 @@ in
     };
     workshop = lib.mkOption {
       type = t.nullOr (t.submodule { options = {
-      allowSymlinkTargetWrites = lib.mkOption {
-        type = t.nullOr (t.bool);
-        default = null;
-      };
       approvalPolicy = lib.mkOption {
         type = t.nullOr (t.oneOf [ (t.enum [ "pending" ]) (t.enum [ "auto" ]) ]);
         default = null;
@@ -9236,10 +9236,6 @@ in
       default = null;
     };
     lastRunVersion = lib.mkOption {
-      type = t.nullOr (t.str);
-      default = null;
-    };
-    localModelLeanAutoModel = lib.mkOption {
       type = t.nullOr (t.str);
       default = null;
     };

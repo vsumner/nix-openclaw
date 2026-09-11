@@ -1,4 +1,4 @@
-# Generated from upstream OpenClaw schema at rev 1391f7cd2d40ab5bbcf2f5f831d3a64f520e72d7. DO NOT EDIT.
+# Generated from upstream OpenClaw schema at rev 3a9d69db306cd7f081e06254cb89c4bcc14a7107. DO NOT EDIT.
 # Generator: nix/scripts/generate-config-options.ts
 { lib }:
 let
@@ -2968,6 +2968,15 @@ in
       type = t.nullOr (t.bool);
       default = null;
     };
+    preparedPool = lib.mkOption {
+      type = t.nullOr (t.submodule { options = {
+      maxTotal = lib.mkOption {
+        type = t.nullOr (t.int);
+        default = null;
+      };
+    }; });
+      default = null;
+    };
     profiles = lib.mkOption {
       type = t.nullOr (t.attrsOf (t.submodule { options = {
       install = lib.mkOption {
@@ -2976,6 +2985,10 @@ in
       };
       provider = lib.mkOption {
         type = t.str;
+      };
+      readyWorkers = lib.mkOption {
+        type = t.nullOr (t.int);
+        default = null;
       };
       settings = lib.mkOption {
         type = t.nullOr (t.attrsOf (t.anything));

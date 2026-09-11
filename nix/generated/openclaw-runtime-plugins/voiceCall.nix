@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.4.10";
   expectedIntegrity = "";
   packageName = "@openclaw/voice-call";
-  version = "2026.9.3";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/voice-call/-/voice-call-2026.9.3.tgz";
-  npmIntegrity = "sha512-PdlZo6GUimxpLgfB4nOSNK18MGHFC0iBqviSPWUOifYa83JVztMYYbYPHuv7F1FGLKyIt9SnlfEY9B29AosapQ==";
-  npmShasum = "fa7ab8508314f09b3d5f42154704e6e7f72359c3";
-  nixHash = "sha256-itQnCMgJ+JYcifxJO+Uepygs4359302tcx5Iwd54sv8=";
+  version = "2026.9.4";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/voice-call/-/voice-call-2026.9.4.tgz";
+  npmIntegrity = "sha512-Zc1atsBdnRZmJ9UY2H2pAPCKA3Do8cooBn9XEZeazVC8zM1kqkq+d1BtMjCPj0QWM4hwJe8PKRAadX1UCHw5IQ==";
+  npmShasum = "538930f611359a4ff88493f12b0cc49895d709e4";
+  nixHash = "sha256-KcMoJGk7rqQ6gQSFo6okHvqcCYsarxiz7FAb+PoRWtQ=";
   dependencyMode = "bundled";
   manifestId = "voice-call";
-  openclawCompat = ">=2026.9.3";
-  peerOpenClaw = ">=2026.9.3";
+  openclawCompat = ">=2026.9.4";
+  peerOpenClaw = ">=2026.9.4";
   runtimeExtensions = [
     "./dist/index.js"
   ];

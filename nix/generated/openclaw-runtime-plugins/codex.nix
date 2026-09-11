@@ -13,11 +13,11 @@
   minHostVersion = ">=2026.5.1-beta.1";
   expectedIntegrity = "";
   packageName = "@openclaw/codex";
-  version = "2026.9.3";
+  version = "2026.9.4";
   workspacePath = "extensions/codex";
   dependencyMode = "workspace";
   manifestId = "codex";
-  openclawCompat = ">=2026.9.3";
+  openclawCompat = ">=2026.9.4";
   peerOpenClaw = "";
   runtimeExtensions = [
     "./index.js"

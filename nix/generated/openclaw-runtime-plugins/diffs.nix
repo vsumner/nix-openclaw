@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.4.30";
   expectedIntegrity = "";
   packageName = "@openclaw/diffs";
-  version = "2026.9.3";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/diffs/-/diffs-2026.9.3.tgz";
-  npmIntegrity = "sha512-ODEZMx1VGvBCJVd8aHYwPSyps67MERLoZamFDcc3ADUxeKXYanobVgWL7IgOP3QuekB3aq0mrG2VHR3oJMdxeA==";
-  npmShasum = "bce308dcc7e0b8d0b3d7761e74fef55c038a2d1e";
-  nixHash = "sha256-DJ2yMxx1w5TuHc4Zzaflm9dKS9xZ4DP269i1yUoTSRU=";
+  version = "2026.9.4";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/diffs/-/diffs-2026.9.4.tgz";
+  npmIntegrity = "sha512-67EDyAYvPZWDpOpdRo7EQlaLlSd7J/rbw2ZxSm75gZQgEQssbOEWXLeqhWBiOhICC2jNpyLFh1zDZvz9T35d5Q==";
+  npmShasum = "35ccb8c37813a3075d21fb6ca929ab169e6d7782";
+  nixHash = "sha256-CXaOyTikTOxbzUG8HCkWm9U82YTL+8pbcCBAfZqJ/qE=";
   dependencyMode = "bundled";
   manifestId = "diffs";
-  openclawCompat = ">=2026.9.3";
-  peerOpenClaw = ">=2026.9.3";
+  openclawCompat = ">=2026.9.4";
+  peerOpenClaw = ">=2026.9.4";
   runtimeExtensions = [
     "./dist/index.js"
   ];

@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.9";
   expectedIntegrity = "";
   packageName = "@openclaw/fireworks-provider";
-  version = "2026.9.3";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/fireworks-provider/-/fireworks-provider-2026.9.3.tgz";
-  npmIntegrity = "sha512-YWBMfMP60LFRA8BtETpBAltpgzuHBhFlFRS3TjB5nonslIZbtckTlCaw80IjVGmyzDpM3bRCbNsNu2yyp5xdsg==";
-  npmShasum = "f40c9af59a7fa5e502b6c2ef77f216469f7d51d6";
-  nixHash = "sha256-h1KMGPX9+W7q6vR30n4P7w7R8w1+LbrrhcfyvNJkPp0=";
+  version = "2026.9.4";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/fireworks-provider/-/fireworks-provider-2026.9.4.tgz";
+  npmIntegrity = "sha512-adfQEhUW0RLRSc66POrULMJIGqs8ieVawkNnBss+xSR/bG2A/ixGs0KORL6464iStJoJlyhfe0Q/jzuI/fUaow==";
+  npmShasum = "612653c1cadf238d1d1b9acdcdaf5c22cbc1b22e";
+  nixHash = "sha256-/+S3XHMvC31I2muZ/BKhlwSK2+LZh9S532rxXOk07xA=";
   dependencyMode = "none";
   manifestId = "fireworks";
-  openclawCompat = ">=2026.9.3";
-  peerOpenClaw = ">=2026.9.3";
+  openclawCompat = ">=2026.9.4";
+  peerOpenClaw = ">=2026.9.4";
   runtimeExtensions = [
     "./dist/index.js"
   ];

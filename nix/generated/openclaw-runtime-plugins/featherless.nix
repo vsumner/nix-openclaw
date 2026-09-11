@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.11";
   expectedIntegrity = "";
   packageName = "@openclaw/featherless-provider";
-  version = "2026.9.3";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/featherless-provider/-/featherless-provider-2026.9.3.tgz";
-  npmIntegrity = "sha512-b36UXcZaR9a/lzTSqS9Z9LkRteWx2qiRfXEIL8tELsZSyOvzud6aDYHYtoi80wlJaHC8rsD+GQ0+64UX2fNikw==";
-  npmShasum = "ee9b69e56edda83a527b39feac42d2671f7ce548";
-  nixHash = "sha256-EqeMHDRvZP1ix44Iwup8tmk2YBk6v+rLTBEZIU6EKyk=";
+  version = "2026.9.4";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/featherless-provider/-/featherless-provider-2026.9.4.tgz";
+  npmIntegrity = "sha512-bglwFYlFfTXTRV+sTGx8HtzA19gQ/RT7w27Cv0e06txm/cFS/AMn5LqHv/rfcxN8ylwWL8GtOEBoubSdHkFJvA==";
+  npmShasum = "53b77aef43ae953c9c2af3bda2b47e965d1038ba";
+  nixHash = "sha256-OyX3SCkivbrtR685xiwGEGAE6sDtLpZKJH5xrV9iRwY=";
   dependencyMode = "none";
   manifestId = "featherless";
-  openclawCompat = ">=2026.9.3";
-  peerOpenClaw = ">=2026.9.3";
+  openclawCompat = ">=2026.9.4";
+  peerOpenClaw = ">=2026.9.4";
   runtimeExtensions = [
     "./dist/index.js"
   ];

@@ -13,11 +13,11 @@
   minHostVersion = ">=2026.4.25";
   expectedIntegrity = "";
   packageName = "@openclaw/acpx";
-  version = "2026.9.3";
+  version = "2026.9.4";
   workspacePath = "extensions/acpx";
   dependencyMode = "workspace";
   manifestId = "acpx";
-  openclawCompat = ">=2026.9.3";
+  openclawCompat = ">=2026.9.4";
   peerOpenClaw = "";
   runtimeExtensions = [
     "./index.js"

@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.9";
   expectedIntegrity = "";
   packageName = "@openclaw/zai-provider";
-  version = "2026.9.3";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/zai-provider/-/zai-provider-2026.9.3.tgz";
-  npmIntegrity = "sha512-xNbpe9Ov16a12e/Q499J3ZOJshmvKmwMdehwEWQ8reFzZyS9jQ7PwFZLRgzK8PdZcJOOYWIAXHgRHH3wo/c7Xw==";
-  npmShasum = "82ef70297e33f08b498b72a432c2639edb6023e0";
-  nixHash = "sha256-E4Evwbmd1jkb3selOyrfJTPJxTAILQcg9PKPH4lZmto=";
+  version = "2026.9.4";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/zai-provider/-/zai-provider-2026.9.4.tgz";
+  npmIntegrity = "sha512-41qXJJNh5/Zd/+Y9i3XPg2ZwfXPh52qNNyn6tVsoNF0fjhs3TH17CJjXEqJX0v2ESjBefndX9Sw4AWq70TYm9g==";
+  npmShasum = "cfd7ba881aed4b48628a58e3cae739fc2ae71424";
+  nixHash = "sha256-gKIkQQUoTlhEeyL8737jag+ku4KvAuB9ppiYgqRolbI=";
   dependencyMode = "none";
   manifestId = "zai";
-  openclawCompat = ">=2026.9.3";
-  peerOpenClaw = ">=2026.9.3";
+  openclawCompat = ">=2026.9.4";
+  peerOpenClaw = ">=2026.9.4";
   runtimeExtensions = [
     "./dist/index.js"
   ];

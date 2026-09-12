@@ -8,6 +8,14 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-12
+
+### Fixed
+
+- Preserve Workboard browser assets when staging OpenClaw `2026.9.4` plugins.
+  Accept their hardlinks in immutable Nix-store roots so the native Workboard
+  panel can load, while retaining external-plugin file-boundary checks.
+
 ## 2026-09-08
 
 ### Fixed

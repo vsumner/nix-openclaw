@@ -5,6 +5,10 @@ if [ -z "${OPENCLAW_GATEWAY:-}" ]; then
   echo "OPENCLAW_GATEWAY is not set" >&2
   exit 1
 fi
+if [ -z "${WORKBOARD_CONTROL_UI_CHECK:-}" ] || [ ! -f "$WORKBOARD_CONTROL_UI_CHECK" ]; then
+  echo "WORKBOARD_CONTROL_UI_CHECK is not set or missing" >&2
+  exit 1
+fi
 
 root="${OPENCLAW_GATEWAY}/lib/openclaw"
 
@@ -43,7 +47,7 @@ if find "${root}/node_modules" -path "*/form-data/package.json" -type f -print |
 fi
 
 public_surface_loader="$(
-  find "${root}/dist" \( -name "*.js" -o -name "*.mjs" \) -type f -exec grep -sl "function loadBundledPluginPublicArtifactModuleSync" {} + | head -1
+  find "${root}/dist" -maxdepth 1 \( -name "*.js" -o -name "*.mjs" \) -type f -exec grep -sl "function loadBundledPluginPublicArtifactModuleSync" {} + | head -1
 )"
 if [ -z "$public_surface_loader" ]; then
   echo "Missing bundled plugin public surface loader" >&2
@@ -131,5 +135,7 @@ if ! find "${root}/skills" -name SKILL.md -type f | grep -q .; then
   echo "Missing bundled SKILL.md files under ${root}/skills" >&2
   exit 1
 fi
+
+OPENCLAW_PACKAGE_ROOT="$root" node "$WORKBOARD_CONTROL_UI_CHECK"
 
 echo "openclaw package contents: ok"

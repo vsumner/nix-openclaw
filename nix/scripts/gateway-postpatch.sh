@@ -9,6 +9,14 @@ if [ -n "${PATCH_BUNDLED_RUNTIME_DEPS_SCRIPT:-}" ] && [ -f scripts/stage-bundled
   chmod u+w scripts/stage-bundled-plugin-runtime-deps.mjs
 fi
 
+if [ -n "${PATCH_CONTROL_UI_RUNTIME_ASSETS:-}" ]; then
+  patch -p1 < "$PATCH_CONTROL_UI_RUNTIME_ASSETS"
+fi
+
+if [ -n "${PATCH_CONTROL_UI_NIX_HARDLINKS:-}" ]; then
+  patch -p1 < "$PATCH_CONTROL_UI_NIX_HARDLINKS"
+fi
+
 if [ -n "${PATCH_BACKUP_MANAGED_LINKS:-}" ]; then
   patch -p1 < "$PATCH_BACKUP_MANAGED_LINKS"
 fi

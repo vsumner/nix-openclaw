@@ -6,6 +6,10 @@
   # fixed-output sandbox. The committed v9 lock remains pnpm 11 compatible.
   pnpmMajor = "12";
   applyPublicSurfaceHardlinksPatch = false;
+  # Remove these once the pinned upstream release preserves manifest-declared
+  # Control UI payloads in dist-runtime and accepts immutable Nix-store assets.
+  applyControlUiRuntimeAssetsPatch = true;
+  applyControlUiNixHardlinksPatch = true;
   pnpmHostOnly = true;
   applySkipPluginAutoEnableNixModePatch = false;
   applyNixStorePluginOwnershipPatch = true;

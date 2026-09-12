@@ -15,6 +15,7 @@ stdenv.mkDerivation {
 
   env = {
     OPENCLAW_GATEWAY = openclawGateway;
+    WORKBOARD_CONTROL_UI_CHECK = "${../scripts/check-workboard-control-ui-assets.mjs}";
   };
 
   doCheck = true;

@@ -1,0 +1,138 @@
+diff --git a/scripts/stage-bundled-plugin-runtime.mts b/scripts/stage-bundled-plugin-runtime.mts
+--- a/scripts/stage-bundled-plugin-runtime.mts
++++ b/scripts/stage-bundled-plugin-runtime.mts
+@@ -243,6 +243,45 @@ function shouldCopyRuntimeFile(relativePath: string) {
+   );
+ }
+ 
++function controlUiAssetDirectory(
++  pluginDir: string,
++): { sourceDir: string; entryPath: string } | undefined {
++  const manifest = tryReadJsonFile(path.join(pluginDir, "openclaw.plugin.json"));
++  if (!isRecord(manifest) || !isRecord(manifest.controlUi)) {
++    return undefined;
++  }
++  const entry = manifest.controlUi.entry;
++  if (typeof entry !== "string" || entry.length === 0 || path.posix.isAbsolute(entry)) {
++    return undefined;
++  }
++  const directory = path.posix.dirname(entry);
++  if (directory === "." || directory.split("/").some((segment) => segment === "..")) {
++    return undefined;
++  }
++  const sourceDir = path.resolve(pluginDir, directory);
++  if (!sourceDir.startsWith(`${path.resolve(pluginDir)}${path.sep}`)) {
++    return undefined;
++  }
++  return { sourceDir, entryPath: path.join(pluginDir, entry) };
++}
++
++function copyDeclaredControlUiAssets(sourcePluginDir: string, targetPluginDir: string) {
++  const controlUi = controlUiAssetDirectory(sourcePluginDir);
++  if (!controlUi) {
++    return;
++  }
++  const { sourceDir, entryPath } = controlUi;
++  const targetDir = path.join(targetPluginDir, path.relative(sourcePluginDir, sourceDir));
++  if (!fs.existsSync(sourceDir) || !fs.statSync(sourceDir).isDirectory()) {
++    throw new Error(`declared Control UI directory is missing: ${sourceDir}`);
++  }
++  if (!fs.existsSync(entryPath) || !fs.statSync(entryPath).isFile()) {
++    throw new Error(`declared Control UI entry is missing: ${entryPath}`);
++  }
++  removePathIfExists(targetDir);
++  fs.cpSync(sourceDir, targetDir, { recursive: true, dereference: false, verbatimSymlinks: true });
++}
++
+ function hasDefaultExport(sourcePath: string) {
+   const text = fs.readFileSync(sourcePath, "utf8");
+   return /\bexport\s+default\b/u.test(text) || /\bas\s+default\b/u.test(text);
+@@ -357,6 +395,7 @@ export function stageBundledPluginRuntime(params: { cwd?: string; repoRoot?: st
+     const runtimePluginDir = path.join(runtimeExtensionsRoot, dirent.name);
+ 
+     stagePluginRuntimeOverlay(distPluginDir, runtimePluginDir);
++    copyDeclaredControlUiAssets(distPluginDir, runtimePluginDir);
+   }
+ }
+ 
+diff --git a/test/scripts/stage-bundled-plugin-runtime.test.ts b/test/scripts/stage-bundled-plugin-runtime.test.ts
+--- a/test/scripts/stage-bundled-plugin-runtime.test.ts
++++ b/test/scripts/stage-bundled-plugin-runtime.test.ts
+@@ -77,4 +77,77 @@ describe("stageBundledPluginRuntime", () => {
+       ).rejects.toMatchObject({ code: "ENOENT" });
+     });
+   });
++
++  it("copies the manifest-declared Control UI directory byte-for-byte", async () => {
++    await withTempDir(async (repoRoot) => {
++      const pluginDir = path.join(repoRoot, "dist", "extensions", "workboard");
++      const assetDir = path.join(pluginDir, "dist", "control-ui", "build");
++      const entryPath = path.join(assetDir, "index.js");
++      const stylePath = path.join(assetDir, "index.css");
++      const chunkPath = path.join(assetDir, "chunks", "vendor.js");
++      await fs.promises.mkdir(assetDir, { recursive: true });
++      await fs.promises.writeFile(entryPath, "browser-entry-body\\n", "utf8");
++      await fs.promises.writeFile(stylePath, "browser-style-body\\n", "utf8");
++      await fs.promises.mkdir(path.dirname(chunkPath), { recursive: true });
++      await fs.promises.writeFile(chunkPath, "browser-chunk-body\\n", "utf8");
++      await fs.promises.writeFile(
++        path.join(pluginDir, "openclaw.plugin.json"),
++        JSON.stringify({
++          id: "workboard",
++          controlUi: {
++            entry: "dist/control-ui/build/index.js",
++            styles: ["dist/control-ui/build/index.css"],
++          },
++        }),
++        "utf8",
++      );
++
++      stageBundledPluginRuntime({ repoRoot });
++
++      const runtimeDir = path.join(
++        repoRoot,
++        "dist-runtime",
++        "extensions",
++        "workboard",
++        "dist",
++        "control-ui",
++        "build",
++      );
++      expect(await fs.promises.readFile(path.join(runtimeDir, "index.js"), "utf8")).toBe(
++        "browser-entry-body\\n",
++      );
++      expect(await fs.promises.readFile(path.join(runtimeDir, "index.css"), "utf8")).toBe(
++        "browser-style-body\\n",
++      );
++      expect(
++        await fs.promises.readFile(path.join(runtimeDir, "chunks", "vendor.js"), "utf8"),
++      ).toBe("browser-chunk-body\\n");
++      expect(fs.lstatSync(path.join(runtimeDir, "index.js")).isSymbolicLink()).toBe(false);
++      expect(fs.lstatSync(path.join(runtimeDir, "index.css")).isSymbolicLink()).toBe(false);
++      expect(
++        fs.lstatSync(path.join(runtimeDir, "chunks", "vendor.js")).isSymbolicLink(),
++      ).toBe(false);
++      expect(await fs.promises.readFile(entryPath, "utf8")).toBe("browser-entry-body\\n");
++      expect(await fs.promises.readFile(stylePath, "utf8")).toBe("browser-style-body\\n");
++      expect(await fs.promises.readFile(chunkPath, "utf8")).toBe("browser-chunk-body\\n");
++    });
++  });
++
++  it("rejects a manifest-declared Control UI entry that is missing", async () => {
++    await withTempDir(async (repoRoot) => {
++      const pluginDir = path.join(repoRoot, "dist", "extensions", "workboard");
++      await fs.promises.mkdir(path.join(pluginDir, "dist", "control-ui", "missing"), {
++        recursive: true,
++      });
++      await fs.promises.writeFile(
++        path.join(pluginDir, "openclaw.plugin.json"),
++        JSON.stringify({ id: "workboard", controlUi: { entry: "dist/control-ui/missing/index.js" } }),
++        "utf8",
++      );
++
++      expect(() => stageBundledPluginRuntime({ repoRoot })).toThrow(
++        /declared Control UI entry is missing/u,
++      );
++    });
++  });
+ });

@@ -1,0 +1,26 @@
+diff --git a/src/plugins/control-ui-assets.ts b/src/plugins/control-ui-assets.ts
+--- a/src/plugins/control-ui-assets.ts
++++ b/src/plugins/control-ui-assets.ts
+@@ -1,6 +1,7 @@
+ import path from "node:path";
+ import { root } from "../infra/fs-safe.js";
+ import { walkRootDirectory } from "../infra/root-walk.js";
++import { shouldRejectHardlinkedPluginFiles } from "./hardlink-policy.js";
+ import type { PluginManifestControlUi } from "./manifest-types.js";
+ 
+ export const CONTROL_UI_PLUGIN_MAX_ASSET_BYTES = 4 * 1024 * 1024;
+@@ -16,7 +17,13 @@ export async function readPluginControlUiAssets(
+   declaration: PluginManifestControlUi,
+ ) {
+   const pluginRoot = await root(rootDir, {
+-    hardlinks: "reject",
++    hardlinks: shouldRejectHardlinkedPluginFiles({
++      origin: "config",
++      rootDir,
++      env: process.env,
++    })
++      ? "reject"
++      : "allow",
+     symlinks: "reject",
+     maxBytes: CONTROL_UI_PLUGIN_MAX_ASSET_BYTES,
+   });

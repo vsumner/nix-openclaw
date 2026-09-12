@@ -51,6 +51,8 @@ let
     "applyPublicSurfaceHardlinksPatch"
     "applySkipPluginAutoEnableNixModePatch"
     "applyNixStorePluginOwnershipPatch"
+    "applyControlUiRuntimeAssetsPatch"
+    "applyControlUiNixHardlinksPatch"
     "publicSurfaceHardlinksPatch"
     "fsSafeSource"
   ];
@@ -69,6 +71,8 @@ let
       gatewaySrc
     else
       fetchFromGitHub sourceFetch;
+
+  usePinnedSource = src == null && gatewaySrc == null;
 
   fsSafeSource = if sourceInfo ? fsSafeSource then fetchFromGitHub sourceInfo.fsSafeSource else null;
   backupManagedLinksPatch =
@@ -230,6 +234,16 @@ let
     NODE_GYP_WRAPPER_SH = "${../scripts/node-gyp-wrapper.sh}";
     GATEWAY_PREBUILD_SH = "${../scripts/gateway-prebuild.sh}";
     PATCH_BUNDLED_RUNTIME_DEPS_SCRIPT = "${../patches/stage-bundled-plugin-runtime-deps.mjs}";
+    PATCH_CONTROL_UI_RUNTIME_ASSETS =
+      if usePinnedSource && (sourceInfo.applyControlUiRuntimeAssetsPatch or false) then
+        "${../patches/preserve-control-ui-assets-in-runtime.patch}"
+      else
+        "";
+    PATCH_CONTROL_UI_NIX_HARDLINKS =
+      if usePinnedSource && (sourceInfo.applyControlUiNixHardlinksPatch or false) then
+        "${../patches/allow-nix-store-control-ui-hardlinks.patch}"
+      else
+        "";
     PATCH_BACKUP_MANAGED_LINKS = if backupManagedLinksPatch != null then "${backupManagedLinksPatch}" else "";
     PATCH_PUBLIC_SURFACE_HARDLINKS =
       if sourceInfo.applyPublicSurfaceHardlinksPatch or true then

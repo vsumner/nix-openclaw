@@ -15,6 +15,8 @@ Older repository history is available in git.
 - Preserve Workboard browser assets when staging OpenClaw `2026.9.4` plugins.
   Accept their hardlinks in immutable Nix-store roots so the native Workboard
   panel can load, while retaining external-plugin file-boundary checks.
+- Refresh the Linux dependency checksum after verified npm registry metadata
+  ordering changes. Locked package payloads remain byte-for-byte identical.
 
 ## 2026-09-08
 

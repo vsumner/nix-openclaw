@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.5.12-beta.1";
   expectedIntegrity = "";
   packageName = "@openclaw/anthropic-vertex-provider";
-  version = "2026.9.4";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/anthropic-vertex-provider/-/anthropic-vertex-provider-2026.9.4.tgz";
-  npmIntegrity = "sha512-/09DnjiFhBnPi70XowOpglSQwnTFPx3oL4/8nD3mPG2dnc+3Pb1LU3XFIYIYa4GQ/vBfiwFy6RgNLhAFxGTREQ==";
-  npmShasum = "9302978c3fd0ae0e7e2443705cac487b535b31e7";
-  nixHash = "sha256-lR8QvSPVfO27bPcvJ5+01WkEjRI1VYRBmtoVSRVbOU8=";
+  version = "2026.9.5";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/anthropic-vertex-provider/-/anthropic-vertex-provider-2026.9.5.tgz";
+  npmIntegrity = "sha512-7f0J8LYBN3IMDohVr4Wuo4683LODzsysO/s+pUye4KttF+MtlN0O/kKxwH9D5+PSbfxcROCv/9sack1qr8iBww==";
+  npmShasum = "f1c42f921b02274ecdf27c009cd96f2a09dae621";
+  nixHash = "sha256-nPQ8XErppasZRMD+LD8kcKryT6D010zzQoM8JYBSq5g=";
   dependencyMode = "bundled";
   manifestId = "anthropic-vertex";
-  openclawCompat = ">=2026.9.4";
-  peerOpenClaw = ">=2026.9.4";
+  openclawCompat = ">=2026.9.5";
+  peerOpenClaw = ">=2026.9.5";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -29,8 +29,8 @@
   channels = [ ];
   contracts = { };
   dependencies = {
-    "@anthropic-ai/vertex-sdk" = "0.19.6";
-    google-auth-library = "10.9.1";
+    "@anthropic-ai/vertex-sdk" = "0.19.7";
+    google-auth-library = "11.0.2";
     undici = "8.10.2";
   };
   optionalDependencies = { };
@@ -61,7 +61,6 @@
     "node_modules/google-auth-library/node_modules/formdata-polyfill"
     "node_modules/google-auth-library/node_modules/gaxios"
     "node_modules/google-auth-library/node_modules/gcp-metadata"
-    "node_modules/google-auth-library/node_modules/gcp-metadata/node_modules/google-logging-utils"
     "node_modules/google-auth-library/node_modules/google-logging-utils"
     "node_modules/google-auth-library/node_modules/https-proxy-agent"
     "node_modules/google-auth-library/node_modules/json-bigint"

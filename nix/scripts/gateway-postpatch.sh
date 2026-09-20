@@ -9,6 +9,10 @@ if [ -n "${PATCH_BUNDLED_RUNTIME_DEPS_SCRIPT:-}" ] && [ -f scripts/stage-bundled
   chmod u+w scripts/stage-bundled-plugin-runtime-deps.mjs
 fi
 
+if [ -n "${PATCH_CONTROL_UI_RUNTIME_COPY:-}" ]; then
+  patch -p1 < "$PATCH_CONTROL_UI_RUNTIME_COPY"
+fi
+
 if [ -n "${PATCH_CONTROL_UI_RUNTIME_ASSETS:-}" ]; then
   patch -p1 < "$PATCH_CONTROL_UI_RUNTIME_ASSETS"
 fi
@@ -30,7 +34,7 @@ if [ -n "${PATCH_SKIP_PLUGIN_AUTO_ENABLE_NIX_MODE:-}" ]; then
 fi
 
 if [ -n "${PATCH_NIX_STORE_PLUGIN_OWNERSHIP:-}" ]; then
-  patch -p1 < "$PATCH_NIX_STORE_PLUGIN_OWNERSHIP"
+  patch --fuzz=0 -p1 < "$PATCH_NIX_STORE_PLUGIN_OWNERSHIP"
 fi
 
 if [ -n "${PATCH_BEFORE_MESSAGE_WRITE_RUN_ID:-}" ]; then

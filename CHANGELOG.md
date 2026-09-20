@@ -8,6 +8,25 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-20
+
+### Changed
+
+- Updated the gateway source, macOS app, generated configuration schema, and
+  runtime plugin catalog to OpenClaw `2026.9.5`.
+- Added the official `radius` runtime plugin; the supported catalog now contains
+  86 plugins, with the existing 11 deterministic skip decisions unchanged.
+- Rebased immutable Nix-store plugin trust onto upstream's shared install-record
+  matcher, retaining official-catalog identity and ambiguous-owner checks.
+
+### Fixed
+
+- Preserve manifest-declared Control UI assets across the upstream runtime
+  staging refactor.
+- Restore the executable mode of TypeScript 7 platform binaries reconstructed
+  from pnpm's content-addressed store.
+- Keep runtime-plugin lock generation aligned with all Nix-only source metadata.
+
 ## 2026-09-12
 
 ### Fixed

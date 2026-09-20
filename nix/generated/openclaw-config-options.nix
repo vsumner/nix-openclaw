@@ -1,4 +1,4 @@
-# Generated from upstream OpenClaw schema at rev 3a9d69db306cd7f081e06254cb89c4bcc14a7107. DO NOT EDIT.
+# Generated from upstream OpenClaw schema at rev ec9c1a13db8938e5a3eaa51fca2e981cde2395a9. DO NOT EDIT.
 # Generator: nix/scripts/generate-config-options.ts
 { lib }:
 let
@@ -326,6 +326,23 @@ in
       };
       embeddedAgent = lib.mkOption {
         type = t.nullOr (t.submodule { options = {
+        cyberFailover = lib.mkOption {
+          type = t.nullOr (t.submodule { options = {
+          cooloffMs = lib.mkOption {
+            type = t.nullOr (t.int);
+            default = null;
+          };
+          mode = lib.mkOption {
+            type = t.nullOr (t.oneOf [ (t.enum [ "auto" ]) (t.enum [ "off" ]) ]);
+            default = null;
+          };
+          model = lib.mkOption {
+            type = t.nullOr (t.str);
+            default = null;
+          };
+        }; });
+          default = null;
+        };
         executionContract = lib.mkOption {
           type = t.nullOr (t.oneOf [ (t.enum [ "default" ]) (t.enum [ "strict-agentic" ]) ]);
           default = null;
@@ -573,6 +590,10 @@ in
         };
         params = lib.mkOption {
           type = t.nullOr (t.attrsOf (t.anything));
+          default = null;
+        };
+        pickerRuntimes = lib.mkOption {
+          type = t.nullOr (t.listOf (t.str));
           default = null;
         };
         streaming = lib.mkOption {
@@ -1512,6 +1533,10 @@ in
           type = t.nullOr (t.attrsOf (t.anything));
           default = null;
         };
+        pickerRuntimes = lib.mkOption {
+          type = t.nullOr (t.listOf (t.str));
+          default = null;
+        };
         streaming = lib.mkOption {
           type = t.nullOr (t.bool);
           default = null;
@@ -2081,6 +2106,10 @@ in
           };
           reviewer = lib.mkOption {
             type = t.nullOr (t.submodule { options = {
+            fastMode = lib.mkOption {
+              type = t.nullOr (t.bool);
+              default = null;
+            };
             model = lib.mkOption {
               type = t.nullOr (t.oneOf [ (t.str) (t.submodule { options = {
               fallbacks = lib.mkOption {
@@ -2092,6 +2121,10 @@ in
                 default = null;
               };
             }; }) ]);
+              default = null;
+            };
+            thinking = lib.mkOption {
+              type = t.nullOr (t.enum [ "minimal" "low" "medium" "high" "xhigh" "max" ]);
               default = null;
             };
             timeoutMs = lib.mkOption {
@@ -4786,6 +4819,10 @@ in
         type = t.nullOr (t.enum [ true ]);
         default = null;
       };
+      utilityModelSeparation = lib.mkOption {
+        type = t.nullOr (t.enum [ true ]);
+        default = null;
+      };
     }; });
       default = null;
     };
@@ -4824,7 +4861,7 @@ in
         default = null;
       };
       api = lib.mkOption {
-        type = t.nullOr (t.enum [ "openai-completions" "openai-responses" "openai-chatgpt-responses" "anthropic-messages" "google-generative-ai" "google-vertex" "github-copilot" "bedrock-converse-stream" "ollama" "azure-openai-responses" ]);
+        type = t.nullOr (t.enum [ "openai-completions" "openai-responses" "openai-chatgpt-responses" "anthropic-messages" "google-generative-ai" "google-vertex" "github-copilot" "bedrock-converse-stream" "ollama" "pi-messages" "azure-openai-responses" ]);
         default = null;
       };
       apiKey = lib.mkOption {
@@ -4919,7 +4956,7 @@ in
           default = null;
         };
         api = lib.mkOption {
-          type = t.nullOr (t.enum [ "openai-completions" "openai-responses" "openai-chatgpt-responses" "anthropic-messages" "google-generative-ai" "google-vertex" "github-copilot" "bedrock-converse-stream" "ollama" "azure-openai-responses" ]);
+          type = t.nullOr (t.enum [ "openai-completions" "openai-responses" "openai-chatgpt-responses" "anthropic-messages" "google-generative-ai" "google-vertex" "github-copilot" "bedrock-converse-stream" "ollama" "pi-messages" "azure-openai-responses" ]);
           default = null;
         };
         baseUrl = lib.mkOption {
@@ -5130,6 +5167,10 @@ in
             default = null;
           };
           supportsReasoningEffort = lib.mkOption {
+            type = t.nullOr (t.bool);
+            default = null;
+          };
+          supportsResponsesContinuation = lib.mkOption {
             type = t.nullOr (t.bool);
             default = null;
           };
@@ -6196,6 +6237,19 @@ in
         type = t.nullOr (t.oneOf [ (t.oneOf [ (t.str) (t.number) ]) (t.enum [ false ]) (t.enum [ 0 ]) ]);
         default = null;
       };
+      coldStorage = lib.mkOption {
+        type = t.nullOr (t.submodule { options = {
+        afterDays = lib.mkOption {
+          type = t.nullOr (t.int);
+          default = null;
+        };
+        enabled = lib.mkOption {
+          type = t.nullOr (t.bool);
+          default = null;
+        };
+      }; });
+        default = null;
+      };
       highWaterBytes = lib.mkOption {
         type = t.nullOr (t.oneOf [ (t.str) (t.number) ]);
         default = null;
@@ -6884,6 +6938,10 @@ in
       };
       reviewer = lib.mkOption {
         type = t.nullOr (t.submodule { options = {
+        fastMode = lib.mkOption {
+          type = t.nullOr (t.bool);
+          default = null;
+        };
         model = lib.mkOption {
           type = t.nullOr (t.oneOf [ (t.str) (t.submodule { options = {
           fallbacks = lib.mkOption {
@@ -6895,6 +6953,10 @@ in
             default = null;
           };
         }; }) ]);
+          default = null;
+        };
+        thinking = lib.mkOption {
+          type = t.nullOr (t.enum [ "minimal" "low" "medium" "high" "xhigh" "max" ]);
           default = null;
         };
         timeoutMs = lib.mkOption {
@@ -9257,6 +9319,11 @@ in
       default = null;
     };
   }; });
+    default = null;
+  };
+
+  worktreeAcceleration = lib.mkOption {
+    type = t.nullOr (t.bool);
     default = null;
   };
 

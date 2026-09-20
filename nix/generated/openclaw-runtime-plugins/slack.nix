@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.5.28";
   expectedIntegrity = "";
   packageName = "@openclaw/slack";
-  version = "2026.9.4";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/slack/-/slack-2026.9.4.tgz";
-  npmIntegrity = "sha512-hWDH+8ZRAoH1a01wDaf6g/9TOzPzuruisUZKd81wivkrLxo/wz0OhHz9nAcUd03whh25ZtyY2j+naPKlrYVyDA==";
-  npmShasum = "c845b1322a3e9e10076352bfb064a577e7c4b4d6";
-  nixHash = "sha256-OzFl8DlB+34MzAEsAAGUqQqM7zBXnf3ucRmpXAZlJxI=";
+  version = "2026.9.5";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/slack/-/slack-2026.9.5.tgz";
+  npmIntegrity = "sha512-Q45q/ZW+zw6Gr5Fg8J8V8xMWYXegMVEn3q8TcRBJyuD0nP0PtuW9FdkPF82KJ/yCP0tj18VPCgLPOuhYaiwR7A==";
+  npmShasum = "74cd581242ad81f6d24b4864fc5a4b98a9d5a6f7";
+  nixHash = "sha256-Gp8gbPmroJurUeL4DjTb6p2DAHSqVScoC36chxh5LMM=";
   dependencyMode = "bundled";
   manifestId = "slack";
-  openclawCompat = ">=2026.9.4";
-  peerOpenClaw = ">=2026.9.4";
+  openclawCompat = ">=2026.9.5";
+  peerOpenClaw = ">=2026.9.5";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -31,32 +31,29 @@
   ];
   contracts = { };
   dependencies = {
-    "@slack/bolt" = "5.0.0";
-    "@slack/socket-mode" = "3.0.1";
+    "@slack/bolt" = "5.1.0";
     "@slack/types" = "3.1.0";
     "@slack/web-api" = "8.1.1";
     get-east-asian-width = "1.6.0";
-    typebox = "1.3.18";
+    typebox = "1.3.30";
     undici = "7.29.1";
-    ws = "8.21.3";
-    zod = "4.4.3";
+    zod = "4.5.4";
   };
   optionalDependencies = { };
   bundleDependencies = [
     "@slack/bolt"
-    "@slack/socket-mode"
     "@slack/types"
     "@slack/web-api"
     "get-east-asian-width"
     "typebox"
     "undici"
-    "ws"
     "zod"
   ];
   bundledPackageRoots = [
     "node_modules/@slack/bolt"
     "node_modules/@slack/bolt/node_modules/@slack/logger"
     "node_modules/@slack/bolt/node_modules/@slack/oauth"
+    "node_modules/@slack/bolt/node_modules/@slack/socket-mode"
     "node_modules/@slack/bolt/node_modules/@types/jsonwebtoken"
     "node_modules/@slack/bolt/node_modules/@types/ms"
     "node_modules/@slack/bolt/node_modules/@types/node"
@@ -82,6 +79,7 @@
     "node_modules/@slack/bolt/node_modules/es-object-atoms"
     "node_modules/@slack/bolt/node_modules/escape-html"
     "node_modules/@slack/bolt/node_modules/etag"
+    "node_modules/@slack/bolt/node_modules/eventemitter3"
     "node_modules/@slack/bolt/node_modules/express"
     "node_modules/@slack/bolt/node_modules/finalhandler"
     "node_modules/@slack/bolt/node_modules/forwarded"
@@ -144,25 +142,9 @@
     "node_modules/@slack/bolt/node_modules/unpipe"
     "node_modules/@slack/bolt/node_modules/vary"
     "node_modules/@slack/bolt/node_modules/wrappy"
-    "node_modules/@slack/socket-mode"
-    "node_modules/@slack/socket-mode/node_modules/@slack/logger"
-    "node_modules/@slack/socket-mode/node_modules/@slack/logger/node_modules/@types/node"
-    "node_modules/@slack/socket-mode/node_modules/@slack/types"
-    "node_modules/@slack/socket-mode/node_modules/@slack/web-api"
-    "node_modules/@slack/socket-mode/node_modules/@types/node"
-    "node_modules/@slack/socket-mode/node_modules/@types/retry"
-    "node_modules/@slack/socket-mode/node_modules/eventemitter3"
-    "node_modules/@slack/socket-mode/node_modules/p-finally"
-    "node_modules/@slack/socket-mode/node_modules/p-queue"
-    "node_modules/@slack/socket-mode/node_modules/p-queue/node_modules/eventemitter3"
-    "node_modules/@slack/socket-mode/node_modules/p-retry"
-    "node_modules/@slack/socket-mode/node_modules/p-timeout"
-    "node_modules/@slack/socket-mode/node_modules/retry"
-    "node_modules/@slack/socket-mode/node_modules/undici-types"
     "node_modules/@slack/types"
     "node_modules/@slack/web-api"
     "node_modules/@slack/web-api/node_modules/@slack/logger"
-    "node_modules/@slack/web-api/node_modules/@slack/logger/node_modules/@types/node"
     "node_modules/@slack/web-api/node_modules/@types/node"
     "node_modules/@slack/web-api/node_modules/@types/retry"
     "node_modules/@slack/web-api/node_modules/eventemitter3"
@@ -177,7 +159,6 @@
     "node_modules/get-east-asian-width"
     "node_modules/typebox"
     "node_modules/undici"
-    "node_modules/ws"
     "node_modules/zod"
   ];
 }

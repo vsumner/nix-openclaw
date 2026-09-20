@@ -1,10 +1,10 @@
 diff --git a/src/plugins/discovery.ts b/src/plugins/discovery.ts
-index 00ecf0e..5e34e67 100644
+index 30ef476..19db2d3 100644
 --- a/src/plugins/discovery.ts
 +++ b/src/plugins/discovery.ts
-@@ -25,7 +25,10 @@ import {
-   resolvePluginCandidateInstallOwner,
+@@ -27,7 +27,10 @@ import {
  } from "./candidate-install-owner.js";
+ import { inspectPluginLoadPath, pluginPathFailureDiagnostic } from "./discovery-availability.js";
  import type { PluginCandidate, PluginDiscoveryResult } from "./discovery.types.js";
 -import { shouldRejectHardlinkedPluginFiles } from "./hardlink-policy.js";
 +import {
@@ -14,7 +14,7 @@ index 00ecf0e..5e34e67 100644
  import { hashStableJson } from "./installed-plugin-index-hash.js";
  import { readLegacyNpmPluginDeclaration } from "./legacy-npm-declaration.js";
  import type { PluginBundleFormat, PluginDiagnostic, PluginFormat } from "./manifest-types.js";
-@@ -135,6 +138,7 @@ function checkPathStatAndPermissions(params: {
+@@ -137,6 +140,7 @@ function checkPathStatAndPermissions(params: {
    rootDir: string;
    origin: PluginOrigin;
    uid: number | null;
@@ -22,7 +22,7 @@ index 00ecf0e..5e34e67 100644
  }): CandidateBlockIssue | null {
    if (process.platform === "win32") {
      return null;
-@@ -190,6 +194,7 @@ function checkPathStatAndPermissions(params: {
+@@ -192,6 +196,7 @@ function checkPathStatAndPermissions(params: {
      if (
        params.origin !== "bundled" &&
        params.uid !== null &&
@@ -30,7 +30,7 @@ index 00ecf0e..5e34e67 100644
        typeof stat.uid === "number" &&
        stat.uid !== params.uid &&
        stat.uid !== 0
-@@ -212,6 +217,7 @@ function findCandidateBlockIssue(params: {
+@@ -214,6 +219,7 @@ function findCandidateBlockIssue(params: {
    rootDir: string;
    origin: PluginOrigin;
    ownershipUid?: number | null;
@@ -38,14 +38,15 @@ index 00ecf0e..5e34e67 100644
  }): CandidateBlockIssue | null {
    const escaped = checkSourceEscapesRoot({
      source: params.source,
-@@ -225,5 +231,6 @@ function findCandidateBlockIssue(params: {
+@@ -227,6 +233,7 @@ function findCandidateBlockIssue(params: {
      rootDir: params.rootDir,
      origin: params.origin,
      uid: currentUid(params.ownershipUid),
 +    env: params.env,
    });
  }
-@@ -248,12 +255,14 @@ function isUnsafePluginCandidate(params: {
+
+@@ -250,12 +257,14 @@ function isUnsafePluginCandidate(params: {
    pluginId?: string;
    diagnostics: PluginDiagnostic[];
    ownershipUid?: number | null;
@@ -60,7 +61,7 @@ index 00ecf0e..5e34e67 100644
    });
    if (!issue) {
      return false;
-@@ -782,6 +791,7 @@ function createPluginScanner(env: NodeJS.ProcessEnv, ownershipUid?: number | nul
+@@ -834,6 +843,7 @@ function createPluginScanner(env: NodeJS.ProcessEnv, ownershipUid?: number | nul
          pluginId: params.idHint,
          diagnostics,
          ownershipUid,
@@ -72,11 +73,10 @@ diff --git a/src/plugins/hardlink-policy.ts b/src/plugins/hardlink-policy.ts
 index 8938d76..e3c3e78 100644
 --- a/src/plugins/hardlink-policy.ts
 +++ b/src/plugins/hardlink-policy.ts
-@@ -21,18 +21,25 @@ function isNixStorePluginRoot(rootDir: string): boolean {
+@@ -21,6 +21,13 @@ function isNixStorePluginRoot(rootDir: string): boolean {
    return rootRealPath === NIX_STORE_ROOT || rootRealPath.startsWith(`${NIX_STORE_ROOT}/`);
  }
--
-+
+
 +export function isTrustedNixStorePluginRoot(params: {
 +  rootDir: string;
 +  env?: NodeJS.ProcessEnv;
@@ -87,10 +87,7 @@ index 8938d76..e3c3e78 100644
  /** Decides whether plugin file hardlinks should fail boundary validation for one root. */
  export function shouldRejectHardlinkedPluginFiles(params: {
    origin: PluginOrigin;
-   rootDir: string;
-   env?: NodeJS.ProcessEnv;
-   realpathCache?: Map<string, string>;
- }): boolean {
+@@ -31,7 +38,7 @@ export function shouldRejectHardlinkedPluginFiles(params: {
    if (params.origin === "bundled") {
      return false;
    }
@@ -99,31 +96,27 @@ index 8938d76..e3c3e78 100644
      return false;
    }
    return true;
- }
-diff --git a/src/plugins/manifest-registry.ts b/src/plugins/manifest-registry.ts
---- a/src/plugins/manifest-registry.ts
-+++ b/src/plugins/manifest-registry.ts
-@@ -25,7 +25,10 @@
-   type PluginCandidate,
-   type PluginDiscoveryResult,
- } from "./discovery.js";
--import { shouldRejectHardlinkedPluginFiles } from "./hardlink-policy.js";
+diff --git a/src/plugins/installed-plugin-record-match.ts b/src/plugins/installed-plugin-record-match.ts
+index 25463ce..9b554e6 100644
+--- a/src/plugins/installed-plugin-record-match.ts
++++ b/src/plugins/installed-plugin-record-match.ts
+@@ -8,7 +8,12 @@ import {
+   resolvePluginCandidateInstallOwner,
+ } from "./candidate-install-owner.js";
+ import type { PluginCandidate } from "./discovery.js";
++import { isTrustedNixStorePluginRoot } from "./hardlink-policy.js";
+ import { isTrustedOfficialPluginInstallRecord } from "./official-external-install-records.js";
 +import {
-+  isTrustedNixStorePluginRoot,
-+  shouldRejectHardlinkedPluginFiles,
-+} from "./hardlink-policy.js";
- import { loadInstalledPluginIndexInstallRecordsSync } from "./installed-plugin-index-record-reader.js";
- import { resolveInstalledPluginIndexStorePath } from "./installed-plugin-index-store-path.js";
- import { recordPluginManifestInstallOwner } from "./manifest-install-owner.js";
-@@ -51,6 +54,7 @@
- import {
-   getOfficialExternalPluginCatalogEntryForPackage,
-   getOfficialExternalPluginCatalogManifest,
++  getOfficialExternalPluginCatalogEntryForPackage,
 +  resolveOfficialExternalPluginId,
- } from "./official-external-plugin-catalog.js";
- import { satisfiesPluginApiRange, resolvePackagePluginApiRange } from "./package-compat.js";
++} from "./official-external-plugin-catalog.js";
  import { isPathInside } from "./path-safety.js";
-@@ -769,3 +773,29 @@
+ import { pluginCacheRealpathSync } from "./plugin-cache-files.js";
+ import type { PluginTrust } from "./plugin-trust.js";
+@@ -78,6 +83,32 @@ export function matchesInstalledPluginRecord(params: {
+   );
+ }
+
 +function isTrustedOfficialNixStorePluginInstall(params: {
 +  pluginId: string;
 +  candidate: PluginCandidate;
@@ -150,10 +143,10 @@ diff --git a/src/plugins/manifest-registry.ts b/src/plugins/manifest-registry.ts
 +  });
 +}
 +
- function resolvePluginTrust(params: {
+ export function resolvePluginTrust(params: {
    pluginId: string;
    candidate: PluginCandidate;
-@@ -781,6 +811,8 @@
+@@ -93,6 +124,8 @@ export function resolvePluginTrust(params: {
      reason = "bundled";
    } else if (isPluginCandidateInstallOwnerAmbiguous(params.candidate)) {
      reason = "owner-ambiguous";
@@ -163,10 +156,12 @@ diff --git a/src/plugins/manifest-registry.ts b/src/plugins/manifest-registry.ts
      origin === "workspace" ||
      record?.source === "path" ||
 diff --git a/src/plugins/registry-registrars-operations.ts b/src/plugins/registry-registrars-operations.ts
-index 28a5ad1..5b52f3e 100644
+index 9ed994e..3a607c5 100644
 --- a/src/plugins/registry-registrars-operations.ts
 +++ b/src/plugins/registry-registrars-operations.ts
-@@ -38,7 +38,10 @@ import type {
+@@ -37,9 +37,12 @@ import type {
+ } from "./types.js";
+
  function isOfficialCodexPluginRecord(
 -  record: Pick<PluginRecord, "id" | "origin" | "packageName" | "rootDir" | "source">,
 +  record: Pick<
@@ -179,7 +174,9 @@ index 28a5ad1..5b52f3e 100644
      return false;
    }
    if (record.packageName === "@openclaw/codex") {
-@@ -54,5 +57,8 @@ function isOfficialCodexPluginRecord(
+@@ -53,7 +56,10 @@ function isOfficialCodexPluginRecord(
+ }
+
  export function canClaimReservedCommandOwnership(
 -  record: Pick<PluginRecord, "id" | "origin" | "packageName" | "rootDir" | "source">,
 +  record: Pick<

@@ -1,9 +1,19 @@
 diff --git a/src/plugins/manifest-registry.test.ts b/src/plugins/manifest-registry.test.ts
+index e36d93d..0e412be 100644
 --- a/src/plugins/manifest-registry.test.ts
 +++ b/src/plugins/manifest-registry.test.ts
-@@ -11,0 +12 @@
+@@ -9,6 +9,7 @@ import { recordPluginCandidateInstallOwner } from "./candidate-install-owner.js"
+ import type { PluginCandidate } from "./discovery.js";
+ import { resolvePluginManifestInstallOwner } from "./manifest-install-owner.js";
+ import { loadPluginManifestRegistryCore } from "./manifest-registry.js";
 +import * as pluginManifest from "./manifest.js";
-@@ -1262,0 +1264,77 @@
+ import type { OpenClawPackageManifest } from "./manifest.js";
+ import { createPluginCache, withPluginCache } from "./plugin-cache.js";
+ import { cleanupTrackedTempDirs, makeTrackedTempDir } from "./test-helpers/fs-fixtures.js";
+@@ -3418,5 +3419,82 @@ describe("loadPluginManifestRegistry", () => {
+     expect(newerHost.plugins.map((plugin) => plugin.id)).toContain("synology-chat");
+     expectNoRegistryDiagnosticContains(newerHost, "this host is 2026.3.21");
+   });
 +
 +  it.each([
 +    {
@@ -81,3 +91,5 @@ diff --git a/src/plugins/manifest-registry.test.ts b/src/plugins/manifest-regist
 +      }
 +    },
 +  );
+ });
+ /* oxlint-disable max-lines -- TODO: split this grandfathered oversized file. */

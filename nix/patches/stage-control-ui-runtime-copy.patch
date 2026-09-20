@@ -1,0 +1,9 @@
+diff --git a/scripts/stage-bundled-plugin-runtime.mts b/scripts/stage-bundled-plugin-runtime.mts
+--- a/scripts/stage-bundled-plugin-runtime.mts
++++ b/scripts/stage-bundled-plugin-runtime.mts
+@@ -373,4 +373,5 @@
+       path.join(repoRoot, "dist-runtime", "extensions", dirent.name),
+     );
++    copyDeclaredControlUiAssets(distPluginDir, runtimePluginDir);
+   }
+ }

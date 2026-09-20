@@ -239,6 +239,11 @@ let
         "${../patches/preserve-control-ui-assets-in-runtime.patch}"
       else
         "";
+    PATCH_CONTROL_UI_RUNTIME_COPY =
+      if usePinnedSource && (sourceInfo.applyControlUiRuntimeAssetsPatch or false) then
+        "${../patches/stage-control-ui-runtime-copy.patch}"
+      else
+        "";
     PATCH_CONTROL_UI_NIX_HARDLINKS =
       if usePinnedSource && (sourceInfo.applyControlUiNixHardlinksPatch or false) then
         "${../patches/allow-nix-store-control-ui-hardlinks.patch}"

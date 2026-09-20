@@ -5,5 +5,6 @@ virtual_store="${1:?usage: restore-pnpm-executables.sh PNPM_VIRTUAL_STORE}"
 
 find "$virtual_store" -type f \( \
   -path '*/node_modules/@esbuild/*/bin/esbuild' -o \
-  -path '*/node_modules/@typescript/native-preview-*/lib/tsgo' \
+  -path '*/node_modules/@typescript/native-preview-*/lib/tsgo' -o \
+  -path '*/node_modules/@typescript/typescript-*/lib/tsc' \
   \) -exec chmod u+x {} +

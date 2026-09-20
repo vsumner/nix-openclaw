@@ -60,6 +60,7 @@
   pixverse = import ./pixverse.nix;
   qianfan = import ./qianfan.nix;
   qwen = import ./qwen.nix;
+  radius = import ./radius.nix;
   raft = import ./raft.nix;
   searxng = import ./searxng.nix;
   signal = import ./signal.nix;

@@ -179,9 +179,12 @@ function resolveOpenClawSourcePath() {
     "releaseVersion",
     "runtimePluginVersion",
     "workspaceRuntimePluginOverrides",
+    "backupManagedLinksPatch",
     "applyPublicSurfaceHardlinksPatch",
     "applySkipPluginAutoEnableNixModePatch",
     "applyNixStorePluginOwnershipPatch",
+    "applyControlUiRuntimeAssetsPatch",
+    "applyControlUiNixHardlinksPatch",
     "publicSurfaceHardlinksPatch",
     "fsSafeSource",
   ];

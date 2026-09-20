@@ -47,14 +47,6 @@ diff --git a/scripts/stage-bundled-plugin-runtime.mts b/scripts/stage-bundled-pl
  function hasDefaultExport(sourcePath: string) {
    const text = fs.readFileSync(sourcePath, "utf8");
    return /\bexport\s+default\b/u.test(text) || /\bas\s+default\b/u.test(text);
-@@ -357,6 +395,7 @@ export function stageBundledPluginRuntime(params: { cwd?: string; repoRoot?: st
-     const runtimePluginDir = path.join(runtimeExtensionsRoot, dirent.name);
- 
-     stagePluginRuntimeOverlay(distPluginDir, runtimePluginDir);
-+    copyDeclaredControlUiAssets(distPluginDir, runtimePluginDir);
-   }
- }
- 
 diff --git a/test/scripts/stage-bundled-plugin-runtime.test.ts b/test/scripts/stage-bundled-plugin-runtime.test.ts
 --- a/test/scripts/stage-bundled-plugin-runtime.test.ts
 +++ b/test/scripts/stage-bundled-plugin-runtime.test.ts

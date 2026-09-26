@@ -8,22 +8,19 @@
   catalogFile = "official-external-plugin-catalog.json";
   catalogEntryName = "@openclaw/llama-cpp-provider";
   catalogDefaultChoice = "npm";
-  selectedSource = "npm";
+  selectedSource = "workspace";
   npmSpec = "@openclaw/llama-cpp-provider";
   minHostVersion = ">=2026.6.2";
   expectedIntegrity = "";
   packageName = "@openclaw/llama-cpp-provider";
-  version = "2026.9.5";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/llama-cpp-provider/-/llama-cpp-provider-2026.9.5.tgz";
-  npmIntegrity = "sha512-aX9wHcDhqlMWMIYf9rQyX6cKE2Xrj3R0e8XaLQiOBZVcj4yk47l10duNQ17qYshASG7Yr4os8TTlYXm7FYv0Yg==";
-  npmShasum = "b15c73298577e5ea9316dbe687b71c1928d6c1d8";
-  nixHash = "sha256-VLHhqyPH9SLZNZ3cfF+qhrMmxTjSf5xiPGDyrBUKyXU=";
-  dependencyMode = "none";
+  version = "2026.9.6";
+  workspacePath = "extensions/llama-cpp";
+  dependencyMode = "workspace";
   manifestId = "llama-cpp";
-  openclawCompat = ">=2026.9.5";
-  peerOpenClaw = ">=2026.9.5";
+  openclawCompat = ">=2026.9.6";
+  peerOpenClaw = "";
   runtimeExtensions = [
-    "./dist/index.js"
+    "./index.js"
   ];
   runtimeSetupEntry = null;
   channels = [ ];
@@ -32,7 +29,9 @@
       "local"
     ];
   };
-  dependencies = { };
+  dependencies = {
+    "@openclaw/fs-safe" = "0.18.1";
+  };
   optionalDependencies = { };
   bundleDependencies = [ ];
   bundledPackageRoots = [ ];

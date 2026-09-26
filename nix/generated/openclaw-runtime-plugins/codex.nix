@@ -13,11 +13,11 @@
   minHostVersion = ">=2026.5.1-beta.1";
   expectedIntegrity = "";
   packageName = "@openclaw/codex";
-  version = "2026.9.5";
+  version = "2026.9.6";
   workspacePath = "extensions/codex";
   dependencyMode = "workspace";
   manifestId = "codex";
-  openclawCompat = ">=2026.9.5";
+  openclawCompat = ">=2026.9.6";
   peerOpenClaw = "";
   runtimeExtensions = [
     "./index.js"
@@ -45,12 +45,12 @@
     ];
   };
   dependencies = {
-    "@openai/codex" = "0.154.0";
+    "@openai/codex" = "0.155.1";
     semver = "7.8.5";
     smol-toml = "1.8.0";
     typebox = "1.3.30";
     ws = "8.21.3";
-    zod = "4.5.4";
+    zod = "4.6.5";
   };
   optionalDependencies = { };
   bundleDependencies = [ ];

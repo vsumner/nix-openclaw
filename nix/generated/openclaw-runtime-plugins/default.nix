@@ -25,6 +25,7 @@
   discord = import ./discord.nix;
   duckduckgo = import ./duckduckgo.nix;
   exa = import ./exa.nix;
+  facetime = import ./facetime.nix;
   featherless = import ./featherless.nix;
   feishu = import ./feishu.nix;
   firecrawl = import ./firecrawl.nix;
@@ -74,6 +75,7 @@
   teams-meetings = import ./teamsMeetings.nix;
   tencent = import ./tencent.nix;
   tokenjuice = import ./tokenjuice.nix;
+  typesafe = import ./typesafe.nix;
   venice = import ./venice.nix;
   vercel-ai-gateway = import ./vercelAiGateway.nix;
   voice-call = import ./voiceCall.nix;

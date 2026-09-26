@@ -16,14 +16,17 @@
   # The gateway's Z.AI compatibility patch changes provider runtime behavior, so
   # export that plugin from this exact built workspace rather than the
   # unpatched npm tarball for the same release.
-  workspaceRuntimePluginOverrides = [ "zai" ];
-  releaseTag = "v2026.9.5";
-  releaseVersion = "2026.9.5";
-  runtimePluginVersion = "2026.9.5";
-  rev = "ec9c1a13db8938e5a3eaa51fca2e981cde2395a9";
-  hash = "sha256-M0nfeZDy6MafWCfqefwDRdL1MFLs8l1YZJmB6sV9IyU=";
+  workspaceRuntimePluginOverrides = [
+    "llama-cpp"
+    "zai"
+  ];
+  releaseTag = "v2026.9.6";
+  releaseVersion = "2026.9.6";
+  runtimePluginVersion = "2026.9.6";
+  rev = "eb377ac59e6c9fd6c7705028034812becf00271b";
+  hash = "sha256-IKshrMAfgpY756WHZpEgm6tbKbPro4ejnpo2696LPdc=";
   pnpmDepsHash = {
-    aarch64-darwin = "sha256-b/Gi7e3qfa1EvBj8SOETJfRpJh+UNketrvfBTPOy3Cs=";
-    x86_64-linux = "sha256-9lidd5x6cFhEgtoYBy1qEukH6tAZEAQDgc35pz252do=";
+    aarch64-darwin = "sha256-l+CJ8j4Ip7AP5abBR+YxTgDZSiysZqYtcOD9Kj7jvK4=";
+    x86_64-linux = "sha256-UWVSaltblerLnTxHDZzhz+QAKRCIZmTZAAWOYI7E2GI=";
   };
 }

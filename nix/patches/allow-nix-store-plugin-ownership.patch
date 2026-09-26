@@ -2,9 +2,7 @@ diff --git a/src/plugins/discovery.ts b/src/plugins/discovery.ts
 index 30ef476..19db2d3 100644
 --- a/src/plugins/discovery.ts
 +++ b/src/plugins/discovery.ts
-@@ -27,7 +27,10 @@ import {
- } from "./candidate-install-owner.js";
- import { inspectPluginLoadPath, pluginPathFailureDiagnostic } from "./discovery-availability.js";
+@@ -30,3 +30,6 @@ import {
  import type { PluginCandidate, PluginDiscoveryResult } from "./discovery.types.js";
 -import { shouldRejectHardlinkedPluginFiles } from "./hardlink-policy.js";
 +import {
@@ -12,8 +10,6 @@ index 30ef476..19db2d3 100644
 +  shouldRejectHardlinkedPluginFiles,
 +} from "./hardlink-policy.js";
  import { hashStableJson } from "./installed-plugin-index-hash.js";
- import { readLegacyNpmPluginDeclaration } from "./legacy-npm-declaration.js";
- import type { PluginBundleFormat, PluginDiagnostic, PluginFormat } from "./manifest-types.js";
 @@ -137,6 +140,7 @@ function checkPathStatAndPermissions(params: {
    rootDir: string;
    origin: PluginOrigin;

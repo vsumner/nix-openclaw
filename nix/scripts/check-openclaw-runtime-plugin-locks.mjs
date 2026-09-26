@@ -199,7 +199,7 @@ for (const row of supported) {
   assert(!lock.npmIntegrity || /^(sha512|sha384|sha256)-/.test(lock.npmIntegrity), `lock ${row.id} has invalid npm SRI integrity`);
   if (lock.selectedSource === "workspace") {
     assert(
-      lock.id === "acpx" || lock.id === "codex",
+      lock.id === "acpx" || lock.id === "codex" || lock.id === "llama-cpp",
       `lock ${row.id} is not an approved gateway workspace plugin`,
     );
     assert(!lock.nixHash, `lock ${row.id} workspace source must use the gateway source hash`);
@@ -229,7 +229,7 @@ for (const expected of ["slack", "discord", "brave", "diagnostics-prometheus"]) 
   requireSupportedId(expected);
 }
 
-for (const workspacePluginId of ["acpx", "codex"]) {
+for (const workspacePluginId of ["acpx", "codex", "llama-cpp"]) {
   const workspacePlugin = requireSupportedId(workspacePluginId);
   assert(
     workspacePlugin.version === report.runtimePluginVersion,

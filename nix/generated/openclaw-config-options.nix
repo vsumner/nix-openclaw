@@ -1,4 +1,4 @@
-# Generated from upstream OpenClaw schema at rev ec9c1a13db8938e5a3eaa51fca2e981cde2395a9. DO NOT EDIT.
+# Generated from upstream OpenClaw schema at rev eb377ac59e6c9fd6c7705028034812becf00271b. DO NOT EDIT.
 # Generator: nix/scripts/generate-config-options.ts
 { lib }:
 let
@@ -317,6 +317,10 @@ in
         default = null;
       };
       cwd = lib.mkOption {
+        type = t.nullOr (t.str);
+        default = null;
+      };
+      decisionModel = lib.mkOption {
         type = t.nullOr (t.str);
         default = null;
       };
@@ -1155,6 +1159,10 @@ in
         type = t.nullOr (t.str);
         default = null;
       };
+      decisionModel = lib.mkOption {
+        type = t.nullOr (t.str);
+        default = null;
+      };
       default = lib.mkOption {
         type = t.nullOr (t.bool);
         default = null;
@@ -1973,8 +1981,8 @@ in
             type = t.nullOr (t.oneOf [ (t.bool) (t.enum [ "auto" ]) ]);
             default = null;
           };
-          languages = lib.mkOption {
-            type = t.nullOr (t.listOf (t.enum [ "javascript" "typescript" ]));
+          executor = lib.mkOption {
+            type = t.nullOr (t.enum [ "node" "quickjs" ]);
             default = null;
           };
           maxOutputBytes = lib.mkOption {
@@ -1999,10 +2007,6 @@ in
           };
           mode = lib.mkOption {
             type = t.nullOr (t.enum [ "only" ]);
-            default = null;
-          };
-          runtime = lib.mkOption {
-            type = t.nullOr (t.enum [ "quickjs-wasi" ]);
             default = null;
           };
           searchDefaultLimit = lib.mkOption {
@@ -3377,7 +3381,7 @@ in
         default = null;
       };
       identityScopes = lib.mkOption {
-        type = t.nullOr (t.attrsOf (t.listOf (t.enum [ "operator.admin" "operator.read" "operator.write" "operator.approvals" "operator.questions" "operator.pairing" "operator.talk" "operator.talk.secrets" ])));
+        type = t.nullOr (t.attrsOf (t.listOf (t.enum [ "operator.admin" "operator.read" "operator.write" "operator.sessions.read" "operator.sessions.write" "operator.approvals" "operator.questions" "operator.pairing" "operator.talk" "operator.talk.secrets" ])));
         default = null;
       };
       mode = lib.mkOption {
@@ -3441,6 +3445,20 @@ in
         };
         allowUsers = lib.mkOption {
           type = t.nullOr (t.listOf (t.str));
+          default = null;
+        };
+        cloudflareAccessOidc = lib.mkOption {
+          type = t.nullOr (t.submodule { options = {
+          githubAccountIdClaim = lib.mkOption {
+            type = t.str;
+          };
+          issuer = lib.mkOption {
+            type = t.str;
+          };
+          providerId = lib.mkOption {
+            type = t.str;
+          };
+        }; });
           default = null;
         };
         deviceAutoApprove = lib.mkOption {
@@ -3809,6 +3827,22 @@ in
       type = t.nullOr (t.int);
       default = null;
     };
+    portals = lib.mkOption {
+      type = t.nullOr (t.submodule { options = {
+      ingress = lib.mkOption {
+        type = t.nullOr (t.submodule { options = {
+        domain = lib.mkOption {
+          type = t.str;
+        };
+        port = lib.mkOption {
+          type = t.int;
+        };
+      }; });
+        default = null;
+      };
+    }; });
+      default = null;
+    };
     publicOrigin = lib.mkOption {
       type = t.nullOr (t.str);
       default = null;
@@ -3927,6 +3961,10 @@ in
       };
       definitions = lib.mkOption {
         type = t.attrsOf (t.submodule { options = {
+        accessPolicyPlugin = lib.mkOption {
+          type = t.nullOr (t.str);
+          default = null;
+        };
         agents = lib.mkOption {
           type = t.oneOf [ (t.enum [ "*" ]) (t.anything) ];
         };
@@ -5708,6 +5746,15 @@ in
     }; });
       default = null;
     };
+    autoUpdate = lib.mkOption {
+      type = t.nullOr (t.submodule { options = {
+      enabled = lib.mkOption {
+        type = t.nullOr (t.bool);
+        default = null;
+      };
+    }; });
+      default = null;
+    };
     browserProxy = lib.mkOption {
       type = t.nullOr (t.submodule { options = {
       allowProfiles = lib.mkOption {
@@ -6281,6 +6328,10 @@ in
     }; });
       default = null;
     };
+    notifyOnCreate = lib.mkOption {
+      type = t.nullOr (t.bool);
+      default = null;
+    };
     reset = lib.mkOption {
       type = t.nullOr (t.submodule { options = {
       atHour = lib.mkOption {
@@ -6805,8 +6856,8 @@ in
         type = t.nullOr (t.oneOf [ (t.bool) (t.enum [ "auto" ]) ]);
         default = null;
       };
-      languages = lib.mkOption {
-        type = t.nullOr (t.listOf (t.enum [ "javascript" "typescript" ]));
+      executor = lib.mkOption {
+        type = t.nullOr (t.enum [ "node" "quickjs" ]);
         default = null;
       };
       maxOutputBytes = lib.mkOption {
@@ -6831,10 +6882,6 @@ in
       };
       mode = lib.mkOption {
         type = t.nullOr (t.enum [ "only" ]);
-        default = null;
-      };
-      runtime = lib.mkOption {
-        type = t.nullOr (t.enum [ "quickjs-wasi" ]);
         default = null;
       };
       searchDefaultLimit = lib.mkOption {
@@ -9211,7 +9258,7 @@ in
     prefs = lib.mkOption {
       type = t.nullOr (t.submodule { options = {
       accent = lib.mkOption {
-        type = t.nullOr (t.anything);
+        type = t.nullOr (t.oneOf [ (t.enum [ "theme" ]) (t.anything) ]);
         default = null;
       };
       chatFollowUpMode = lib.mkOption {

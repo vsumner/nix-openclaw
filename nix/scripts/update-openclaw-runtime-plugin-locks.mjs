@@ -32,6 +32,7 @@ const catalogFiles = [
 const gatewayWorkspacePluginPaths = new Map([
   ["acpx", "extensions/acpx"],
   ["codex", "extensions/codex"],
+  ["llama-cpp", "extensions/llama-cpp"],
 ]);
 
 function run(command, args, options = {}) {

@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.9";
   expectedIntegrity = "";
   packageName = "@openclaw/signal";
-  version = "2026.9.5";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/signal/-/signal-2026.9.5.tgz";
-  npmIntegrity = "sha512-/13NWVdrlZ7aZ5RtSYeT9+WGFCvNaEkrgb4fpS7i6gfRIRQANkk2r886AQ62ZYDZFk5uj5qIi8vZ4cGG/toGPw==";
-  npmShasum = "120d6c2d44296e4dedd742deea7aad8547d405da";
-  nixHash = "sha256-sw+iPAdH/vMQHTWBb/Bf/ioVAWT/3a0k4yNWnt76zec=";
+  version = "2026.9.6";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/signal/-/signal-2026.9.6.tgz";
+  npmIntegrity = "sha512-0iKoejjg0eIKbcm8C7hHcSzBWHCOj5Wc4AX4/oMBXUDXO/MCSC0+5gssr9F9RSjh+7GUZKxz6b8A9Ldcmv8JCw==";
+  npmShasum = "bcc00a2292da5fb9c0f07e2df35eee427cfe8bde";
+  nixHash = "sha256-YlQgrjXGrHvn/n7p65qrQI+MYrhb0hch85EmP9LRN9k=";
   dependencyMode = "bundled";
   manifestId = "signal";
-  openclawCompat = ">=2026.9.5";
-  peerOpenClaw = ">=2026.9.5";
+  openclawCompat = ">=2026.9.6";
+  peerOpenClaw = ">=2026.9.6";
   runtimeExtensions = [
     "./dist/index.js"
   ];
@@ -31,15 +31,38 @@
   ];
   contracts = { };
   dependencies = {
+    "@openclaw/fs-safe" = "0.18.1";
     ws = "8.21.3";
-    zod = "4.5.4";
+    zod = "4.6.5";
   };
   optionalDependencies = { };
   bundleDependencies = [
+    "@openclaw/fs-safe"
     "ws"
     "zod"
   ];
   bundledPackageRoots = [
+    "node_modules/@openclaw/fs-safe"
+    "node_modules/@openclaw/fs-safe-darwin-arm64"
+    "node_modules/@openclaw/fs-safe-darwin-x64"
+    "node_modules/@openclaw/fs-safe-linux-arm64-gnu"
+    "node_modules/@openclaw/fs-safe-linux-arm64-musl"
+    "node_modules/@openclaw/fs-safe-linux-x64-gnu"
+    "node_modules/@openclaw/fs-safe-linux-x64-musl"
+    "node_modules/@openclaw/fs-safe-win32-x64-msvc"
+    "node_modules/core-util-is"
+    "node_modules/immediate"
+    "node_modules/inherits"
+    "node_modules/isarray"
+    "node_modules/jszip"
+    "node_modules/lie"
+    "node_modules/pako"
+    "node_modules/process-nextick-args"
+    "node_modules/readable-stream"
+    "node_modules/safe-buffer"
+    "node_modules/setimmediate"
+    "node_modules/string_decoder"
+    "node_modules/util-deprecate"
     "node_modules/ws"
     "node_modules/zod"
   ];

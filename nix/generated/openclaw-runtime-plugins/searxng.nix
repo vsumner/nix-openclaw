@@ -13,15 +13,15 @@
   minHostVersion = ">=2026.6.9";
   expectedIntegrity = "";
   packageName = "@openclaw/searxng-plugin";
-  version = "2026.9.5";
-  tarballUrl = "https://registry.npmjs.org/@openclaw/searxng-plugin/-/searxng-plugin-2026.9.5.tgz";
-  npmIntegrity = "sha512-4pfel0dmLmD3uA9Uv1CvpFYrvpsx9tASPrGYcsfUBDsAheQjOadzuqS5nD4TqXYXZ/pArO0t3+uF7kZREJOKOw==";
-  npmShasum = "09d8af473f3f496616c45fc51100cf97a236f3b1";
-  nixHash = "sha256-yKQkHLp3vsA3S0iv+WRz0IzjQRdnEF3LLpFW5Y0OMu4=";
+  version = "2026.9.6";
+  tarballUrl = "https://registry.npmjs.org/@openclaw/searxng-plugin/-/searxng-plugin-2026.9.6.tgz";
+  npmIntegrity = "sha512-0jqS0A6sp7vyGxwiNO64xV7PWZyoGl3c2MRziZzvjVlAZpNKoM9GzYrpfLkGfuz6/gMumNJlIi+LdQXEF+kdqw==";
+  npmShasum = "12cde60a2247abea498f15ef009c622b7fcbbe9c";
+  nixHash = "sha256-thZYbanDoKKhDWUJnRBQin7ub7aG9dhANjcyil1oozA=";
   dependencyMode = "none";
   manifestId = "searxng";
-  openclawCompat = ">=2026.9.5";
-  peerOpenClaw = ">=2026.9.5";
+  openclawCompat = ">=2026.9.6";
+  peerOpenClaw = ">=2026.9.6";
   runtimeExtensions = [
     "./dist/index.js"
   ];

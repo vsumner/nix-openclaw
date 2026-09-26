@@ -8,6 +8,20 @@ This changelog starts with the current pre-1.0 nix-openclaw Home Manager module
 API transition.
 Older repository history is available in git.
 
+## 2026-09-25
+
+### Changed
+
+- Updated the gateway source, macOS app, generated configuration schema, and
+  runtime plugin catalog to OpenClaw `2026.9.6`. The app uses upstream's
+  replacement universal ZIP after the original 2026.9.6 app build failed to launch.
+- Added the official `facetime` and `typesafe` runtime plugins. The supported
+  catalog now contains 88 plugins; the new `onnx` artifact is skipped because
+  its runtime dependencies have no lock or bundle.
+- Kept the official `llama-cpp` local embedding provider by packaging its
+  matching OpenClaw workspace plugin. Its 2026.9.6 npm artifact has a runtime
+  dependency but no shrinkwrap or bundled dependencies.
+
 ## 2026-09-20
 
 ### Changed

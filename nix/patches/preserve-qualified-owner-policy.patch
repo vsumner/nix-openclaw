@@ -37,12 +37,6 @@
    };
  }
  
-@@ -534,7 +550,7 @@
-     isInternalMessageChannel(ctx.Provider) &&
-     Array.isArray(ctx.GatewayClientScopes) &&
-     ctx.GatewayClientScopes.includes("operator.admin");
+@@ -492,1 +508,1 @@
 -  const ownerAllowlistConfigured = ownerState.explicitOwners.length > 0;
 +  const ownerAllowlistConfigured = ownerState.ownerAllowlistConfigured;
-   const senderIsOwner = senderIsOwnerByIdentity || senderIsOwnerByScope;
-   const requireOwner = enforceOwner || ownerAllowlistConfigured;
-   const isOwnerForCommands = !requireOwner
